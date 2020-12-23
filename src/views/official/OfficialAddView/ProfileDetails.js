@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import { useOfficial } from '../../../states';
+import useAxios from 'axios-hooks';
 import {
   Box,
   Button,
@@ -33,9 +35,15 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ProfileDetails = ({ className, ...rest }) => {
+  const [official, { setOfficialID }] = useOfficial();
+
+  const [{ data, loading, error }, refetch] = useAxios(
+    `https://reqres.in/api/users/${official.officialID}?delay=1`
+  );
+
   const classes = useStyles();
   const [values, setValues] = useState({
-    firstName: 'Katarina',
+    firstName: data.data.first_name,
     lastName: 'Smith',
     email: 'demo@devias.io',
     phone: '',
@@ -44,12 +52,13 @@ const ProfileDetails = ({ className, ...rest }) => {
   });
 
   const handleChange = event => {
-    setValues({
+    const a = setValues({
       ...values,
       [event.target.name]: event.target.value
     });
   };
-
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error!</p>;
   return (
     <form
       autoComplete="off"
@@ -84,7 +93,7 @@ const ProfileDetails = ({ className, ...rest }) => {
                 name="lastName"
                 onChange={handleChange}
                 required
-                value={values.lastName}
+                value={data.data.last_name}
                 variant="outlined"
               />
             </Grid>
@@ -149,6 +158,10 @@ const ProfileDetails = ({ className, ...rest }) => {
           </Button>
         </Box>
       </Card>
+      <div>
+        <button onClick={refetch}>refetch</button>
+        <pre>{JSON.stringify(data, null, 2)}</pre>
+      </div>
     </form>
   );
 };

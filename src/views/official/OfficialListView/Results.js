@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { NavLink as RouterLink } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -16,10 +17,12 @@ import {
   TableRow,
   Typography,
   makeStyles,
-  Button
+  Button,
+  IconButton
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-
+import { Edit as EditIcon } from 'react-feather';
+import { useOfficial } from '../../../states';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -28,6 +31,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = ({ className, customers, ...rest }) => {
+  const [official, { setOfficialID }] = useOfficial();
   const classes = useStyles();
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
@@ -93,7 +97,7 @@ const Results = ({ className, customers, ...rest }) => {
                 <TableCell>Location</TableCell>
                 <TableCell>Phone</TableCell>
                 <TableCell>Registration date</TableCell>
-                <TableCell padding="none"></TableCell>
+                <TableCell padding="default"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -101,6 +105,7 @@ const Results = ({ className, customers, ...rest }) => {
                 <TableRow
                   hover
                   key={customer.id}
+                  value={customer.id}
                   selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                 >
                   <TableCell padding="default"></TableCell>
@@ -126,7 +131,14 @@ const Results = ({ className, customers, ...rest }) => {
                     {moment(customer.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
-                    <Button color="secondary">Edit</Button>
+                    <IconButton
+                      aria-label="Edit"
+                      onClick={() => setOfficialID(2)}
+                      component={RouterLink}
+                      to="/app/official-add"
+                    >
+                      <EditIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
