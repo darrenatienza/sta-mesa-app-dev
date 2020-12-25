@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { NavLink as RouterLink } from 'react-router-dom';
+import useAxios from 'axios-hooks';
 import {
   Avatar,
   Box,
@@ -23,6 +24,7 @@ import {
 import getInitials from 'src/utils/getInitials';
 import { Edit as EditIcon } from 'react-feather';
 import { useOfficial } from '../../../states';
+
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -31,7 +33,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = ({ className, customers, ...rest }) => {
-  const [official, { setOfficialID }] = useOfficial();
+  const [userId, setUserId] = useState();
+  const [official, { setOfficialID, setFirstName }] = useOfficial();
+  const [{ data, loading, error }] = useAxios(
+    `https://reqres.in/api/users/${userId}?delay=1`,
+    {
+      manual: !userId
+    }
+  );
+
   const classes = useStyles();
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
@@ -83,7 +93,11 @@ const Results = ({ className, customers, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-
+  const handleEditClick = () => {
+    setOfficialID(2);
+  };
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error!</p>;
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
       <PerfectScrollbar>
@@ -133,9 +147,9 @@ const Results = ({ className, customers, ...rest }) => {
                   <TableCell>
                     <IconButton
                       aria-label="Edit"
-                      onClick={() => setOfficialID(2)}
+                      onClick={handleEditClick}
                       component={RouterLink}
-                      to="/app/official-add"
+                      to="/app/official-form"
                     >
                       <EditIcon />
                     </IconButton>

@@ -12,7 +12,7 @@ import RegisterView from 'src/views/auth/RegisterView';
 import SettingsView from 'src/views/settings/SettingsView';
 import OfficialListView from './views/official/OfficialListView';
 import HealthWorkerListView from './views/health-workers/HealthWorkerListView';
-import OfficialAddView from './views/official/OfficialAddView';
+import OfficialFormView from './views/official/OfficialFormView';
 
 const routes = [
   {
@@ -22,7 +22,7 @@ const routes = [
       { path: 'account', element: <AccountView /> },
       { path: 'customers', element: <CustomerListView /> },
       { path: 'officials', element: <OfficialListView /> },
-      { path: 'official-add', element: <OfficialAddView /> },
+      { path: 'official-form', element: <OfficialFormView /> },
       { path: 'health-workers', element: <HealthWorkerListView /> },
       { path: 'dashboard', element: <DashboardView /> },
       { path: 'products', element: <ProductListView /> },

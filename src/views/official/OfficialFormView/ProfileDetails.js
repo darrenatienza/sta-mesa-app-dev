@@ -35,30 +35,13 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ProfileDetails = ({ className, ...rest }) => {
-  const [official, { setOfficialID }] = useOfficial();
-
-  const [{ data, loading, error }, refetch] = useAxios(
-    `https://reqres.in/api/users/${official.officialID}?delay=1`
-  );
+  const [
+    official,
+    { setOfficialID, setFirstName, setLastName, setEmail }
+  ] = useOfficial();
 
   const classes = useStyles();
-  const [values, setValues] = useState({
-    firstName: data.data.first_name,
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'new-york',
-    country: 'USA'
-  });
 
-  const handleChange = event => {
-    const a = setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error!</p>;
   return (
     <form
       autoComplete="off"
@@ -80,9 +63,9 @@ const ProfileDetails = ({ className, ...rest }) => {
                 helperText="Please specify the first name"
                 label="First name"
                 name="firstName"
-                onChange={handleChange}
+                onChange={e => setFirstName(e.target.value)}
                 required
-                value={values.firstName}
+                value={official.firstName}
                 variant="outlined"
               />
             </Grid>
@@ -91,9 +74,9 @@ const ProfileDetails = ({ className, ...rest }) => {
                 fullWidth
                 label="Last name"
                 name="lastName"
-                onChange={handleChange}
+                onChange={e => setLastName(e.target.value)}
                 required
-                value={data.data.last_name}
+                value={official.lastName}
                 variant="outlined"
               />
             </Grid>
@@ -102,9 +85,9 @@ const ProfileDetails = ({ className, ...rest }) => {
                 fullWidth
                 label="Email Address"
                 name="email"
-                onChange={handleChange}
+                onChange={e => e.setEmail(e.target.value)}
                 required
-                value={values.email}
+                value={official.email}
                 variant="outlined"
               />
             </Grid>
@@ -113,9 +96,9 @@ const ProfileDetails = ({ className, ...rest }) => {
                 fullWidth
                 label="Phone Number"
                 name="phone"
-                onChange={handleChange}
+                //onChange={handleChange}
                 type="number"
-                value={values.phone}
+                //value={values.phone}
                 variant="outlined"
               />
             </Grid>
@@ -124,9 +107,9 @@ const ProfileDetails = ({ className, ...rest }) => {
                 fullWidth
                 label="Country"
                 name="country"
-                onChange={handleChange}
+                // onChange={handleChange}
                 required
-                value={values.country}
+                // value={values.country}
                 variant="outlined"
               />
             </Grid>
@@ -135,11 +118,11 @@ const ProfileDetails = ({ className, ...rest }) => {
                 fullWidth
                 label="Select State"
                 name="state"
-                onChange={handleChange}
+                //onChange={handleChange}
                 required
                 select
                 SelectProps={{ native: true }}
-                value={values.state}
+                //value={values.state}
                 variant="outlined"
               >
                 {states.map(option => (
@@ -158,10 +141,6 @@ const ProfileDetails = ({ className, ...rest }) => {
           </Button>
         </Box>
       </Card>
-      <div>
-        <button onClick={refetch}>refetch</button>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </div>
     </form>
   );
 };

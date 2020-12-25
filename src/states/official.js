@@ -1,11 +1,9 @@
 export const initialState = {
-  officialID: 1,
+  officialID: 0,
   firstName: '',
-  lastName: ''
-};
-
-export const setValues1 = officialEntity => value => {
-  officialEntity.setState({ officialEntity: value });
+  lastName: '',
+  email: '',
+  avatar: ''
 };
 
 export const setOfficialID = officialEntity => id => {
@@ -16,4 +14,10 @@ export const setFirstName = officialEntity => firstName => {
 };
 export const setLastName = officialEntity => lastName => {
   officialEntity.setState({ lastName: lastName });
+};
+export const setEmail = officialEntity => email => {
+  officialEntity.setState({ email: email });
+};
+export const setAvatar = officialEntity => avatar => {
+  officialEntity.setState({ avatar: avatar });
 };
