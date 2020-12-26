@@ -29,6 +29,7 @@ const OfficialFormView = () => {
     official,
     { setOfficialID, setFirstName, setLastName, setEmail, setAvatar }
   ] = useOfficial();
+
   const [{ data, loading, error }, refetch] = useAxios(
     `https://reqres.in/api/users/${official.officialID}?delay=1`,
     {
@@ -38,6 +39,7 @@ const OfficialFormView = () => {
 
   useEffect(() => {
     if (data) {
+      setOfficialID(data.data.id);
       setFirstName(data.data.first_name);
       setLastName(data.data.last_name);
       setEmail(data.data.email);
