@@ -13,7 +13,7 @@ import SettingsView from 'src/views/settings/SettingsView';
 import OfficialListView from './views/official/OfficialListView';
 import HealthWorkerListView from './views/health-workers/HealthWorkerListView';
 import OfficialFormView from './views/official/OfficialFormView';
-
+import ResidentListView from './views/residents/ResidentListView';
 const routes = [
   {
     path: 'app',
@@ -22,6 +22,7 @@ const routes = [
       { path: 'account', element: <AccountView /> },
       { path: 'customers', element: <CustomerListView /> },
       { path: 'officials', element: <OfficialListView /> },
+      { path: 'residents', element: <ResidentListView /> },
       { path: 'official-form', element: <OfficialFormView /> },
       { path: 'health-workers', element: <HealthWorkerListView /> },
       { path: 'dashboard', element: <DashboardView /> },

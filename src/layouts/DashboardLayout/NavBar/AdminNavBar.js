@@ -43,6 +43,11 @@ const items = [
     title: 'Account'
   },
   {
+    href: '/app/residents',
+    icon: UsersIcon,
+    title: 'Residents'
+  },
+  {
     href: '/app/officials',
     icon: UsersIcon,
     title: 'Brgy Officials'

@@ -107,9 +107,9 @@ const Results = ({ className, customers, ...rest }) => {
               <TableRow>
                 <TableCell padding="default"></TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Location</TableCell>
-                <TableCell>Phone</TableCell>
+                <TableCell>Age</TableCell>
+                <TableCell>Civil Status</TableCell>
+                <TableCell>Phone Number</TableCell>
                 <TableCell>Registration date</TableCell>
                 <TableCell padding="default"></TableCell>
               </TableRow>
