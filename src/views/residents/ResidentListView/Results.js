@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { NavLink as RouterLink } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -20,9 +21,10 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import { useResidentSearch } from '../../../states';
+import { useResidentSearch, useResident } from '../../../states';
 import useAxios from 'axios-hooks';
-import { Edit as EditIcon } from 'react-feather';
+import { Edit as EditIcon, Delete as DeleteIcon } from 'react-feather';
+
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -36,7 +38,9 @@ const Results = ({ className, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [residentSearch] = useResidentSearch();
+  const [resident, { setResidentID }] = useResident();
   const [residents, setResidents] = useState([]);
+
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
@@ -45,9 +49,7 @@ const Results = ({ className, ...rest }) => {
     setPage(newPage);
   };
 
-  const [{ data, loading, error }, refetch] = useAxios(
-    `http://localhost/sta-mesa-api/api.php/records/residents`
-  );
+  const [{ data, loading, error }, refetch] = useAxios(`/records/residents`);
 
   useEffect(() => {
     if (data) {
@@ -59,7 +61,12 @@ const Results = ({ className, ...rest }) => {
     refetch({ params: { filter: `first_name,cs,${residentSearch.criteria}` } });
   }, [residentSearch.criteria]);
 
-  const handleEditClick = () => {};
+  const handleEditClick = residentID => {
+    setResidentID(residentID);
+  };
+  const handleDeleteClick = residentID => {
+    console.log(residentID);
+  };
   if (loading) return <CircularProgress className={classes.progress} />;
   if (error) return <p>Error!</p>;
   return (
@@ -74,6 +81,7 @@ const Results = ({ className, ...rest }) => {
                 <TableCell>Age</TableCell>
                 <TableCell>Civil Status</TableCell>
                 <TableCell>Phone Number</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -94,6 +102,22 @@ const Results = ({ className, ...rest }) => {
                   <TableCell>{resident.age}</TableCell>
                   <TableCell>{resident.civil_status}</TableCell>
                   <TableCell>{resident.phone_number}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-label="Edit"
+                      onClick={() => handleEditClick(resident.resident_id)}
+                      component={RouterLink}
+                      to="/app/resident-form"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      aria-label="Delete"
+                      onClick={() => handleDeleteClick(resident.resident_id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
