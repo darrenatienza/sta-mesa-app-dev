@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import { NavLink as RouterLink } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -33,13 +34,20 @@ const Toolbar = ({ className, ...rest }) => {
     const timeOutId = setTimeout(() => setCriteria(query), 500);
     return () => clearTimeout(timeOutId);
   }, [query]);
+  //maintains value of the search box
+  useEffect(() => {
+    setQuery(residentSearch.criteria);
+  }, []);
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box display="flex" justifyContent="flex-end">
-        <Button className={classes.importButton}>Import</Button>
-        <Button className={classes.exportButton}>Export</Button>
-        <Button color="primary" variant="contained">
-          Add customer
+        <Button
+          color="primary"
+          variant="contained"
+          component={RouterLink}
+          to="/app/resident-form"
+        >
+          Add Resident
         </Button>
       </Box>
       <Box mt={3}>
@@ -59,7 +67,7 @@ const Toolbar = ({ className, ...rest }) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search customer"
+                placeholder="Search Residents"
                 variant="outlined"
               />
             </Box>
