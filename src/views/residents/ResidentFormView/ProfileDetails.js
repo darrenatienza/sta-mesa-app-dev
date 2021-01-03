@@ -62,6 +62,7 @@ const ProfileDetails = ({ className, ...rest }) => {
   const navigate = useNavigate();
   const [resident] = useResident();
   const classes = useStyles();
+
   const [values, setValues] = useState({
     firstName: '',
     middleName: '',
@@ -70,6 +71,7 @@ const ProfileDetails = ({ className, ...rest }) => {
     birthDate: moment().format('YYYY-MM-DD'),
     phone: ''
   });
+
   const [
     { data: getData, loading: getLoading, error: getError },
     refetch
@@ -96,7 +98,18 @@ const ProfileDetails = ({ className, ...rest }) => {
       manual: true
     }
   );
-
+  useEffect(() => {
+    if (resident.residentID > 0)
+      setValues({
+        ...values,
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        civilStatus: '',
+        phone: '',
+        birthDate: moment().format('YYYY-MM-DD')
+      });
+  }, [resident.residentID]);
   useEffect(() => {
     if (getData) {
       setValues({

@@ -3,14 +3,16 @@ import {
   Box,
   Container,
   makeStyles,
-  CircularProgress
+  CircularProgress,
+  Dialog
 } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
 import data from './data';
-import { useResidentSearch } from '../../../states';
+import { useDeleteDialog } from '../../../states';
 import useAxios from 'axios-hooks';
+import DeleteDialog from '../../shared/DeleteDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -29,6 +31,7 @@ const ResidentListView = () => {
         <Toolbar />
         <Box mt={3}>
           <Results />
+          <DeleteDialog />
         </Box>
       </Container>
     </Page>

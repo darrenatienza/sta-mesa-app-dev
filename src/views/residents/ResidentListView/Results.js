@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -18,10 +18,15 @@ import {
   Typography,
   CircularProgress,
   IconButton,
+  Button,
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import { useResidentSearch, useResident } from '../../../states';
+import {
+  useResidentSearch,
+  useResident,
+  useDeleteDialog
+} from '../../../states';
 import useAxios from 'axios-hooks';
 import { Edit as EditIcon, Delete as DeleteIcon } from 'react-feather';
 
@@ -35,10 +40,12 @@ const useStyles = makeStyles(theme => ({
 
 const Results = ({ className, ...rest }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [residentSearch] = useResidentSearch();
   const [resident, { setResidentID }] = useResident();
+  const [deleteDialog, { setOpenDialog, setDeleteUrl }] = useDeleteDialog();
   const [residents, setResidents] = useState([]);
 
   const handleLimitChange = event => {
@@ -62,11 +69,16 @@ const Results = ({ className, ...rest }) => {
   }, [residentSearch.criteria]);
 
   const handleEditClick = residentID => {
+    navigate('/app/resident-form', { replace: true });
     setResidentID(residentID);
   };
   const handleDeleteClick = residentID => {
+    setOpenDialog(true);
+    //TODO: update this
+    setDeleteUrl('');
     console.log(residentID);
   };
+
   if (loading) return <CircularProgress className={classes.progress} />;
   if (error) return <p>Error!</p>;
   return (
@@ -106,8 +118,6 @@ const Results = ({ className, ...rest }) => {
                     <IconButton
                       aria-label="Edit"
                       onClick={() => handleEditClick(resident.resident_id)}
-                      component={RouterLink}
-                      to="/app/resident-form"
                     >
                       <EditIcon />
                     </IconButton>

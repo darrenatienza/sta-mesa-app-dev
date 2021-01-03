@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -13,7 +13,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
-import { useResidentSearch } from '../../../states';
+import { useResidentSearch, useResident } from '../../../states';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -27,9 +27,10 @@ const useStyles = makeStyles(theme => ({
 
 const Toolbar = ({ className, ...rest }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [residentSearch, { setCriteria }] = useResidentSearch();
-
+  const [resident, { setResidentID }] = useResident();
   useEffect(() => {
     const timeOutId = setTimeout(() => setCriteria(query), 500);
     return () => clearTimeout(timeOutId);
@@ -38,15 +39,15 @@ const Toolbar = ({ className, ...rest }) => {
   useEffect(() => {
     setQuery(residentSearch.criteria);
   }, []);
+
+  const handleAdd = event => {
+    setResidentID(0);
+    navigate('/app/resident-form', { replace: true });
+  };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box display="flex" justifyContent="flex-end">
-        <Button
-          color="primary"
-          variant="contained"
-          component={RouterLink}
-          to="/app/resident-form"
-        >
+        <Button color="primary" variant="contained" onClick={handleAdd}>
           Add Resident
         </Button>
       </Box>
