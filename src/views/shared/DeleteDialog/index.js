@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -8,21 +8,17 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDeleteDialog } from '../../../states';
 import useAxios from 'axios-hooks';
+
 const DeleteDialog = () => {
-  const [deleteDialog, { setOpenDialog }] = useDeleteDialog();
-  const [
-    { data: deleteData, loading: deleteLoading, error: deleteError },
-    executeDelete
-  ] = useAxios(
-    { url: deleteDialog.url, method: 'DELETE' },
-    {
-      manual: true
-    }
-  );
+  const [deleteDialog, { setOpenDialog,setResult }] = useDeleteDialog();
+  
   const handleClose = () => {
+    setResult(false);
     setOpenDialog(false);
   };
-  const handleAgree = () => {
+
+  const handleOk = () => {
+    setResult(true);
     setOpenDialog(false);
   };
   return (
@@ -41,10 +37,10 @@ const DeleteDialog = () => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
-          Disagree
+          Cancel
         </Button>
-        <Button onClick={handleAgree} color="primary" autoFocus>
-          Agree
+        <Button onClick={handleOk} color="primary" autoFocus>
+          Ok
         </Button>
       </DialogActions>
     </Dialog>

@@ -62,14 +62,15 @@ const ProfileDetails = ({ className, ...rest }) => {
   const navigate = useNavigate();
   const [resident] = useResident();
   const classes = useStyles();
-
+  const [userID, setUserID] = useState(0);
   const [values, setValues] = useState({
     firstName: '',
     middleName: '',
     lastName: '',
     civilStatus: 'single',
     birthDate: moment().format('YYYY-MM-DD'),
-    phone: ''
+    phone: '',
+    userID: 0
   });
 
   const [
@@ -97,19 +98,33 @@ const ProfileDetails = ({ className, ...rest }) => {
     {
       manual: true
     }
-  );
-  useEffect(() => {
-    if (resident.residentID > 0)
-      setValues({
-        ...values,
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        civilStatus: '',
-        phone: '',
-        birthDate: moment().format('YYYY-MM-DD')
-      });
-  }, [resident.residentID]);
+    );
+  
+    const [
+      { loading: postUserLoading, error: postUserError },
+      executeUserPost
+    ] = useAxios(
+      { url: `/register`, method: 'POST' },
+      {
+        manual: true
+      }
+    );
+  
+  // for adding new resident
+  //useEffect(() => {
+  //  if (resident.residentID > 0)
+  //    setValues({
+  //      ...values,
+  //      firstName: '',
+  //      middleName: '',
+  //      lastName: '',
+  //      civilStatus: '',
+  //      phone: '',
+  //      birthDate: moment().format('YYYY-MM-DD')
+  //    });
+  //}, [resident.residentID]);
+
+// for record to edit load current data
   useEffect(() => {
     if (getData) {
       setValues({
@@ -119,53 +134,80 @@ const ProfileDetails = ({ className, ...rest }) => {
         lastName: getData.last_name,
         civilStatus: getData.civil_status,
         phone: getData.phone_number,
+        userID: getData.user_id,
         birthDate: moment(getData.birthdate).format('YYYY-MM-DD')
       });
     }
   }, [getData]);
 
-  /**const handleChange = event => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };*/
+  // when new user generated proceed saving on new resident
+  useEffect(() => {
+      saveResident();
+  }, [values.userID])
 
-  const handleSave = async values => {
-    if (resident.residentID == 0) {
-      console.log('New Record');
+  // save new resident
+  const saveResident = async () => {
+    if (values.userID > 0 && resident.residentID == 0) {
       await executePost({
         data: {
           first_name: values.firstName,
           middle_name: values.middleName,
           last_name: values.lastName,
-          age: 0,
           civil_status: values.civilStatus,
-          user_id: 1,
-          phone_number: '123456',
-          birthdate: values.birthDate
-        }
-      });
-    } else {
-      console.log('update record');
-      await executePut({
-        data: {
-          ...getData,
-          first_name: values.firstName,
-          middle_name: values.middleName,
-          last_name: values.lastName,
-          age: 0,
-          civil_status: values.civilStatus,
-          user_id: 1,
+          user_id: values.userID,
           phone_number: values.phone,
           birthdate: values.birthDate
         }
       });
-    }
-    navigate('/app/residents');
+      navigate('/app/residents');
+    } 
   };
-  if (getLoading || putLoading || postLoading) return <p>Loading...</p>;
-  if (getError || putError || postError) return <p>Error!</p>;
+
+//handles the save click
+  const handleSave = async formValues => {
+    if (resident.residentID == 0) {
+      console.log('New Record');
+      const _username = formValues.firstName.toLowerCase() + formValues.middleName.toLowerCase() + formValues.lastName.toLowerCase();
+      
+      const { data: { user_id } } = await executeUserPost({
+        data: {
+          username: _username,
+          password: _username,
+        }
+      });
+      // set the values for new resident
+      setValues({
+        ...values,
+        firstName: formValues.firstName,
+        middleName: formValues.middleName,
+        lastName: formValues.lastName,
+        civilStatus: formValues.civilStatus,
+        phone_number: formValues.phone,
+        birthdate: formValues.birthDate,
+        userID: user_id
+      })
+      
+      
+    } else {
+      // update only the record
+      console.log('update record');
+      await executePut({
+        data: {
+          ...getData,
+          first_name: formValues.firstName,
+          middle_name: formValues.middleName,
+          last_name: formValues.lastName,
+          civil_status: formValues.civilStatus,
+          phone_number: formValues.phone,
+          birthdate: formValues.birthDate
+        }
+      });
+      navigate('/app/residents');
+    }
+    
+  };
+  if (getLoading || putLoading || postLoading || postUserLoading) return <p>Loading...</p>;
+  if (getError || putError || postError || postUserError) return <p>Error!</p>;
   return (
     <>
       <Formik

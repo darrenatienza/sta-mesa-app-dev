@@ -29,7 +29,7 @@ import {
 } from '../../../states';
 import useAxios from 'axios-hooks';
 import { Edit as EditIcon, Delete as DeleteIcon } from 'react-feather';
-
+import DeleteDialog from '../../shared/DeleteDialog';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -45,12 +45,23 @@ const Results = ({ className, ...rest }) => {
   const [page, setPage] = useState(0);
   const [residentSearch] = useResidentSearch();
   const [resident, { setResidentID }] = useResident();
-  const [deleteDialog, { setOpenDialog, setDeleteUrl }] = useDeleteDialog();
+  const [userID, setUserID] = useState(0);
+  const [deleteDialog, { setOpenDialog,setResult }] = useDeleteDialog();
   const [residents, setResidents] = useState([]);
 
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
+
+  const [
+    { data: deleteData, loading: deleteLoading, error: deleteError },
+    executeDelete
+  ] = useAxios(
+    { url: `/records/residents/${resident.residentID}`, method: 'DELETE' },
+    {
+      manual: true
+    }
+  );
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -65,24 +76,41 @@ const Results = ({ className, ...rest }) => {
   }, [data]);
 
   useEffect(() => {
-    refetch({ params: { filter: `first_name,cs,${residentSearch.criteria}` } });
+    handleRefetch();
   }, [residentSearch.criteria]);
+
+  // handle delete confirmation
+  useEffect( () => {
+    if (deleteDialog.result) {
+      handleDelete();
+    }
+    // set delete dialog result to default value
+    setResult(false);
+  }, [deleteDialog.result]);
+
+  const handleRefetch = async() => {
+    await refetch({ params: { filter: `first_name,cs,${residentSearch.criteria}` } });
+  }
+  // execute delete
+  const handleDelete = async() => {
+    await executeDelete();
+    handleRefetch();
+  };
 
   const handleEditClick = residentID => {
     navigate('/app/resident-form', { replace: true });
     setResidentID(residentID);
   };
-  const handleDeleteClick = residentID => {
+  const handleDeleteClick = (residentID,userID) => {
     setOpenDialog(true);
-    //TODO: update this
-    setDeleteUrl('');
-    console.log(residentID);
+    setResidentID(residentID);
   };
 
-  if (loading) return <CircularProgress className={classes.progress} />;
-  if (error) return <p>Error!</p>;
+  if (loading || deleteLoading) return <CircularProgress className={classes.progress} />;
+  if (error || deleteError) return <p>Error!</p>;
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
+      <DeleteDialog open = {deleteDialog.open} />
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
@@ -111,7 +139,9 @@ const Results = ({ className, ...rest }) => {
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{resident.age}</TableCell>
+                  <TableCell>{
+                    //calculate age
+                    moment().diff(resident.birthdate, 'years')}</TableCell>
                   <TableCell>{resident.civil_status}</TableCell>
                   <TableCell>{resident.phone_number}</TableCell>
                   <TableCell>
@@ -123,7 +153,7 @@ const Results = ({ className, ...rest }) => {
                     </IconButton>
                     <IconButton
                       aria-label="Delete"
-                      onClick={() => handleDeleteClick(resident.resident_id)}
+                      onClick={() => handleDeleteClick(resident.resident_id,resident.user_id)}
                     >
                       <DeleteIcon />
                     </IconButton>

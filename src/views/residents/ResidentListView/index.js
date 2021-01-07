@@ -31,7 +31,6 @@ const ResidentListView = () => {
         <Toolbar />
         <Box mt={3}>
           <Results />
-          <DeleteDialog />
         </Box>
       </Container>
     </Page>

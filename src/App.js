@@ -12,7 +12,7 @@ import Axios from 'axios';
 const App = () => {
   const routing = useRoutes(routes);
   const axios = Axios.create({
-    baseURL: 'http://localhost/sta-mesa-api/api.php'
+    baseURL: process.env.REACT_APP_API_URL
   });
   const cache = new LRU({ max: 10 });
 
