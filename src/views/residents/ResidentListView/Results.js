@@ -45,72 +45,116 @@ const Results = ({ className, ...rest }) => {
   const [page, setPage] = useState(0);
   const [residentSearch] = useResidentSearch();
   const [resident, { setResidentID }] = useResident();
-  const [userID, setUserID] = useState(0);
-  const [deleteDialog, { setOpenDialog,setResult }] = useDeleteDialog();
+  const [activeUserID, setActiveUserID] = useState(0);
+  const [activeResidentID, setActiveResidentID] = useState(0);
+  const [deleteDialog, { setOpenDialog, setResult }] = useDeleteDialog();
   const [residents, setResidents] = useState([]);
-
+  const [deleteResidentResult, setDeleteResidentResult] = useState(0);
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
 
   const [
-    { data: deleteData, loading: deleteLoading, error: deleteError },
-    executeDelete
+    {
+      data: deleteData,
+      loading: deleteResidentLoading,
+      error: deleteResidentError
+    },
+    executeResidentDelete
   ] = useAxios(
-    { url: `/records/residents/${resident.residentID}`, method: 'DELETE' },
+    { url: `/records/residents/${activeResidentID}`, method: 'DELETE' },
     {
       manual: true
     }
   );
-
+  const [
+    {
+      data: deleteUserData,
+      loading: deleteUserLoading,
+      error: deleteUserError
+    },
+    executeUserDelete
+  ] = useAxios(
+    { url: `/records/users/${activeUserID}`, method: 'DELETE' },
+    {
+      manual: true
+    }
+  );
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
 
   const [{ data, loading, error }, refetch] = useAxios(`/records/residents`);
 
+  //showing records on tables
   useEffect(() => {
     if (data) {
       setResidents(data.records);
     }
   }, [data]);
 
+  //search function
   useEffect(() => {
     handleRefetch();
   }, [residentSearch.criteria]);
 
-  // handle delete confirmation
-  useEffect( () => {
+  // handle delete confirmation dialog
+  useEffect(() => {
     if (deleteDialog.result) {
-      handleDelete();
+      executeResidentDeleteRequest();
     }
     // set delete dialog result to default value
     setResult(false);
   }, [deleteDialog.result]);
 
-  const handleRefetch = async() => {
-    await refetch({ params: { filter: `first_name,cs,${residentSearch.criteria}` } });
-  }
-  // execute delete
-  const handleDelete = async() => {
-    await executeDelete();
+  //after resident successfully deleted proceed to user deletion
+  useEffect(() => {
+    if (deleteResidentResult > 0) {
+      executeUserDeleteRequest();
+    }
+  }, [deleteResidentResult]);
+
+  //set value to global state when active resident change
+  useEffect(() => {
+    setResidentID(activeResidentID);
+  }, [activeResidentID]);
+
+  // background task for fetching record base on criteria search
+  const handleRefetch = async () => {
+    await refetch({
+      params: { filter: `first_name,cs,${residentSearch.criteria}` }
+    });
+  };
+  //background task for deleting resident
+  const executeResidentDeleteRequest = async () => {
+    const { data } = await executeResidentDelete();
+    setDeleteResidentResult(data);
     handleRefetch();
   };
-
+  //background task for deleting user
+  const executeUserDeleteRequest = async () => {
+    const { data } = await executeUserDelete();
+    await handleRefetch();
+  };
+  //callback for edit
   const handleEditClick = residentID => {
     navigate('/app/resident-form', { replace: true });
     setResidentID(residentID);
   };
-  const handleDeleteClick = (residentID,userID) => {
+
+  //callback for delete
+  const handleDeleteClick = (residentID, userID) => {
     setOpenDialog(true);
-    setResidentID(residentID);
+    setActiveResidentID(residentID);
+    setActiveUserID(userID);
   };
 
-  if (loading || deleteLoading) return <CircularProgress className={classes.progress} />;
-  if (error || deleteError) return <p>Error!</p>;
+  if (loading || deleteResidentLoading || deleteUserLoading)
+    return <CircularProgress className={classes.progress} />;
+  if (error || deleteResidentError || deleteUserError) return <p>Error!</p>;
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <DeleteDialog open = {deleteDialog.open} />
+      <DeleteDialog open={deleteDialog.open} />
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
@@ -139,9 +183,10 @@ const Results = ({ className, ...rest }) => {
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{
-                    //calculate age
-                    moment().diff(resident.birthdate, 'years')}</TableCell>
+                  <TableCell>
+                    {//calculate age
+                    moment().diff(resident.birthdate, 'years')}
+                  </TableCell>
                   <TableCell>{resident.civil_status}</TableCell>
                   <TableCell>{resident.phone_number}</TableCell>
                   <TableCell>
@@ -153,7 +198,12 @@ const Results = ({ className, ...rest }) => {
                     </IconButton>
                     <IconButton
                       aria-label="Delete"
-                      onClick={() => handleDeleteClick(resident.resident_id,resident.user_id)}
+                      onClick={() =>
+                        handleDeleteClick(
+                          resident.resident_id,
+                          resident.user_id
+                        )
+                      }
                     >
                       <DeleteIcon />
                     </IconButton>

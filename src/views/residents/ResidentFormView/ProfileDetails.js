@@ -98,18 +98,18 @@ const ProfileDetails = ({ className, ...rest }) => {
     {
       manual: true
     }
-    );
-  
-    const [
-      { loading: postUserLoading, error: postUserError },
-      executeUserPost
-    ] = useAxios(
-      { url: `/register`, method: 'POST' },
-      {
-        manual: true
-      }
-    );
-  
+  );
+
+  const [
+    { loading: postUserLoading, error: postUserError },
+    executeUserPost
+  ] = useAxios(
+    { url: `/register`, method: 'POST' },
+    {
+      manual: true
+    }
+  );
+
   // for adding new resident
   //useEffect(() => {
   //  if (resident.residentID > 0)
@@ -124,7 +124,7 @@ const ProfileDetails = ({ className, ...rest }) => {
   //    });
   //}, [resident.residentID]);
 
-// for record to edit load current data
+  // for record to edit load current data
   useEffect(() => {
     if (getData) {
       setValues({
@@ -142,8 +142,8 @@ const ProfileDetails = ({ className, ...rest }) => {
 
   // when new user generated proceed saving on new resident
   useEffect(() => {
-      saveResident();
-  }, [values.userID])
+    saveResident();
+  }, [values.userID]);
 
   // save new resident
   const saveResident = async () => {
@@ -160,19 +160,24 @@ const ProfileDetails = ({ className, ...rest }) => {
         }
       });
       navigate('/app/residents');
-    } 
+    }
   };
 
-//handles the save click
+  //handles the save click
   const handleSave = async formValues => {
     if (resident.residentID == 0) {
       console.log('New Record');
-      const _username = formValues.firstName.toLowerCase() + formValues.middleName.toLowerCase() + formValues.lastName.toLowerCase();
-      
-      const { data: { user_id } } = await executeUserPost({
+      const _username =
+        formValues.firstName.toLowerCase() +
+        formValues.middleName.toLowerCase() +
+        formValues.lastName.toLowerCase();
+
+      const {
+        data: { user_id }
+      } = await executeUserPost({
         data: {
-          username: _username,
-          password: _username,
+          username: _username.replace(/\s+/g, ''), // remove spaces
+          password: _username
         }
       });
       // set the values for new resident
@@ -182,12 +187,10 @@ const ProfileDetails = ({ className, ...rest }) => {
         middleName: formValues.middleName,
         lastName: formValues.lastName,
         civilStatus: formValues.civilStatus,
-        phone_number: formValues.phone,
+        phone: formValues.phone,
         birthdate: formValues.birthDate,
         userID: user_id
-      })
-      
-      
+      });
     } else {
       // update only the record
       console.log('update record');
@@ -204,9 +207,9 @@ const ProfileDetails = ({ className, ...rest }) => {
       });
       navigate('/app/residents');
     }
-    
   };
-  if (getLoading || putLoading || postLoading || postUserLoading) return <p>Loading...</p>;
+  if (getLoading || putLoading || postLoading || postUserLoading)
+    return <p>Loading...</p>;
   if (getError || putError || postError || postUserError) return <p>Error!</p>;
   return (
     <>
@@ -332,7 +335,7 @@ const ProfileDetails = ({ className, ...rest }) => {
                       ))}
                     </TextField>
                   </Grid>
-                  <Grid item md={6} xs={12}>
+                  <Grid item md={12} xs={12}>
                     <TextField
                       error={Boolean(touched.phone && errors.phone)}
                       helperText={touched.phone && errors.phone}
@@ -343,17 +346,6 @@ const ProfileDetails = ({ className, ...rest }) => {
                       onChange={handleChange}
                       type="number"
                       value={values.phone}
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item md={6} xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Country"
-                      name="country"
-                      onChange={handleChange}
-                      required
-                      value={values.country}
                       variant="outlined"
                     />
                   </Grid>
