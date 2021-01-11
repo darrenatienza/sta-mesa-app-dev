@@ -24,7 +24,7 @@ CREATE TABLE `residents` (
   CONSTRAINT `residents_users_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE st_mesa_db.officials (
+CREATE TABLE officials (
 	official_id INT NOT NULL AUTO_INCREMENT,
 	resident_id INT NOT NULL,
 	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
@@ -46,20 +46,41 @@ DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
 
 
-create
-or replace
-view `view_officials` as select
-    `officials`.`official_id` as `official_id`,
-    `officials`.`resident_id` as `resident_id`,
-    `residents`.`first_name` as `first_name`,
-    `residents`.`middle_name` as `middle_name`,
-    `residents`.`last_name` as `last_name`,
-    official_positions.title
-from
-    (( `officials`
-join `residents` on
-    ( `officials`.`resident_id` = `residents`.`resident_id` ))
-join `official_positions` on
-    ( `official_positions`.`official_position_id` = `officials`.`official_position_id` ));
+CREATE TABLE `persons` (
+  `person_id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(100) NOT NULL,
+  `middle_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `civil_status` varchar(100) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `create_time_stamp` datetime NOT NULL DEFAULT current_timestamp(),
+  `phone_number` varchar(100) NOT NULL,
+  `birthdate` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`person_id`),
+  KEY `persons_users_fk` (`user_id`),
+  CONSTRAINT `persons_users_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+
+
+create table roles (
+	role_id int(11) not null AUTO_INCREMENT,
+	title varchar(100) not null,
+	create_time_stamp datetime NOT NULL DEFAULT current_timestamp(),
+	 PRIMARY KEY (`role_id`)
+)
+
+CREATE TABLE residents_roles (
+	resident_role_id INT NOT NULL AUTO_INCREMENT,
+	resident_id int(11) NOT NULL,
+	role_id int(11) not null,
+	PRIMARY KEY (resident_role_id),
+  	KEY `residents_residents_roles_fk` (`resident_id`),
+  	CONSTRAINT `residents_residents_roles_fk` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`resident_id`) ON DELETE cascade,
+  	KEY `roles_residents_roles_fk` (`role_id`),
+  	CONSTRAINT `roles_residents_roles_fk` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE CASCADE
+)
+
+
+
 
 

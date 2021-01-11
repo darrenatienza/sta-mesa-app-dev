@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
+import Menu from './Menus';
 import {
   Avatar,
   Box,
@@ -28,7 +29,12 @@ import {
   useDeleteDialog
 } from '../../../states';
 import useAxios from 'axios-hooks';
-import { Edit as EditIcon, Delete as DeleteIcon } from 'react-feather';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Menu as MenuIcon,
+  Key as KeyIcon
+} from 'react-feather';
 import DeleteDialog from '../../shared/DeleteDialog';
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -85,7 +91,7 @@ const Results = ({ className, ...rest }) => {
   };
 
   const [{ data, loading, error }, refetch] = useAxios(`/records/residents`);
-
+  const [anchorEl, setAnchorEl] = React.useState(null);
   //showing records on tables
   useEffect(() => {
     if (data) {
@@ -149,6 +155,14 @@ const Results = ({ className, ...rest }) => {
     setActiveUserID(userID);
   };
 
+  //callback for change password
+  const handleChangeRoleCallback = userID => {
+    alert('Reset');
+  };
+  //callback for change password
+  const handleResetPasswordCallBack = userID => {
+    alert('Reset');
+  };
   if (loading || deleteResidentLoading || deleteUserLoading)
     return <CircularProgress className={classes.progress} />;
   if (error || deleteResidentError || deleteUserError) return <p>Error!</p>;
@@ -197,16 +211,35 @@ const Results = ({ className, ...rest }) => {
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      aria-label="Delete"
-                      onClick={() =>
+                      aria-label="Reset Password"
+                      onClick={() => {
+                        handleResetPasswordCallBack(resident.resident_id);
+                      }}
+                    >
+                      <KeyIcon />
+                    </IconButton>
+
+                    <IconButton
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
+                      aria-label="Menu"
+                      onClick={e => setAnchorEl(e.target)}
+                    >
+                      <MenuIcon />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      setAnchorEl={setAnchorEl}
+                      handleDeleteCallBack={() =>
                         handleDeleteClick(
                           resident.resident_id,
                           resident.user_id
                         )
                       }
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                      handleChangeRoleCallBack={() =>
+                        handleChangeRoleCallback(resident.user_id)
+                      }
+                    />
                   </TableCell>
                 </TableRow>
               ))}
