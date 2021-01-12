@@ -13,7 +13,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
-import { useResidentSearch, useResident } from '../../../states';
+import { useResidentSearch, usePersonView } from '../../../states';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -30,7 +30,7 @@ const Toolbar = ({ className, ...rest }) => {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [residentSearch, { setCriteria }] = useResidentSearch();
-  const [resident, { setResidentID }] = useResident();
+  const [personView, { setPersonID }] = usePersonView();
   useEffect(() => {
     const timeOutId = setTimeout(() => setCriteria(query), 500);
     return () => clearTimeout(timeOutId);
@@ -41,7 +41,7 @@ const Toolbar = ({ className, ...rest }) => {
   }, []);
 
   const handleAdd = event => {
-    setResidentID(0);
+    setPersonID(0);
     navigate('/app/resident-form', { replace: true });
   };
   return (

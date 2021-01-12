@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useOfficial, useResident } from '../../../states';
+import { useOfficial, usePersonView } from '../../../states';
 import useAxios from 'axios-hooks';
 import moment from 'moment';
 import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
@@ -60,31 +60,30 @@ const useStyles = makeStyles(() => ({
 
 const ProfileDetails = ({ className, ...rest }) => {
   const navigate = useNavigate();
-  const [resident] = useResident();
+  const [personView] = usePersonView();
   const classes = useStyles();
-  const [userID, setUserID] = useState(0);
+  const [personID, setPersonID] = useState(0);
   const [values, setValues] = useState({
     firstName: '',
     middleName: '',
     lastName: '',
     civilStatus: 'single',
     birthDate: moment().format('YYYY-MM-DD'),
-    phone: '',
-    userID: 0
+    phone: ''
   });
 
   const [
     { data: getData, loading: getLoading, error: getError },
     refetch
-  ] = useAxios(`/records/residents/${resident.residentID}`, {
-    manual: !resident.residentID
+  ] = useAxios(`/records/persons/${personView.personID}`, {
+    manual: !personView.personID
   });
 
   const [
     { data: putData, loading: putLoading, error: putError },
     executePut
   ] = useAxios(
-    { url: `/records/residents/${resident.residentID}`, method: 'PUT' },
+    { url: `/records/persons/${personView.personID}`, method: 'PUT' },
     {
       manual: true
     }
@@ -94,7 +93,7 @@ const ProfileDetails = ({ className, ...rest }) => {
     { data: postData, loading: postLoading, error: postError },
     executePost
   ] = useAxios(
-    { url: `/records/residents`, method: 'POST' },
+    { url: `/records/persons`, method: 'POST' },
     {
       manual: true
     }
@@ -142,12 +141,13 @@ const ProfileDetails = ({ className, ...rest }) => {
 
   // when new user generated proceed saving on new resident
   useEffect(() => {
-    saveResident();
-  }, [values.userID]);
+    
+   
+  }, [values.personID]);
 
   // save new resident
-  const saveResident = async () => {
-    if (values.userID > 0 && resident.residentID == 0) {
+  const saveResident = async values => {
+    if (personView.personID == 0) {
       await executePost({
         data: {
           first_name: values.firstName,
@@ -159,38 +159,28 @@ const ProfileDetails = ({ className, ...rest }) => {
           birthdate: values.birthDate
         }
       });
-      navigate('/app/residents');
+      //navigate('/app/residents');
     }
   };
 
   //handles the save click
   const handleSave = async formValues => {
-    if (resident.residentID == 0) {
+    if (personView.personID == 0) {
       console.log('New Record');
-      const _username =
-        formValues.firstName.toLowerCase() +
-        formValues.middleName.toLowerCase() +
-        formValues.lastName.toLowerCase();
-
-      const {
-        data: { user_id }
-      } = await executeUserPost({
-        data: {
-          username: _username.replace(/\s+/g, ''), // remove spaces
-          password: _username
-        }
-      });
-      // set the values for new resident
-      setValues({
-        ...values,
-        firstName: formValues.firstName,
-        middleName: formValues.middleName,
-        lastName: formValues.lastName,
-        civilStatus: formValues.civilStatus,
-        phone: formValues.phone,
-        birthdate: formValues.birthDate,
-        userID: user_id
-      });
+      //const _username =
+      //  formValues.firstName.toLowerCase() +
+      //  formValues.middleName.toLowerCase() +
+      //  formValues.lastName.toLowerCase();
+//
+      //const {
+      //  data: { user_id }
+      //} = await executeUserPost({
+      //  data: {
+      //    username: _username.replace(/\s+/g, ''), // remove spaces
+      //    password: _username
+      //  }
+      //});
+     saveResident(formValues)
     } else {
       // update only the record
       console.log('update record');

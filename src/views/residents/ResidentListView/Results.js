@@ -25,7 +25,7 @@ import {
 import getInitials from 'src/utils/getInitials';
 import {
   useResidentSearch,
-  useResident,
+  usePersonView,
   useDeleteDialog
 } from '../../../states';
 import useAxios from 'axios-hooks';
@@ -36,6 +36,7 @@ import {
   Key as KeyIcon
 } from 'react-feather';
 import DeleteDialog from '../../shared/DeleteDialog';
+import { setPersonID } from 'src/states/personView';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -50,12 +51,10 @@ const Results = ({ className, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [residentSearch] = useResidentSearch();
-  const [resident, { setResidentID }] = useResident();
-  const [activeUserID, setActiveUserID] = useState(0);
-  const [activeResidentID, setActiveResidentID] = useState(0);
-  const [deleteDialog, { setOpenDialog, setResult }] = useDeleteDialog();
+  const [activePersonID, setActivePersonID] = useState(0);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteResult, setDeleteResult] = useState(false);
   const [residents, setResidents] = useState([]);
-  const [deleteResidentResult, setDeleteResidentResult] = useState(0);
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
@@ -66,32 +65,21 @@ const Results = ({ className, ...rest }) => {
       loading: deleteResidentLoading,
       error: deleteResidentError
     },
-    executeResidentDelete
+    executePersonDelete
   ] = useAxios(
-    { url: `/records/residents/${activeResidentID}`, method: 'DELETE' },
+    { url: `/records/persons/${activePersonID}`, method: 'DELETE' },
     {
       manual: true
     }
   );
-  const [
-    {
-      data: deleteUserData,
-      loading: deleteUserLoading,
-      error: deleteUserError
-    },
-    executeUserDelete
-  ] = useAxios(
-    { url: `/records/users/${activeUserID}`, method: 'DELETE' },
-    {
-      manual: true
-    }
-  );
+  
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
 
-  const [{ data, loading, error }, refetch] = useAxios(`/records/residents`);
+  const [{ data, loading, error }, refetch] = useAxios(`/records/persons`);
   const [anchorEl, setAnchorEl] = React.useState(null);
+
   //showing records on tables
   useEffect(() => {
     if (data) {
@@ -104,26 +92,7 @@ const Results = ({ className, ...rest }) => {
     handleRefetch();
   }, [residentSearch.criteria]);
 
-  // handle delete confirmation dialog
-  useEffect(() => {
-    if (deleteDialog.result) {
-      executeResidentDeleteRequest();
-    }
-    // set delete dialog result to default value
-    setResult(false);
-  }, [deleteDialog.result]);
-
-  //after resident successfully deleted proceed to user deletion
-  useEffect(() => {
-    if (deleteResidentResult > 0) {
-      executeUserDeleteRequest();
-    }
-  }, [deleteResidentResult]);
-
-  //set value to global state when active resident change
-  useEffect(() => {
-    setResidentID(activeResidentID);
-  }, [activeResidentID]);
+ 
 
   // background task for fetching record base on criteria search
   const handleRefetch = async () => {
@@ -131,30 +100,31 @@ const Results = ({ className, ...rest }) => {
       params: { filter: `first_name,cs,${residentSearch.criteria}` }
     });
   };
+
   //background task for deleting resident
-  const executeResidentDeleteRequest = async () => {
-    const { data } = await executeResidentDelete();
-    setDeleteResidentResult(data);
+  const executePersonDeleteRequest = async () => {
+    const { data } = await executePersonDelete();
     handleRefetch();
   };
-  //background task for deleting user
-  const executeUserDeleteRequest = async () => {
-    const { data } = await executeUserDelete();
-    await handleRefetch();
-  };
+
   //callback for edit
-  const handleEditClick = residentID => {
+  const handleEditClick = personID => {
     navigate('/app/resident-form', { replace: true });
-    setResidentID(residentID);
+    setPersonID(personID);
   };
 
   //callback for delete
-  const handleDeleteClick = (residentID, userID) => {
-    setOpenDialog(true);
-    setActiveResidentID(residentID);
-    setActiveUserID(userID);
+  const handleDeleteClick = (personID) => {
+    setOpenDelete(true);
+    setActivePersonID(personID);
   };
-
+  useEffect(() => {
+    if (deleteResult) {
+      {
+        executePersonDelete();
+     }
+   }
+  }, [deleteResult])
   //callback for change password
   const handleChangeRoleCallback = userID => {
     alert('Reset');
@@ -163,12 +133,12 @@ const Results = ({ className, ...rest }) => {
   const handleResetPasswordCallBack = userID => {
     alert('Reset');
   };
-  if (loading || deleteResidentLoading || deleteUserLoading)
+  if (loading || deleteResidentLoading)
     return <CircularProgress className={classes.progress} />;
-  if (error || deleteResidentError || deleteUserError) return <p>Error!</p>;
+  if (error || deleteResidentError) return <p>Error!</p>;
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <DeleteDialog open={deleteDialog.open} />
+      <DeleteDialog open={openDelete} setOpen={setOpenDelete} setResult = {setDeleteResult} />
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
@@ -186,8 +156,8 @@ const Results = ({ className, ...rest }) => {
               {residents.slice(0, limit).map(resident => (
                 <TableRow
                   hover
-                  key={resident.resident_id}
-                  value={resident.resident_id}
+                  key={resident.person_id}
+                  value={resident.person_id}
                 >
                   <TableCell padding="default"></TableCell>
                   <TableCell>
@@ -206,14 +176,14 @@ const Results = ({ className, ...rest }) => {
                   <TableCell>
                     <IconButton
                       aria-label="Edit"
-                      onClick={() => handleEditClick(resident.resident_id)}
+                      onClick={() => handleEditClick(resident.person_id)}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       aria-label="Reset Password"
                       onClick={() => {
-                        handleResetPasswordCallBack(resident.resident_id);
+                        handleResetPasswordCallBack(resident.person_id);
                       }}
                     >
                       <KeyIcon />
@@ -232,8 +202,7 @@ const Results = ({ className, ...rest }) => {
                       setAnchorEl={setAnchorEl}
                       handleDeleteCallBack={() =>
                         handleDeleteClick(
-                          resident.resident_id,
-                          resident.user_id
+                          resident.person_id
                         )
                       }
                       handleChangeRoleCallBack={() =>

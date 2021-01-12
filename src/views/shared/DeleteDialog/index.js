@@ -9,22 +9,21 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDeleteDialog } from '../../../states';
 import useAxios from 'axios-hooks';
 
-const DeleteDialog = () => {
-  const [deleteDialog, { setOpenDialog,setResult }] = useDeleteDialog();
-  
+const DeleteDialog = ({open,setOpen,setResult}) => {
+ 
   const handleClose = () => {
-    setResult(false);
-    setOpenDialog(false);
+    setResult(false)
+    setOpen(false);
   };
 
   const handleOk = () => {
-    setResult(true);
-    setOpenDialog(false);
+    setResult(true)
+    setOpen(false);
   };
   return (
     <Dialog
       fullWidth
-      open={deleteDialog.open}
+      open={open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
