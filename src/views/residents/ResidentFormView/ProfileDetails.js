@@ -19,20 +19,6 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
 const civilStats = [
   {
     value: 'single',
@@ -62,7 +48,7 @@ const ProfileDetails = ({ className, ...rest }) => {
   const navigate = useNavigate();
   const [personView] = usePersonView();
   const classes = useStyles();
-  const [personID, setPersonID] = useState(0);
+  const [userName, setUserName] = useState('');
   const [values, setValues] = useState({
     firstName: '',
     middleName: '',
@@ -103,25 +89,11 @@ const ProfileDetails = ({ className, ...rest }) => {
     { loading: postUserLoading, error: postUserError },
     executeUserPost
   ] = useAxios(
-    { url: `/register`, method: 'POST' },
+    { url: `/records/users`, method: 'POST' },
     {
       manual: true
     }
   );
-
-  // for adding new resident
-  //useEffect(() => {
-  //  if (resident.residentID > 0)
-  //    setValues({
-  //      ...values,
-  //      firstName: '',
-  //      middleName: '',
-  //      lastName: '',
-  //      civilStatus: '',
-  //      phone: '',
-  //      birthDate: moment().format('YYYY-MM-DD')
-  //    });
-  //}, [resident.residentID]);
 
   // for record to edit load current data
   useEffect(() => {
@@ -133,54 +105,51 @@ const ProfileDetails = ({ className, ...rest }) => {
         lastName: getData.last_name,
         civilStatus: getData.civil_status,
         phone: getData.phone_number,
-        userID: getData.user_id,
         birthDate: moment(getData.birthdate).format('YYYY-MM-DD')
       });
     }
   }, [getData]);
 
-  // when new user generated proceed saving on new resident
+  // when new person generated proceed saving on new user
   useEffect(() => {
-    
-   
-  }, [values.personID]);
-
-  // save new resident
-  const saveResident = async values => {
-    if (personView.personID == 0) {
-      await executePost({
-        data: {
-          first_name: values.firstName,
-          middle_name: values.middleName,
-          last_name: values.lastName,
-          civil_status: values.civilStatus,
-          user_id: values.userID,
-          phone_number: values.phone,
-          birthdate: values.birthDate
-        }
-      });
-      //navigate('/app/residents');
+    if (postData && !postError) {
+      saveNewUser(postData);
     }
-  };
+  }, [postData]);
 
+  // save new user
+  const saveNewUser = async personID => {
+    await executeUserPost({
+      data: {
+        username: userName, // remove spaces
+        password: userName,
+        person_id: personID
+      }
+    });
+    navigate('/app/residents');
+  };
   //handles the save click
   const handleSave = async formValues => {
     if (personView.personID == 0) {
       console.log('New Record');
-      //const _username =
-      //  formValues.firstName.toLowerCase() +
-      //  formValues.middleName.toLowerCase() +
-      //  formValues.lastName.toLowerCase();
-//
-      //const {
-      //  data: { user_id }
-      //} = await executeUserPost({
-      //  data: {
-      //    username: _username.replace(/\s+/g, ''), // remove spaces
-      //    password: _username
-      //  }
-      //});
-     saveResident(formValues)
+
+      const _username =
+        formValues.firstName.toLowerCase() +
+        formValues.middleName.toLowerCase() +
+        formValues.lastName.toLowerCase();
+      setUserName(_username.replace(/\s+/g, ''));
+
+      await executePost({
+        data: {
+          ...getData,
+          first_name: formValues.firstName,
+          middle_name: formValues.middleName,
+          last_name: formValues.lastName,
+          civil_status: formValues.civilStatus,
+          phone_number: formValues.phone,
+          birthdate: formValues.birthDate
+        }
+      });
     } else {
       // update only the record
       console.log('update record');

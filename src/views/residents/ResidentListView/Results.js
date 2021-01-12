@@ -36,7 +36,7 @@ import {
   Key as KeyIcon
 } from 'react-feather';
 import DeleteDialog from '../../shared/DeleteDialog';
-import { setPersonID } from 'src/states/personView';
+import ConfirmationDialog from '../../shared/ConfirmationDialog';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -50,11 +50,20 @@ const Results = ({ className, ...rest }) => {
   const navigate = useNavigate();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [personView, { setPersonID }] = usePersonView();
   const [residentSearch] = useResidentSearch();
   const [activePersonID, setActivePersonID] = useState(0);
   const [openDelete, setOpenDelete] = useState(false);
-  const [deleteResult, setDeleteResult] = useState(false);
-  const [residents, setResidents] = useState([]);
+  const [deleteDialogResult, setDeleteDialogResult] = useState(false);
+  const [persons, setPersons] = useState([]);
+  const [openPassResetConfirmDialog, setOpenPassResetConfirmDialog] = useState(
+    false
+  );
+  const [
+    passResetConfirmDialogResult,
+    setpassResetConfirmDialogResult
+  ] = useState(false);
+
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
@@ -62,8 +71,8 @@ const Results = ({ className, ...rest }) => {
   const [
     {
       data: deleteData,
-      loading: deleteResidentLoading,
-      error: deleteResidentError
+      loading: deletePersonLoading,
+      error: deletePersonError
     },
     executePersonDelete
   ] = useAxios(
@@ -72,7 +81,18 @@ const Results = ({ className, ...rest }) => {
       manual: true
     }
   );
-  
+  const [
+    { data: getUserData, loading: getUserLoading, error: getUserError },
+    refetchUser
+  ] = useAxios(
+    {
+      url: `/records/users?filter=person_id,eq,${activePersonID}`,
+      method: 'GET'
+    },
+    {
+      manual: true
+    }
+  );
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
@@ -83,7 +103,7 @@ const Results = ({ className, ...rest }) => {
   //showing records on tables
   useEffect(() => {
     if (data) {
-      setResidents(data.records);
+      setPersons(data.records);
     }
   }, [data]);
 
@@ -92,53 +112,79 @@ const Results = ({ className, ...rest }) => {
     handleRefetch();
   }, [residentSearch.criteria]);
 
- 
-
   // background task for fetching record base on criteria search
-  const handleRefetch = async () => {
-    await refetch({
+  const handleRefetch = () => {
+    refetch({
       params: { filter: `first_name,cs,${residentSearch.criteria}` }
     });
   };
 
-  //background task for deleting resident
-  const executePersonDeleteRequest = async () => {
-    const { data } = await executePersonDelete();
-    handleRefetch();
+  //background task for deleting person
+  const executePersonDeleteAsync = async () => {
+    await executePersonDelete();
+    await handleRefetch();
+    setActivePersonID(0);
+    setDeleteDialogResult(false);
   };
 
   //callback for edit
   const handleEditClick = personID => {
-    navigate('/app/resident-form', { replace: true });
     setPersonID(personID);
+    navigate('/app/resident-form', { replace: true });
   };
 
   //callback for delete
-  const handleDeleteClick = (personID) => {
+  const handleDeleteClick = personID => {
     setOpenDelete(true);
     setActivePersonID(personID);
   };
+
+  //handles person delete
   useEffect(() => {
-    if (deleteResult) {
-      {
-        executePersonDelete();
-     }
-   }
-  }, [deleteResult])
-  //callback for change password
-  const handleChangeRoleCallback = userID => {
-    alert('Reset');
+    if (deleteDialogResult) {
+      executePersonDeleteAsync();
+    }
+  }, [deleteDialogResult]);
+
+  useEffect(() => {
+    if (passResetConfirmDialogResult) passResetAsync();
+  }, [passResetConfirmDialogResult]);
+
+  const passResetAsync = async () => {
+    await refetchUser();
+    setpassResetConfirmDialogResult(false);
   };
+  useEffect(() => {
+    if (getUserData) {
+      const userID = getUserData.records[0].user_id;
+      //Todo: Add Reset Password Routine
+    }
+  }, [getUserData]);
   //callback for change password
-  const handleResetPasswordCallBack = userID => {
-    alert('Reset');
+  const handleChangeRoleCallback = personID => {};
+  //callback for change password
+  const handleResetPasswordCallBack = personID => {
+    setActivePersonID(personID);
+
+    setOpenPassResetConfirmDialog(true);
   };
-  if (loading || deleteResidentLoading)
+  if (loading || deletePersonLoading || getUserLoading)
     return <CircularProgress className={classes.progress} />;
-  if (error || deleteResidentError) return <p>Error!</p>;
+  if (error || deletePersonError || getUserError) return <p>Error!</p>;
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <DeleteDialog open={openDelete} setOpen={setOpenDelete} setResult = {setDeleteResult} />
+      <DeleteDialog
+        open={openDelete}
+        setOpen={setOpenDelete}
+        setResult={setDeleteDialogResult}
+      />
+      <ConfirmationDialog
+        title="Reset Password"
+        message="Do you want to reset password?"
+        open={openPassResetConfirmDialog}
+        setOpen={setOpenPassResetConfirmDialog}
+        setResult={setpassResetConfirmDialogResult}
+      />
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
@@ -153,37 +199,33 @@ const Results = ({ className, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {residents.slice(0, limit).map(resident => (
-                <TableRow
-                  hover
-                  key={resident.person_id}
-                  value={resident.person_id}
-                >
+              {persons.slice(0, limit).map(person => (
+                <TableRow hover key={person.person_id} value={person.person_id}>
                   <TableCell padding="default"></TableCell>
                   <TableCell>
                     <Box alignItems="center" display="flex">
                       <Typography color="textPrimary" variant="body1">
-                        {`${resident.first_name} ${resident.last_name}`}
+                        {`${person.first_name} ${person.last_name}`}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
                     {//calculate age
-                    moment().diff(resident.birthdate, 'years')}
+                    moment().diff(person.birthdate, 'years')}
                   </TableCell>
-                  <TableCell>{resident.civil_status}</TableCell>
-                  <TableCell>{resident.phone_number}</TableCell>
+                  <TableCell>{person.civil_status}</TableCell>
+                  <TableCell>{person.phone_number}</TableCell>
                   <TableCell>
                     <IconButton
                       aria-label="Edit"
-                      onClick={() => handleEditClick(resident.person_id)}
+                      onClick={() => handleEditClick(person.person_id)}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       aria-label="Reset Password"
                       onClick={() => {
-                        handleResetPasswordCallBack(resident.person_id);
+                        handleResetPasswordCallBack(person.person_id);
                       }}
                     >
                       <KeyIcon />
@@ -201,12 +243,10 @@ const Results = ({ className, ...rest }) => {
                       anchorEl={anchorEl}
                       setAnchorEl={setAnchorEl}
                       handleDeleteCallBack={() =>
-                        handleDeleteClick(
-                          resident.person_id
-                        )
+                        handleDeleteClick(person.person_id)
                       }
                       handleChangeRoleCallBack={() =>
-                        handleChangeRoleCallback(resident.user_id)
+                        handleChangeRoleCallback(person.user_id)
                       }
                     />
                   </TableCell>
@@ -218,7 +258,7 @@ const Results = ({ className, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={residents.length}
+        count={persons.length}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}

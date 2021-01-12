@@ -7,6 +7,7 @@ CREATE TABLE `persons` (
   `create_time_stamp` datetime NOT NULL DEFAULT current_timestamp(),
   `phone_number` varchar(100) NOT NULL,
   `birthdate` datetime DEFAULT current_timestamp(),
+   `group` varchar(100) not null default 'resident',
   PRIMARY KEY (`person_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -15,7 +16,6 @@ CREATE TABLE `users` (
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `person_id` int(11) not null,
-  `user_type` varchar(100) not null default 'resident',
   `active` tinyint(1) NOT NULL DEFAULT 0,
   `create_time_stamp` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`user_id`),
