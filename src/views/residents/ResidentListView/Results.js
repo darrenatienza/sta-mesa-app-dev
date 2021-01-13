@@ -24,9 +24,8 @@ import {
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 import {
-  useResidentSearch,
-  usePersonView,
-  useDeleteDialog
+
+  useResidentViewState
 } from '../../../states';
 import useAxios from 'axios-hooks';
 import {
@@ -37,6 +36,7 @@ import {
 } from 'react-feather';
 import DeleteDialog from '../../shared/DeleteDialog';
 import ConfirmationDialog from '../../shared/ConfirmationDialog';
+import ResidentDeleteView from '../ResidentDeleteView';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -48,143 +48,45 @@ const useStyles = makeStyles(theme => ({
 const Results = ({ className, ...rest }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const [residentViewState, {setPersonID, setOpenResetPasswordDialog  }] = useResidentViewState();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [personView, { setPersonID }] = usePersonView();
-  const [residentSearch] = useResidentSearch();
-  const [activePersonID, setActivePersonID] = useState(0);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [deleteDialogResult, setDeleteDialogResult] = useState(false);
-  const [persons, setPersons] = useState([]);
-  const [openPassResetConfirmDialog, setOpenPassResetConfirmDialog] = useState(
-    false
-  );
-  const [
-    passResetConfirmDialogResult,
-    setpassResetConfirmDialogResult
-  ] = useState(false);
 
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
 
-  const [
-    {
-      data: deleteData,
-      loading: deletePersonLoading,
-      error: deletePersonError
-    },
-    executePersonDelete
-  ] = useAxios(
-    { url: `/records/persons/${activePersonID}`, method: 'DELETE' },
-    {
-      manual: true
-    }
-  );
-  const [
-    { data: getUserData, loading: getUserLoading, error: getUserError },
-    refetchUser
-  ] = useAxios(
-    {
-      url: `/records/users?filter=person_id,eq,${activePersonID}`,
-      method: 'GET'
-    },
-    {
-      manual: true
-    }
-  );
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
 
-  const [{ data, loading, error }, refetch] = useAxios(`/records/persons`);
+  const [{ data, loading, error }, refetch] =
+    useAxios(`/records/persons?filter=first_name,cs,${residentViewState.criteria}`
+     );
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  //showing records on tables
-  useEffect(() => {
-    if (data) {
-      setPersons(data.records);
-    }
-  }, [data]);
 
   //search function
   useEffect(() => {
-    handleRefetch();
-  }, [residentSearch.criteria]);
+    refetch();
+  }, [residentViewState.criteria || residentViewState.openDeleteDialog]);
 
-  // background task for fetching record base on criteria search
-  const handleRefetch = () => {
-    refetch({
-      params: { filter: `first_name,cs,${residentSearch.criteria}` }
-    });
-  };
-
-  //background task for deleting person
-  const executePersonDeleteAsync = async () => {
-    await executePersonDelete();
-    await handleRefetch();
-    setActivePersonID(0);
-    setDeleteDialogResult(false);
-  };
-
-  //callback for edit
-  const handleEditClick = personID => {
+  const handleResetPassword = (personID) => {
+    console.log(personID);
     setPersonID(personID);
-    navigate('/app/resident-form', { replace: true });
-  };
+    setOpenResetPasswordDialog(true);
+  }
+  const handleEdit = (personID) => { 
+    setPersonID(personID);
+    navigate('/app/resident-form')
+  }
 
-  //callback for delete
-  const handleDeleteClick = personID => {
-    setOpenDelete(true);
-    setActivePersonID(personID);
-  };
-
-  //handles person delete
-  useEffect(() => {
-    if (deleteDialogResult) {
-      executePersonDeleteAsync();
-    }
-  }, [deleteDialogResult]);
-
-  useEffect(() => {
-    if (passResetConfirmDialogResult) passResetAsync();
-  }, [passResetConfirmDialogResult]);
-
-  const passResetAsync = async () => {
-    await refetchUser();
-    setpassResetConfirmDialogResult(false);
-  };
-  useEffect(() => {
-    if (getUserData) {
-      const userID = getUserData.records[0].user_id;
-      //Todo: Add Reset Password Routine
-    }
-  }, [getUserData]);
-  //callback for change password
-  const handleChangeRoleCallback = personID => {};
-  //callback for change password
-  const handleResetPasswordCallBack = personID => {
-    setActivePersonID(personID);
-
-    setOpenPassResetConfirmDialog(true);
-  };
-  if (loading || deletePersonLoading || getUserLoading)
+  if (loading )
     return <CircularProgress className={classes.progress} />;
-  if (error || deletePersonError || getUserError) return <p>Error!</p>;
+  if (error ) return <p>Error!</p>;
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <DeleteDialog
-        open={openDelete}
-        setOpen={setOpenDelete}
-        setResult={setDeleteDialogResult}
-      />
-      <ConfirmationDialog
-        title="Reset Password"
-        message="Do you want to reset password?"
-        open={openPassResetConfirmDialog}
-        setOpen={setOpenPassResetConfirmDialog}
-        setResult={setpassResetConfirmDialogResult}
-      />
+      
+      
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
@@ -199,7 +101,7 @@ const Results = ({ className, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {persons.slice(0, limit).map(person => (
+              {data?.records.slice(0, limit).map(person => (
                 <TableRow hover key={person.person_id} value={person.person_id}>
                   <TableCell padding="default"></TableCell>
                   <TableCell>
@@ -218,14 +120,14 @@ const Results = ({ className, ...rest }) => {
                   <TableCell>
                     <IconButton
                       aria-label="Edit"
-                      onClick={() => handleEditClick(person.person_id)}
+                      onClick={() => handleEdit(person.person_id)}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       aria-label="Reset Password"
                       onClick={() => {
-                        handleResetPasswordCallBack(person.person_id);
+                        handleResetPassword(person.person_id);
                       }}
                     >
                       <KeyIcon />
@@ -242,12 +144,8 @@ const Results = ({ className, ...rest }) => {
                     <Menu
                       anchorEl={anchorEl}
                       setAnchorEl={setAnchorEl}
-                      handleDeleteCallBack={() =>
-                        handleDeleteClick(person.person_id)
-                      }
-                      handleChangeRoleCallBack={() =>
-                        handleChangeRoleCallback(person.user_id)
-                      }
+                      personID = {person.person_id}
+                     
                     />
                   </TableCell>
                 </TableRow>
@@ -258,13 +156,14 @@ const Results = ({ className, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={persons.length}
+        count={data?.records.length}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
+     
     </Card>
   );
 };

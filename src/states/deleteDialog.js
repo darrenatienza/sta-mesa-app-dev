@@ -1,4 +1,5 @@
 export const initialState = {
+  id: 0,
   open: false,
   result: false
 };

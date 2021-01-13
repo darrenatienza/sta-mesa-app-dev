@@ -13,7 +13,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
-import { useResidentSearch, usePersonView } from '../../../states';
+import { useResidentViewState} from '../../../states';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -29,15 +29,14 @@ const Toolbar = ({ className, ...rest }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
-  const [residentSearch, { setCriteria }] = useResidentSearch();
-  const [personView, { setPersonID }] = usePersonView();
+  const [residentViewState, {setPersonID,setCriteria}] = useResidentViewState();
   useEffect(() => {
     const timeOutId = setTimeout(() => setCriteria(query), 500);
     return () => clearTimeout(timeOutId);
   }, [query]);
   //maintains value of the search box
   useEffect(() => {
-    setQuery(residentSearch.criteria);
+    setQuery(residentViewState.criteria);
   }, []);
 
   const handleAdd = event => {

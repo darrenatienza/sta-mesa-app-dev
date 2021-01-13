@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useOfficial, usePersonView } from '../../../states';
+import { useOfficial, usePersonView, useResidentViewState } from '../../../states';
 import useAxios from 'axios-hooks';
 import moment from 'moment';
 import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
@@ -46,7 +46,7 @@ const useStyles = makeStyles(() => ({
 
 const ProfileDetails = ({ className, ...rest }) => {
   const navigate = useNavigate();
-  const [personView] = usePersonView();
+  const [residentViewState] = useResidentViewState();
   const classes = useStyles();
   const [userName, setUserName] = useState('');
   const [values, setValues] = useState({
@@ -61,15 +61,15 @@ const ProfileDetails = ({ className, ...rest }) => {
   const [
     { data: getData, loading: getLoading, error: getError },
     refetch
-  ] = useAxios(`/records/persons/${personView.personID}`, {
-    manual: !personView.personID
+  ] = useAxios(`/records/persons/${residentViewState.personID}`, {
+    manual: !residentViewState.personID
   });
 
   const [
     { data: putData, loading: putLoading, error: putError },
     executePut
   ] = useAxios(
-    { url: `/records/persons/${personView.personID}`, method: 'PUT' },
+    { url: `/records/persons/${residentViewState.personID}`, method: 'PUT' },
     {
       manual: true
     }
@@ -97,7 +97,7 @@ const ProfileDetails = ({ className, ...rest }) => {
 
   // for record to edit load current data
   useEffect(() => {
-    if (getData) {
+    getData &&
       setValues({
         ...values,
         firstName: getData.first_name,
@@ -107,12 +107,12 @@ const ProfileDetails = ({ className, ...rest }) => {
         phone: getData.phone_number,
         birthDate: moment(getData.birthdate).format('YYYY-MM-DD')
       });
-    }
+    
   }, [getData]);
 
   // when new person generated proceed saving on new user
   useEffect(() => {
-    if (postData && !postError) {
+    if (postData) {
       saveNewUser(postData);
     }
   }, [postData]);
@@ -130,7 +130,7 @@ const ProfileDetails = ({ className, ...rest }) => {
   };
   //handles the save click
   const handleSave = async formValues => {
-    if (personView.personID == 0) {
+    if (residentViewState.personID == 0) {
       console.log('New Record');
 
       const _username =
@@ -141,7 +141,6 @@ const ProfileDetails = ({ className, ...rest }) => {
 
       await executePost({
         data: {
-          ...getData,
           first_name: formValues.firstName,
           middle_name: formValues.middleName,
           last_name: formValues.lastName,

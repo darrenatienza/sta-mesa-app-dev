@@ -13,6 +13,8 @@ import data from './data';
 import { useDeleteDialog } from '../../../states';
 import useAxios from 'axios-hooks';
 import DeleteDialog from '../../shared/DeleteDialog';
+import ResidentDeleteView from '../ResidentDeleteView';
+import ResidentResetPasswordView from '../ResidentResetPasswordView';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -32,6 +34,8 @@ const ResidentListView = () => {
         <Box mt={3}>
           <Results />
         </Box>
+        <ResidentDeleteView />
+        <ResidentResetPasswordView />
       </Container>
     </Page>
   );

@@ -1,21 +1,28 @@
 import React from 'react';
 import { Menu, MenuItem } from '@material-ui/core';
-
+import {
+  useResidentSearch,
+  usePersonView,
+  useDeleteDialog,
+  useResidentViewState
+} from '../../../states';
 const Menus = ({
   anchorEl,
   setAnchorEl,
-  handleDeleteCallBack,
-  handleChangeRoleCallBack
+  personID,
 }) => {
+
+  const [residentViewState, {setPersonID, setOpenResetPasswordDialog, setOpenChangeGroupDialog, setOpenDeleteDialog }] = useResidentViewState();
   const handleClose = event => {
     setAnchorEl(null);
   };
-  const handleChangeRole = () => {
-    handleChangeRoleCallBack();
+  const handleChangeGroup = () => {
+    setOpenChangeGroupDialog(true);
     setAnchorEl(null);
   };
   const handleDelete = () => {
-    handleDeleteCallBack();
+    setPersonID(personID);
+    setOpenDeleteDialog(true);
     setAnchorEl(null);
   };
   return (
@@ -26,8 +33,8 @@ const Menus = ({
       open={Boolean(anchorEl)}
       onClose={handleClose}
     >
-      <MenuItem onClick={handleChangeRole}>Change Role</MenuItem>
-      <MenuItem onClick={handleDelete}>Remove</MenuItem>
+      <MenuItem onClick={() => handleChangeGroup()}>Change Role</MenuItem>
+      <MenuItem onClick={() => handleDelete()}>Remove</MenuItem>
     </Menu>
   );
 };
