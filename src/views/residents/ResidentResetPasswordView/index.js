@@ -20,13 +20,17 @@ const [residentViewState, { setOpenResetPasswordDialog,setUserID }] = useResiden
     {
       url: `/records/users?filter=person_id,eq,${residentViewState.personID}`,
       method: 'GET'
-    }
+    },
+    {manual: !residentViewState.personID}
         );
-        useEffect(() => {
-            console.log(getUserDataByPersonID?.records[0])
-            const userID = getUserDataByPersonID?.records[0]['user_id'];
-            setUserID(userID);
-        }, [getUserDataByPersonID?.records[0]])
+  useEffect(() => {
+    
+    if (getUserDataByPersonID?.records[0]) {
+      console.log(getUserDataByPersonID?.records[0])
+      const userID = getUserDataByPersonID?.records[0]['user_id'];
+      setUserID(userID);
+    }
+        }, [getUserDataByPersonID?.records])
     
         const [
             { data: putUserData, loading: putUserLoading, error: putUserError },

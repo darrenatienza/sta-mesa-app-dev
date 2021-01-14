@@ -154,7 +154,6 @@ const ProfileDetails = ({ className, ...rest }) => {
       console.log('update record');
       await executePut({
         data: {
-          ...getData,
           first_name: formValues.firstName,
           middle_name: formValues.middleName,
           last_name: formValues.lastName,
