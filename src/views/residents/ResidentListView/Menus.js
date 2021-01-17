@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Menu, MenuItem } from '@material-ui/core';
 import {
   useResidentSearch,
@@ -6,13 +6,17 @@ import {
   useDeleteDialog,
   useResidentViewState
 } from '../../../states';
-const Menus = ({
-  anchorEl,
-  setAnchorEl,
-  personID,
-}) => {
-
-  const [residentViewState, {setPersonID, setOpenResetPasswordDialog, setOpenChangeGroupDialog, setOpenDeleteDialog }] = useResidentViewState();
+const Menus = () => {
+  const [
+    residentViewState,
+    {
+      setPersonID,
+      setOpenResetPasswordDialog,
+      setOpenChangeGroupDialog,
+      setOpenDeleteDialog,
+      setAnchorEl
+    }
+  ] = useResidentViewState();
   const handleClose = event => {
     setAnchorEl(null);
   };
@@ -21,16 +25,15 @@ const Menus = ({
     setAnchorEl(null);
   };
   const handleDelete = () => {
-    setPersonID(personID);
     setOpenDeleteDialog(true);
     setAnchorEl(null);
   };
   return (
     <Menu
       id="simple-menu"
-      anchorEl={anchorEl}
+      anchorEl={residentViewState.anchorEl}
       keepMounted
-      open={Boolean(anchorEl)}
+      open={Boolean(residentViewState.anchorEl)}
       onClose={handleClose}
     >
       <MenuItem onClick={() => handleChangeGroup()}>Change Role</MenuItem>

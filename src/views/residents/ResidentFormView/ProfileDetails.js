@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useOfficial, usePersonView, useResidentViewState } from '../../../states';
+import { useResidentViewState, usePersonEntity } from '../../../states';
 import useAxios from 'axios-hooks';
 import moment from 'moment';
 import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
@@ -16,6 +16,7 @@ import {
   Divider,
   Grid,
   TextField,
+  CircularProgress,
   makeStyles
 } from '@material-ui/core';
 
@@ -46,7 +47,11 @@ const useStyles = makeStyles(() => ({
 
 const ProfileDetails = ({ className, ...rest }) => {
   const navigate = useNavigate();
-  const [residentViewState] = useResidentViewState();
+  const [
+    residentViewState,
+    { setShowResidentDetailView, setShowResidentListView }
+  ] = useResidentViewState();
+  const [personEntity] = usePersonEntity();
   const classes = useStyles();
   const [userName, setUserName] = useState('');
   const [values, setValues] = useState({
@@ -59,17 +64,10 @@ const ProfileDetails = ({ className, ...rest }) => {
   });
 
   const [
-    { data: getData, loading: getLoading, error: getError },
-    refetch
-  ] = useAxios(`/records/persons/${residentViewState.personID}`, {
-    manual: !residentViewState.personID
-  });
-
-  const [
     { data: putData, loading: putLoading, error: putError },
     executePut
   ] = useAxios(
-    { url: `/records/persons/${residentViewState.personID}`, method: 'PUT' },
+    { url: `/records/persons/${personEntity.personID}`, method: 'PUT' },
     {
       manual: true
     }
@@ -97,24 +95,19 @@ const ProfileDetails = ({ className, ...rest }) => {
 
   // for record to edit load current data
   useEffect(() => {
-    getData &&
-      setValues({
-        ...values,
-        firstName: getData.first_name,
-        middleName: getData.middle_name,
-        lastName: getData.last_name,
-        civilStatus: getData.civil_status,
-        phone: getData.phone_number,
-        birthDate: moment(getData.birthdate).format('YYYY-MM-DD')
-      });
-    
-  }, [getData]);
+    setValues({
+      firstName: personEntity.firstName,
+      middleName: personEntity.middleName,
+      lastName: personEntity.lastName,
+      civilStatus: personEntity.civilStatus,
+      phone: personEntity.phoneNumber,
+      birthDate: moment(personEntity.birthDate).format('YYYY-MM-DD')
+    });
+  }, [personEntity]);
 
   // when new person generated proceed saving on new user
   useEffect(() => {
-    if (postData) {
-      saveNewUser(postData);
-    }
+    if (postData) saveNewUser(postData);
   }, [postData]);
 
   // save new user
@@ -126,11 +119,12 @@ const ProfileDetails = ({ className, ...rest }) => {
         person_id: personID
       }
     });
-    navigate('/app/residents');
+    setShowResidentDetailView(false);
+    setShowResidentListView(true);
   };
   //handles the save click
   const handleSave = async formValues => {
-    if (residentViewState.personID == 0) {
+    if (personEntity.personID == 0) {
       console.log('New Record');
 
       const _username =
@@ -162,12 +156,17 @@ const ProfileDetails = ({ className, ...rest }) => {
           birthdate: formValues.birthDate
         }
       });
-      navigate('/app/residents');
+      setShowResidentDetailView(false);
+      setShowResidentListView(true);
     }
   };
-  if (getLoading || putLoading || postLoading || postUserLoading)
-    return <p>Loading...</p>;
-  if (getError || putError || postError || postUserError) return <p>Error!</p>;
+  const handleClose = event => {
+    setShowResidentDetailView(false);
+    setShowResidentListView(true);
+  };
+  if (putLoading || postLoading || postUserLoading)
+    return <CircularProgress className={classes.progress} />;
+  if (putError || postError || postUserError) return <p>Error!</p>;
   return (
     <>
       <Formik
@@ -314,8 +313,7 @@ const ProfileDetails = ({ className, ...rest }) => {
                   color="primary"
                   variant="outlined"
                   className={classes.cancelButton}
-                  component={RouterLink}
-                  to="/app/residents"
+                  onClick={handleClose}
                 >
                   Cancel
                 </Button>

@@ -15,6 +15,7 @@ import HealthWorkerListView from './views/health-workers/HealthWorkerListView';
 import OfficialFormView from './views/official/OfficialFormView';
 import ResidentListView from './views/residents/ResidentListView';
 import ResidentFormView from './views/residents/ResidentFormView';
+import ResidentView from './views/residents';
 const routes = [
   {
     path: 'app',
@@ -23,7 +24,7 @@ const routes = [
       { path: 'account', element: <AccountView /> },
       { path: 'customers', element: <CustomerListView /> },
       { path: 'officials', element: <OfficialListView /> },
-      { path: 'residents', element: <ResidentListView /> },
+      { path: 'residents', element: <ResidentView /> },
       { path: 'official-form', element: <OfficialFormView /> },
       { path: 'resident-form', element: <ResidentFormView /> },
       { path: 'health-workers', element: <HealthWorkerListView /> },

@@ -13,7 +13,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
-import { useResidentViewState} from '../../../states';
+import { useResidentViewState, usePersonEntity } from '../../../states';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -28,8 +28,13 @@ const useStyles = makeStyles(theme => ({
 const Toolbar = ({ className, ...rest }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const [personEntity, { resetPersonEntity }] = usePersonEntity();
   const [query, setQuery] = useState('');
-  const [residentViewState, {setPersonID,setCriteria}] = useResidentViewState();
+  const [
+    residentViewState,
+    { setShowResidentDetailView, setShowResidentListView, setCriteria }
+  ] = useResidentViewState();
+
   useEffect(() => {
     const timeOutId = setTimeout(() => setCriteria(query), 500);
     return () => clearTimeout(timeOutId);
@@ -40,41 +45,44 @@ const Toolbar = ({ className, ...rest }) => {
   }, []);
 
   const handleAdd = event => {
-    setPersonID(0);
-    navigate('/app/resident-form', { replace: true });
+    setShowResidentListView(false);
+    setShowResidentDetailView(true);
+    resetPersonEntity();
   };
   return (
-    <div className={clsx(classes.root, className)} {...rest}>
-      <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained" onClick={handleAdd}>
-          Add Resident
-        </Button>
-      </Box>
-      <Box mt={3}>
-        <Card>
-          <CardContent>
-            <Box maxWidth={500}>
-              <TextField
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon fontSize="small" color="action">
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  )
-                }}
-                placeholder="Search Residents"
-                variant="outlined"
-              />
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
-    </div>
+    <>
+      <div className={clsx(classes.root, className)} {...rest}>
+        <Box display="flex" justifyContent="flex-end">
+          <Button color="primary" variant="contained" onClick={handleAdd}>
+            Add Resident
+          </Button>
+        </Box>
+        <Box mt={3}>
+          <Card>
+            <CardContent>
+              <Box maxWidth={500}>
+                <TextField
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SvgIcon fontSize="small" color="action">
+                          <SearchIcon />
+                        </SvgIcon>
+                      </InputAdornment>
+                    )
+                  }}
+                  placeholder="Search Residents"
+                  variant="outlined"
+                />
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+      </div>
+    </>
   );
 };
 

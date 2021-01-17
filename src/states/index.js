@@ -4,9 +4,10 @@ import * as personView from './personView';
 import * as residentSearch from './residentSearch';
 import * as deleteDialog from './deleteDialog';
 import * as residentViewState from './residentViewState';
-
+import * as personEntity from './personEntity';
 export const usePersonView = makeEntity(personView);
 export const useOfficial = makeEntity(official);
 export const useResidentSearch = makeEntity(residentSearch);
 export const useDeleteDialog = makeEntity(deleteDialog);
 export const useResidentViewState = makeEntity(residentViewState);
+export const usePersonEntity = makeEntity(personEntity);
