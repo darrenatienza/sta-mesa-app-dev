@@ -4,6 +4,7 @@ import useAxios from 'axios-hooks';
 import Page from 'src/components/Page';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+
 import {
   Box,
   Button,
@@ -16,7 +17,12 @@ import {
   CircularProgress,
   makeStyles
 } from '@material-ui/core';
-
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Checkbox from '@material-ui/core/Checkbox';
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
@@ -29,39 +35,11 @@ const useStyles = makeStyles(theme => ({
 
 const ResidentChangeGroupView = ({ className, ...rest }) => {
   const classes = useStyles();
-  const states = [
-    {
-      value: 'resident',
-      label: 'Resident'
-    },
-    {
-      value: 'official',
-      label: 'Official'
-    },
-    {
-      value: 'bhw',
-      label: 'BHW'
-    },
-    {
-      value: 'admin',
-      label: 'Administrator'
-    }
-  ];
-  const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'admin',
-    country: 'USA'
-  });
+  const [activeRoleID, setActiveRoleID] = useState(null);
+  const [personRoleID, setPersonRoleID] = useState(null);
+  const [checked, setChecked] = React.useState(['1']);
+  const [{ data, loading, error }, refetch] = useAxios(`/records/roles`);
 
-  const handleChange = event => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
   const [personEntity, { setGroup }] = usePersonEntity();
   const [
     residentViewState,
@@ -70,33 +48,98 @@ const ResidentChangeGroupView = ({ className, ...rest }) => {
 
   const [
     {
-      data: updatePersonData,
-      loading: updatePersonLoading,
-      error: updatePersonError
+      data: getPersonRolesData,
+      loading: getPersonRolesDataLoading,
+      error: getPersonRolesDataError
     },
-    executePersonDataUpdate
+    refetchPersonRolesData
   ] = useAxios(
-    { url: `/records/persons/${personEntity.personID}`, method: 'PUT' },
+    `/records/person_roles?filter=person_id,eq,${personEntity.personID}`,
+    {
+      manual: !personEntity.personID
+    }
+  );
+  useEffect(() => {
+    refetchPersonRolesData();
+  }, []);
+  const [
+    {
+      data: getOnePersonRolesData,
+      loading: getOnePersonRolesDataLoading,
+      error: getOnePersonRolesDataError
+    },
+    refetchOnePersonRolesData
+  ] = useAxios(
+    `/records/person_roles?filter=person_id,eq,${personEntity.personID}&filter=role_id,eq,${activeRoleID}`,
+    {
+      manual: !personEntity.personID || !activeRoleID
+    }
+  );
+  //Todo: Post Action for adding roles
+  useEffect(() => {
+    if (getOnePersonRolesData) {
+      console.log(getOnePersonRolesData.records[0].person_role_id);
+      setPersonRoleID(getOnePersonRolesData.records[0].person_role_id);
+    }
+  }, [getOnePersonRolesData]);
+
+  useEffect(() => {
+    if (personRoleID) {
+      deletePersonRole();
+    }
+  }, [personRoleID]);
+  const deletePersonRole = async () => {
+    await executePersonRoleDelete();
+    await refetchPersonRolesData();
+    setPersonRoleID(null);
+    setActiveRoleID(null);
+  };
+  useEffect(() => {
+    if (getPersonRolesData) {
+      const newChecked = [...checked];
+      getPersonRolesData.records.map(v => {
+        newChecked.push(v.role_id);
+        console.log(v.role_id);
+      });
+      setChecked(newChecked);
+    }
+  }, [getPersonRolesData]);
+
+  const [
+    {
+      data: deletePersonRoleData,
+      loading: deletePersonRoleLoading,
+      error: deletePersonRoleError
+    },
+    executePersonRoleDelete
+  ] = useAxios(
+    { url: `/records/person_roles/${personRoleID}`, method: 'DELETE' },
     {
       manual: true
     }
   );
-
   const handleClose = () => {
     setOpenChangeGroupDialog(false);
   };
-  //TODO: add alert after group changed
-  const handleConfirm = async () => {
-    await executePersonDataUpdate({
-      data: {
-        group: personEntity.group
-      }
-    });
-    setOpenChangeGroupDialog(false);
+
+  const handleToggle = value => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+      setActiveRoleID(value);
+    }
+
+    setChecked(newChecked);
+    console.log(newChecked);
   };
-  if (updatePersonLoading)
+
+  if (deletePersonRoleLoading)
     return <CircularProgress className={classes.progress} />;
-  if (updatePersonError) return <p>Error!</p>;
+  if (deletePersonRoleError) return <p>Error!</p>;
   return (
     <form
       autoComplete="off"
@@ -113,23 +156,30 @@ const ResidentChangeGroupView = ({ className, ...rest }) => {
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Select Group"
-                name="state"
-                onChange={handleChange}
+              <FormControl
                 required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
+                component="fieldset"
+                className={classes.formControl}
               >
-                {states.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
+                {data &&
+                  data.records.map(option => {
+                    const labelId = `checkbox-list-secondary-label-${option.role_id}`;
+                    return (
+                      <FormControlLabel
+                        key={option.role_id}
+                        control={
+                          <Checkbox
+                            disabled={option.role_id === '1'}
+                            checked={checked.indexOf(option.role_id) !== -1}
+                            onChange={handleToggle(option.role_id)}
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                        }
+                        label={option.title}
+                      />
+                    );
+                  })}
+              </FormControl>
             </Grid>
           </Grid>
         </CardContent>

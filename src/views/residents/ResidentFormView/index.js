@@ -51,7 +51,7 @@ const ResidentFormView = () => {
           >
             <Tab label="General Information" {...a11yProps(0)} />
             <Tab label="Group" {...a11yProps(1)} />
-            <Tab label="User Account" {...a11yProps(2)} />
+            {false && <Tab label="User Account" {...a11yProps(2)} />}
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>

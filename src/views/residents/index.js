@@ -24,17 +24,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 const ResidentView = () => {
-  const [residentViewState] = useResidentViewState();
   const classes = useStyles();
   return (
-    <>
+    <div>
       <Page className={classes.root} title="Residents">
+        {' '}
         <ResidentFormView />
         <ResidentListView />
         <ResidentResetPasswordView />
         <ResidentDeleteView />
       </Page>
-    </>
+    </div>
   );
 };
 

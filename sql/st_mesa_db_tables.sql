@@ -47,7 +47,29 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
 
+CREATE TABLE roles (
+	role_id INT NOT NULL AUTO_INCREMENT,
+	title varchar(100) NOT NULL,
+	CONSTRAINT roles_pk PRIMARY KEY (`role_id`)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;
 
 
+CREATE TABLE person_roles (
+	person_role_id INT NOT NULL AUTO_INCREMENT,
+	person_id INT NOT NULL,
+	role_id int not null,
+	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
+	CONSTRAINT person_roles_pk PRIMARY KEY (person_role_id),
+	KEY `person_roles_persons_fk` (`person_id`),
+  	CONSTRAINT `person_roles_persons_fk` FOREIGN KEY (`person_id`) REFERENCES `persons` (`person_id`) ON DELETE cascade,
+  	KEY `officials_positions_fk` (`role_id`),
+  	CONSTRAINT `person_roles_roles_fk` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE CASCADE
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;
 
 

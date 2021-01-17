@@ -55,6 +55,7 @@ const Results = ({ className, ...rest }) => {
       setAnchorEl
     }
   ] = useResidentViewState();
+
   const [personEntity, { setPersonEntity, setPersonID }] = usePersonEntity();
 
   const [limit, setLimit] = useState(10);
@@ -71,6 +72,7 @@ const Results = ({ className, ...rest }) => {
   const [{ data, loading, error }, refetch] = useAxios(
     `/records/persons?filter=first_name,cs,${residentViewState.criteria}`
   );
+
   const [
     {
       data: getPersonData,
@@ -140,62 +142,62 @@ const Results = ({ className, ...rest }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data?.records.slice(0, limit).map(person => (
-                  <TableRow
-                    hover
-                    key={person.person_id}
-                    value={person.person_id}
-                    onClick={e => handleRowClick(person.person_id)}
-                  >
-                    <TableCell padding="default"></TableCell>
-                    <TableCell>
-                      <Box alignItems="center" display="flex">
-                        <Typography color="textPrimary" variant="body1">
-                          {`${person.first_name} ${person.last_name}`}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      {//calculate age
-                      moment().diff(person.birthdate, 'years')}
-                    </TableCell>
-                    <TableCell>{person.civil_status}</TableCell>
-                    <TableCell>{person.phone_number}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-label="Edit"
-                        onClick={() => handleEdit(person.person_id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="Reset Password"
-                        onClick={() => {
-                          handleResetPassword(person.person_id);
-                        }}
-                      >
-                        <KeyIcon />
-                      </IconButton>
+                {data &&
+                  data.records.slice(0, limit).map(person => (
+                    <TableRow
+                      hover
+                      key={person.person_id}
+                      value={person.person_id}
+                      onClick={e => handleRowClick(person.person_id)}
+                    >
+                      <TableCell padding="default"></TableCell>
+                      <TableCell>
+                        <Box alignItems="center" display="flex">
+                          <Typography color="textPrimary" variant="body1">
+                            {`${person.first_name} ${person.last_name}`}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        {//calculate age
+                        moment().diff(person.birthdate, 'years')}
+                      </TableCell>
+                      <TableCell>{person.civil_status}</TableCell>
+                      <TableCell>{person.phone_number}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          aria-label="Edit"
+                          onClick={() => handleEdit(person.person_id)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="Reset Password"
+                          onClick={() => {
+                            handleResetPassword(person.person_id);
+                          }}
+                        >
+                          <KeyIcon />
+                        </IconButton>
 
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Menu"
-                        onClick={event => setAnchorEl(event.target)}
-                      >
-                        <MenuIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        <IconButton
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          aria-label="Menu"
+                        >
+                          <MenuIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </Box>
         </PerfectScrollbar>
-        <Menu />
+
         <TablePagination
           component="div"
-          count={data?.records.length}
+          count={data && data.records.length}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleLimitChange}
           page={page}
