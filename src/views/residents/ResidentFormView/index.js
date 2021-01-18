@@ -58,11 +58,7 @@ const ResidentFormView = () => {
           <ProfileDetails />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <Grid container spacing={3}>
-            <Grid item lg={12} md={12} xs={12}>
-              <ResidentChangeGroupView />
-            </Grid>
-          </Grid>
+          <ResidentChangeGroupView />
         </TabPanel>
       </Container>
     </Collapse>
