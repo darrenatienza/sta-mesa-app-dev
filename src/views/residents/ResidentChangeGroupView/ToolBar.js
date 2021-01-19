@@ -21,7 +21,11 @@ import {
   Grid
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
-import { useResidentViewState, usePersonEntity } from '../../../states';
+import {
+  useResidentViewState,
+  usePersonEntity,
+  useResidentChangeRoleViewState
+} from '../../../states';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -39,7 +43,12 @@ const ToolBar = ({ className, ...rest }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [personEntity, { resetPersonEntity }] = usePersonEntity();
-  const [roleID, setRoleID] = useState('');
+  const [
+    residentChangeRoleViewState,
+    { setRefetchResults }
+  ] = useResidentChangeRoleViewState();
+  const [roleID, setRoleID] = useState('1');
+  const [addButtonClickable, setAddButtonClickable] = useState(false);
   const [
     {
       data: deletePersonRoleData,
@@ -53,7 +62,16 @@ const ToolBar = ({ className, ...rest }) => {
       manual: true
     }
   );
-
+  const [
+    {
+      data: getRoleListData,
+      loading: getRoleListDataLoading,
+      error: getRoleListDataError
+    },
+    refetchRoleResults
+  ] = useAxios({
+    url: `/records/roles`
+  });
   const [
     {
       data: postPersonRoleData,
@@ -62,7 +80,7 @@ const ToolBar = ({ className, ...rest }) => {
     },
     executePersonRolePost
   ] = useAxios(
-    { url: `/records/persons`, method: 'POST' },
+    { url: `/records/person_roles`, method: 'POST' },
     {
       manual: true
     }
@@ -72,7 +90,8 @@ const ToolBar = ({ className, ...rest }) => {
       data: getPersonRoleListData,
       loading: getPersonRoleListDataLoading,
       error: getPersonRoleListDataError
-    }
+    },
+    refetchRoleListData
   ] = useAxios(
     {
       url: `/records/view_person_roles?filter=person_id,eq,${personEntity.personID}&filter=role_id,eq,${roleID}`
@@ -81,22 +100,32 @@ const ToolBar = ({ className, ...rest }) => {
       manual: !personEntity.personID || !roleID
     }
   );
-
-  const [
-    {
-      data: getRoleListData,
-      loading: getRoleListDataLoading,
-      error: getRoleListDataError
+  useEffect(() => {
+    if (residentChangeRoleViewState.refetchRoleResults) {
+      refetchRoleResults();
     }
-  ] = useAxios({
-    url: `/records/roles`
-  });
-  const handleAdd = event => {
-    resetPersonEntity();
+  }, [residentChangeRoleViewState.refetchRoleResults]);
+
+  const handleAdd = async event => {
+    await executePersonRolePost({
+      data: { person_id: personEntity.personID, role_id: roleID }
+    });
+    setRefetchResults(true);
+    setAddButtonClickable(false);
   };
+  //Disable the add button if role already exists
+  useEffect(() => {
+    if (getPersonRoleListData) {
+      console.log(getPersonRoleListData.records.length);
+      const clickable = getPersonRoleListData.records.length > 0 ? false : true;
+      setAddButtonClickable(clickable);
+    }
+  }, [getPersonRoleListData]);
+  useEffect(() => {
+    refetchRoleListData();
+  }, [roleID]);
   const handleChange = event => {
     setRoleID(event.target.value);
-    console.log(event.target.value);
   };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
@@ -143,6 +172,7 @@ const ToolBar = ({ className, ...rest }) => {
               variant="contained"
               onClick={handleAdd}
               display="flex"
+              disabled={!addButtonClickable}
             >
               Add Group
             </Button>

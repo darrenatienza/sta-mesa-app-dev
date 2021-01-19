@@ -5,9 +5,16 @@ export const initialState = {
   openDeleteDialog: false,
   openResetPasswordDialog: false,
   openChangeGroupDialog: false,
-
+  isDeleteSuccess: false,
+  isResetPasswordSuccess: false,
   anchorEl: null,
   criteria: ''
+};
+export const setDeleteSuccess = residentViewState => value => {
+  residentViewState.setState({ isDeleteSuccess: value });
+};
+export const setResetPasswordSuccess = residentViewState => value => {
+  residentViewState.setState({ isResetPasswordSuccess: value });
 };
 export const setShowChangeGroupView = residentViewState => value => {
   residentViewState.setState({ showChangeGroupView: value });

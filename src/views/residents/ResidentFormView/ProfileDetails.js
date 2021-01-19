@@ -167,6 +167,7 @@ const ProfileDetails = ({ className, ...rest }) => {
   if (putLoading || postLoading || postUserLoading)
     return <CircularProgress className={classes.progress} />;
   if (putError || postError || postUserError) return <p>Error!</p>;
+
   return (
     <>
       <Formik
@@ -223,7 +224,7 @@ const ProfileDetails = ({ className, ...rest }) => {
                       name="firstName"
                       onChange={handleChange}
                       required
-                      value={values.firstName}
+                      value={values.firstName || ''}
                       variant="outlined"
                     />
                   </Grid>
@@ -237,7 +238,7 @@ const ProfileDetails = ({ className, ...rest }) => {
                       name="middleName"
                       onChange={handleChange}
                       required
-                      value={values.middleName}
+                      value={values.middleName || ''}
                       variant="outlined"
                     />
                   </Grid>
@@ -251,7 +252,7 @@ const ProfileDetails = ({ className, ...rest }) => {
                       name="lastName"
                       onChange={handleChange}
                       required
-                      value={values.lastName}
+                      value={values.lastName || ''}
                       variant="outlined"
                     />
                   </Grid>
@@ -264,7 +265,7 @@ const ProfileDetails = ({ className, ...rest }) => {
                       type="date"
                       //defaultValue={moment().format('YYYY-MM-DD')}
                       onChange={handleChange}
-                      value={values.birthDate}
+                      value={values.birthDate || moment().format('YYYY-MM-DD')}
                       className={classes.textField}
                       variant="outlined"
                       InputLabelProps={{
@@ -285,7 +286,7 @@ const ProfileDetails = ({ className, ...rest }) => {
                       variant="outlined"
                     >
                       {civilStats.map(option => (
-                        <option key={option.value} value={option.value}>
+                        <option key={option.value} value={option.value || ''}>
                           {option.label}
                         </option>
                       ))}
@@ -301,7 +302,7 @@ const ProfileDetails = ({ className, ...rest }) => {
                       name="phone"
                       onChange={handleChange}
                       type="number"
-                      value={values.phone}
+                      value={values.phone || ''}
                       variant="outlined"
                     />
                   </Grid>

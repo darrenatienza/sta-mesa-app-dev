@@ -23,7 +23,11 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import { useResidentViewState, usePersonEntity } from '../../../states';
+import {
+  useResidentViewState,
+  usePersonEntity,
+  useResidentChangeRoleViewState
+} from '../../../states';
 import useAxios from 'axios-hooks';
 import {
   Edit as EditIcon,
@@ -58,7 +62,10 @@ const Results = ({ className, ...rest }) => {
   ] = useResidentViewState();
 
   const [personEntity, { setPersonEntity, setPersonID }] = usePersonEntity();
-
+  const [
+    residentChangeRoleViewState,
+    { setRefetchResults, setRefetchRoleResults }
+  ] = useResidentChangeRoleViewState();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [personRoleIDOnDelete, setPersonRoleIDOnDelete] = useState(27);
@@ -90,7 +97,13 @@ const Results = ({ className, ...rest }) => {
       manual: true
     }
   );
-
+  useEffect(() => {
+    if (residentChangeRoleViewState.refetchResults) {
+      refetch();
+      setRefetchRoleResults(true);
+      setRefetchResults(false);
+    }
+  }, [residentChangeRoleViewState.refetchResults]);
   // if id change, delete happens
   useEffect(() => {
     executeDeletePersonRole();

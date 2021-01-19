@@ -11,7 +11,10 @@ import {
   makeStyles
 } from '@material-ui/core';
 const ResidentDeleteView = () => {
-  const [residentViewState, { setOpenDeleteDialog }] = useResidentViewState();
+  const [
+    residentViewState,
+    { setOpenDeleteDialog, setDeleteSuccess }
+  ] = useResidentViewState();
   const [personEntity] = usePersonEntity();
   const [
     {
@@ -35,6 +38,7 @@ const ResidentDeleteView = () => {
   const handleConfirm = async () => {
     await executePersonDelete();
     setOpenDeleteDialog(false);
+    setDeleteSuccess(true);
   };
   return (
     <Dialog

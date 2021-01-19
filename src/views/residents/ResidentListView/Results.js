@@ -34,6 +34,7 @@ import {
 import DeleteDialog from '../../shared/DeleteDialog';
 import ConfirmationDialog from '../../shared/ConfirmationDialog';
 import ResidentDeleteView from '../ResidentDeleteView';
+
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -45,18 +46,22 @@ const useStyles = makeStyles(theme => ({
 const Results = ({ className, ...rest }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-
+  const [selectedPersonID, setSelectedPersonID] = useState(0);
   const [
     residentViewState,
     {
       setOpenResetPasswordDialog,
       setShowResidentDetailView,
       setShowResidentListView,
-      setAnchorEl
+      setOpenDeleteDialog,
+      setDeleteSuccess
     }
   ] = useResidentViewState();
 
-  const [personEntity, { setPersonEntity, setPersonID }] = usePersonEntity();
+  const [
+    personEntity,
+    { setPersonEntity, setPersonID, resetPersonEntity }
+  ] = usePersonEntity();
 
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -72,7 +77,9 @@ const Results = ({ className, ...rest }) => {
   const [{ data, loading, error }, refetch] = useAxios(
     `/records/persons?filter=first_name,cs,${residentViewState.criteria}`
   );
-
+  useEffect(() => {
+    resetPersonEntity();
+  }, []);
   const [
     {
       data: getPersonData,
@@ -80,19 +87,22 @@ const Results = ({ className, ...rest }) => {
       error: getPersonDataError
     },
     refetchPersonData
-  ] = useAxios(`/records/persons/${personEntity.personID}`, {
-    manual: !personEntity.personID
+  ] = useAxios(`/records/persons/${selectedPersonID}`, {
+    manual: true
   });
 
   //search function
   useEffect(() => {
-    refetch();
-  }, [residentViewState.criteria || residentViewState.openDeleteDialog]);
+    if (residentViewState.isDeleteSuccess) {
+      refetch();
+      setDeleteSuccess(false);
+    }
+  }, [residentViewState.isDeleteSuccess]);
 
   useEffect(() => {
     // this must be use
 
-    getPersonData &&
+    if (getPersonData) {
       setPersonEntity(
         getPersonData.person_id,
         getPersonData.first_name,
@@ -103,6 +113,7 @@ const Results = ({ className, ...rest }) => {
         getPersonData.birthdate,
         getPersonData.group
       );
+    }
   }, [getPersonData]);
 
   useEffect(() => {
@@ -113,14 +124,21 @@ const Results = ({ className, ...rest }) => {
     setOpenResetPasswordDialog(true);
   };
 
+  const executeRefetchPersonData = async () => {
+    await refetchPersonData();
+  };
+  useEffect(() => {
+    selectedPersonID && executeRefetchPersonData();
+  }, [selectedPersonID]);
   const handleEdit = personID => {
+    setSelectedPersonID(personID);
     setShowResidentListView(false);
     setShowResidentDetailView(true);
   };
 
-  const handleShowMenu = e => {};
-  const handleRowClick = personID => {
+  const handleDelete = personID => {
     setPersonID(personID);
+    setOpenDeleteDialog(true);
   };
   if (loading || getPersonDataLoading)
     return <CircularProgress className={classes.progress} />;
@@ -148,7 +166,6 @@ const Results = ({ className, ...rest }) => {
                       hover
                       key={person.person_id}
                       value={person.person_id}
-                      onClick={e => handleRowClick(person.person_id)}
                     >
                       <TableCell padding="default"></TableCell>
                       <TableCell>
@@ -184,8 +201,9 @@ const Results = ({ className, ...rest }) => {
                           aria-controls="simple-menu"
                           aria-haspopup="true"
                           aria-label="Menu"
+                          onClick={() => handleDelete(person.person_id)}
                         >
-                          <MenuIcon />
+                          <DeleteIcon />
                         </IconButton>
                       </TableCell>
                     </TableRow>

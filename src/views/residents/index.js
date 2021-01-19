@@ -28,9 +28,8 @@ const ResidentView = () => {
   return (
     <div>
       <Page className={classes.root} title="Residents">
-        {' '}
         <ResidentFormView />
-        <ResidentListView />
+        {<ResidentListView />}
         <ResidentResetPasswordView />
         <ResidentDeleteView />
       </Page>
