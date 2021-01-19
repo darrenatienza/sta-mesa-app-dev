@@ -34,6 +34,7 @@ import {
 import DeleteDialog from '../../shared/DeleteDialog';
 import ConfirmationDialog from '../../shared/ConfirmationDialog';
 import ResidentDeleteView from '../ResidentDeleteView';
+import { version } from 'moment';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -60,71 +61,51 @@ const Results = ({ className, ...rest }) => {
 
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
+  const [personRoleIDOnDelete, setPersonRoleIDOnDelete] = useState(27);
+  const [affectedRows, setAffectedRows] = useState(0);
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
-
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
 
   const [{ data, loading, error }, refetch] = useAxios(
-    `/records/persons?filter=first_name,cs,${residentViewState.criteria}`
+    `/records/view_person_roles?filter=person_id,eq,${personEntity.personID}`,
+    {
+      manual: !personEntity.personID
+    }
   );
 
   const [
     {
-      data: getPersonData,
-      loading: getPersonDataLoading,
-      error: getPersonDataError
+      data: deletePersonRoleData,
+      loading: deletePersonRoleDataLoading,
+      error: deletePersonRoleDataError
     },
-    refetchPersonData
-  ] = useAxios(`/records/persons/${personEntity.personID}`, {
-    manual: !personEntity.personID
-  });
+    executeDeletePersonRoleData
+  ] = useAxios(
+    { url: `/records/person_roles/${personRoleIDOnDelete}`, method: 'DELETE' },
+    {
+      manual: true
+    }
+  );
 
-  //search function
+  // if id change, delete happens
   useEffect(() => {
-    refetch();
-  }, [residentViewState.criteria || residentViewState.openDeleteDialog]);
-
-  useEffect(() => {
-    // this must be use
-
-    getPersonData &&
-      setPersonEntity(
-        getPersonData.person_id,
-        getPersonData.first_name,
-        getPersonData.middle_name,
-        getPersonData.last_name,
-        getPersonData.civil_status,
-        getPersonData.phone_number,
-        getPersonData.birthdate,
-        getPersonData.group
-      );
-  }, [getPersonData]);
-
-  useEffect(() => {
-    residentViewState.showResidentListView && refetch();
-  }, [residentViewState.showResidentListView]);
-
-  const handleResetPassword = personID => {
-    setOpenResetPasswordDialog(true);
+    executeDeletePersonRole();
+  }, [personRoleIDOnDelete]);
+  //TODO: Add POSt Method
+  const executeDeletePersonRole = async () => {
+    await executeDeletePersonRoleData();
+    await refetch();
   };
-
-  const handleEdit = personID => {
-    setShowResidentListView(false);
-    setShowResidentDetailView(true);
+  const handleRoleDelete = personRoleIDOnDelete => {
+    setPersonRoleIDOnDelete(personRoleIDOnDelete);
   };
-
-  const handleShowMenu = e => {};
-  const handleRowClick = personID => {
-    setPersonID(personID);
-  };
-  if (loading || getPersonDataLoading)
+  if (loading || deletePersonRoleDataLoading)
     return <CircularProgress className={classes.progress} />;
-  if (error || getPersonDataError) return <p>Error!</p>;
+  if (error || deletePersonRoleDataError) return <p>Error!</p>;
   return (
     <>
       <Box mt={0}>
@@ -134,26 +115,23 @@ const Results = ({ className, ...rest }) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell>Current Group</TableCell>
+                    <TableCell padding="default">Current Group</TableCell>
 
-                    <TableCell></TableCell>
+                    <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {data &&
-                    data.records.slice(0, limit).map(person => (
+                    data.records.slice(0, limit).map(v => (
                       <TableRow
                         hover
-                        key={person.person_id}
-                        value={person.person_id}
-                        onClick={e => handleRowClick(person.person_id)}
+                        key={v.person_role_id}
+                        value={v.person_role_id}
                       >
-                        <TableCell padding="default"></TableCell>
                         <TableCell>
                           <Box alignItems="center" display="flex">
                             <Typography color="textPrimary" variant="body1">
-                              {`${person.first_name} ${person.last_name}`}
+                              {`${v.title}`}
                             </Typography>
                           </Box>
                         </TableCell>
@@ -162,7 +140,7 @@ const Results = ({ className, ...rest }) => {
                           <IconButton
                             aria-label="Reset Password"
                             onClick={() => {
-                              handleResetPassword(person.person_id);
+                              handleRoleDelete(v.person_role_id);
                             }}
                           >
                             <DeleteIcon />

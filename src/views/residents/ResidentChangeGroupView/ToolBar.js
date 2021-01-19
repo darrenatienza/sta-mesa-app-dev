@@ -143,7 +143,6 @@ const ToolBar = ({ className, ...rest }) => {
               variant="contained"
               onClick={handleAdd}
               display="flex"
-              justifyContent="flex-end"
             >
               Add Group
             </Button>
