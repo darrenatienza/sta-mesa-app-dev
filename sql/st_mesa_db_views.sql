@@ -2,17 +2,17 @@ create
 or replace
 view `view_officials` as select
     `officials`.`official_id` as `official_id`,
-    `officials`.`resident_id` as `resident_id`,
-    `residents`.`first_name` as `first_name`,
-    `residents`.`middle_name` as `middle_name`,
-    `residents`.`last_name` as `last_name`,
-    official_positions.title
+    `officials`.`person_id` as `person_id`,
+    `persons`.`first_name` as `first_name`,
+    `persons`.`middle_name` as `middle_name`,
+    `persons`.`last_name` as `last_name`,
+    `positions`.`title`
 from
     (( `officials`
-join `residents` on
-    ( `officials`.`resident_id` = `residents`.`resident_id` ))
-join `official_positions` on
-    ( `official_positions`.`official_position_id` = `officials`.`official_position_id` ));
+join `persons` on
+    ( `officials`.`person_id` = `persons`.`person_id` ))
+join `positions` on
+    ( `officials`.`position_id` = `positions`.`position_id` ));
     
 create
 or replace
@@ -27,3 +27,4 @@ join `persons` on
     ( `persons`.person_id = `person_roles`.person_id ))
 join `roles` on
     ( `roles`.`role_id` = `person_roles`.`role_id` ));
+    

@@ -20,6 +20,7 @@ import { setAvatar } from 'src/states/official';
 import ToolBar from './ToolBar';
 import TabPanel, { a11yProps } from './TabPanel';
 import ResidentChangeGroupView from '../ResidentChangeGroupView';
+
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,

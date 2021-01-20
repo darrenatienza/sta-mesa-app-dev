@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useOfficial } from '../../../states';
+import { useOfficialViewState } from '../../../states';
 import useAxios from 'axios-hooks';
 import {
   Box,
@@ -12,34 +12,58 @@ import {
   Divider,
   Grid,
   TextField,
+  MenuItem,
+  InputLabel,
+  Select,
+  FormControl,
   makeStyles
 } from '@material-ui/core';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
-
 const useStyles = makeStyles(() => ({
-  root: {}
+  root: {},
+  cancelButton: {
+    marginRight: '10px'
+  }
 }));
 
 const ProfileDetails = ({ className, ...rest }) => {
   const [
-    official,
-    { setOfficialID, setFirstName, setLastName, setEmail }
-  ] = useOfficial();
+    officialViewState,
+    { setOfficialID, setShowOfficialListView, setShowOfficialFormView }
+  ] = useOfficialViewState();
+  const [
+    {
+      data: getPersonListData,
+      loading: getPersonListLoading,
+      error: getPersonListError
+    },
+    refetchPersonList
+  ] = useAxios(`/records/persons`);
 
+  const [
+    {
+      data: getPositionListData,
+      loading: getPositionListLoading,
+      error: getPositionListError
+    },
+    refetchPositionList
+  ] = useAxios(`/records/positions`);
+  const [values, setValues] = useState({
+    personID: '',
+    positionID: ''
+  });
+  const handleChange = event => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value
+    });
+  };
+
+  const handleClose = () => {
+    setOfficialID(0);
+    setShowOfficialListView(true);
+    setShowOfficialFormView(false);
+  };
   const classes = useStyles();
 
   return (
@@ -58,86 +82,75 @@ const ProfileDetails = ({ className, ...rest }) => {
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
-              <TextField
+              <FormControl
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
-                onChange={e => setFirstName(e.target.value)}
-                required
-                value={official.firstName}
                 variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Last name"
-                name="lastName"
-                onChange={e => setLastName(e.target.value)}
-                required
-                value={official.lastName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                onChange={e => e.setEmail(e.target.value)}
-                required
-                value={official.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                //onChange={handleChange}
-                type="number"
-                //value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                // onChange={handleChange}
-                required
-                // value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                //onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                //value={values.state}
-                variant="outlined"
+                className={classes.formControl}
               >
-                {states.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
+                <InputLabel id="demo-simple-select-outlined-label">
+                  Residents
+                </InputLabel>
+                <Select
+                  fullWidth
+                  name="personID"
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={values.personID}
+                  onChange={handleChange}
+                  label="Residents"
+                  variant="outlined"
+                >
+                  {getPersonListData &&
+                    getPersonListData.records.map(option => (
+                      <MenuItem key={option.person_id} value={option.person_id}>
+                        {option.first_name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <FormControl
+                fullWidth
+                variant="outlined"
+                className={classes.formControl}
+              >
+                <InputLabel id="position-label">Position</InputLabel>
+                <Select
+                  fullWidth
+                  name="positionID"
+                  labelId="position-label"
+                  id="position-label"
+                  value={values.positionID}
+                  onChange={handleChange}
+                  label="Position"
+                >
+                  {getPositionListData &&
+                    getPositionListData.records.map(option => (
+                      <MenuItem
+                        key={option.position_id}
+                        value={option.position_id}
+                      >
+                        {option.title}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
         </CardContent>
         <Divider />
         <Box display="flex" justifyContent="flex-end" p={2}>
+          <Button
+            color="primary"
+            variant="outlined"
+            className={classes.cancelButton}
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
           <Button color="primary" variant="contained">
-            Save details
+            Save Official
           </Button>
         </Box>
       </Card>

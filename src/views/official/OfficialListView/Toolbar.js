@@ -12,27 +12,31 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
-
+import { useOfficialViewState } from '../../../states';
 const useStyles = makeStyles(theme => ({
-  root: {},
-  importButton: {
-    marginRight: theme.spacing(1)
-  },
-  exportButton: {
-    marginRight: theme.spacing(1)
-  }
+  root: {}
 }));
 
 const Toolbar = ({ className, ...rest }) => {
   const classes = useStyles();
-
+  const [
+    officialViewState,
+    { setOfficialID, setShowOfficialListView, setShowOfficialFormView }
+  ] = useOfficialViewState();
+  const handleAddOfficial = () => {
+    setOfficialID(0);
+    setShowOfficialFormView(true);
+    setShowOfficialListView(false);
+  };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box display="flex" justifyContent="flex-end">
-        <Button className={classes.importButton}>Import</Button>
-        <Button className={classes.exportButton}>Export</Button>
-        <Button color="primary" variant="contained">
-          Add Officials
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => handleAddOfficial()}
+        >
+          Add Official
         </Button>
       </Box>
       <Box mt={3}>

@@ -16,6 +16,7 @@ import OfficialFormView from './views/official/OfficialFormView';
 import ResidentListView from './views/residents/ResidentListView';
 import ResidentFormView from './views/residents/ResidentFormView';
 import ResidentView from './views/residents';
+import OfficialView from './views/official';
 const routes = [
   {
     path: 'app',
@@ -23,7 +24,7 @@ const routes = [
     children: [
       { path: 'account', element: <AccountView /> },
       { path: 'customers', element: <CustomerListView /> },
-      { path: 'officials', element: <OfficialListView /> },
+      { path: 'officials', element: <OfficialView /> },
       { path: 'residents', element: <ResidentView /> },
       { path: 'official-form', element: <OfficialFormView /> },
       { path: 'resident-form', element: <ResidentFormView /> },

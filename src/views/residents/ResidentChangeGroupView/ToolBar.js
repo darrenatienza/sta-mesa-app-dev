@@ -116,9 +116,11 @@ const ToolBar = ({ className, ...rest }) => {
   //Disable the add button if role already exists
   useEffect(() => {
     if (getPersonRoleListData) {
-      console.log(getPersonRoleListData.records.length);
-      const clickable = getPersonRoleListData.records.length > 0 ? false : true;
-      setAddButtonClickable(clickable);
+      if (getPersonRoleListData.records) {
+        const clickable =
+          getPersonRoleListData.records.length > 0 ? false : true;
+        setAddButtonClickable(clickable);
+      }
     }
   }, [getPersonRoleListData]);
   useEffect(() => {

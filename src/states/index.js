@@ -6,6 +6,7 @@ import * as deleteDialog from './deleteDialog';
 import * as residentViewState from './residentViewState';
 import * as personEntity from './personEntity';
 import * as residentChangeRoleViewState from './residentChangeRoleViewState';
+import * as officialViewState from './officialViewState';
 
 export const usePersonView = makeEntity(personView);
 export const useOfficial = makeEntity(official);
@@ -16,3 +17,5 @@ export const usePersonEntity = makeEntity(personEntity);
 export const useResidentChangeRoleViewState = makeEntity(
   residentChangeRoleViewState
 );
+
+export const useOfficialViewState = makeEntity(officialViewState);
