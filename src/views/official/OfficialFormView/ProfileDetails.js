@@ -18,6 +18,7 @@ import {
   FormControl,
   makeStyles
 } from '@material-ui/core';
+import SaveActionButton from './SaveActionButton';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -27,6 +28,9 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ProfileDetails = ({ className, ...rest }) => {
+  const [personList, setPersonList] = useState([]);
+  const [positionList, setPositionList] = useState([]);
+
   const [
     officialViewState,
     { setOfficialID, setShowOfficialListView, setShowOfficialFormView }
@@ -48,10 +52,62 @@ const ProfileDetails = ({ className, ...rest }) => {
     },
     refetchPositionList
   ] = useAxios(`/records/positions`);
+
+  const [
+    {
+      data: getOfficialData,
+      loading: getOfficialLoading,
+      error: getOfficialError
+    },
+    refetchOfficialData
+  ] = useAxios(
+    {
+      url: `/records/officials/${officialViewState.officialID}`,
+      method: 'GET'
+    },
+    { manual: true }
+  );
   const [values, setValues] = useState({
+    officialID: '',
     personID: '',
     positionID: ''
   });
+  // if id found, set values (edit operation)
+  // if not set empty values (add operation)
+  useEffect(() => {}, [officialViewState.officialID]);
+
+  useEffect(() => {
+    if (officialViewState.showOfficialFormView) {
+      if (officialViewState.officialID > 0) {
+        refetchOfficialData();
+      } else {
+        setValues({
+          officialID: '',
+          personID: '',
+          positionID: ''
+        });
+      }
+    }
+  }, [officialViewState.showOfficialFormView]);
+
+  useEffect(() => {
+    getOfficialData &&
+      setValues({
+        ...values,
+        officialID: getOfficialData.official_id,
+        personID: getOfficialData.person_id,
+        positionID: getOfficialData.position_id
+      });
+  }, [getOfficialData]);
+
+  useEffect(() => {
+    getPersonListData && setPersonList(getPersonListData.records);
+  }, [getPersonListData]);
+
+  useEffect(() => {
+    getPositionListData && setPositionList(getPositionListData.records);
+  }, [getPositionListData]);
+
   const handleChange = event => {
     setValues({
       ...values,
@@ -100,8 +156,8 @@ const ProfileDetails = ({ className, ...rest }) => {
                   label="Residents"
                   variant="outlined"
                 >
-                  {getPersonListData &&
-                    getPersonListData.records.map(option => (
+                  {personList &&
+                    personList?.map(option => (
                       <MenuItem key={option.person_id} value={option.person_id}>
                         {option.first_name}
                       </MenuItem>
@@ -125,8 +181,8 @@ const ProfileDetails = ({ className, ...rest }) => {
                   onChange={handleChange}
                   label="Position"
                 >
-                  {getPositionListData &&
-                    getPositionListData.records.map(option => (
+                  {positionList &&
+                    positionList?.map(option => (
                       <MenuItem
                         key={option.position_id}
                         value={option.position_id}
@@ -149,9 +205,7 @@ const ProfileDetails = ({ className, ...rest }) => {
           >
             Cancel
           </Button>
-          <Button color="primary" variant="contained">
-            Save Official
-          </Button>
+          <SaveActionButton value={values} />
         </Box>
       </Card>
     </form>

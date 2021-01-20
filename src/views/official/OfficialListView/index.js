@@ -27,7 +27,12 @@ const OfficialListView = () => {
   const [officials, setOfficials] = useState([]);
   const [
     officialViewState,
-    { setOfficialID, setShowOfficialListView, setShowOfficialFormView }
+    {
+      setOfficialID,
+      setShowOfficialListView,
+      setShowOfficialFormView,
+      setRefreshList
+    }
   ] = useOfficialViewState();
   const [
     {
@@ -39,9 +44,20 @@ const OfficialListView = () => {
   ] = useAxios(
     `/records/view_officials?filter=first_name,cs,${officialViewState.criteria}`
   );
+
   useEffect(() => {
     getOfficialList && setOfficials(getOfficialList.records);
   }, [getOfficialList]);
+
+  useEffect(() => {
+    refetchAsync();
+  }, [officialViewState.refeshList]);
+
+  //need to async because action before this is http put
+  const refetchAsync = async () => {
+    await refetch();
+    setRefreshList(false);
+  };
   return (
     <Collapse in={officialViewState.showOfficialListView}>
       <Container maxWidth={false}>

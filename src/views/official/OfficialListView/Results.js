@@ -20,11 +20,18 @@ import {
   CircularProgress,
   makeStyles,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton
 } from '@material-ui/core';
+
 import getInitials from 'src/utils/getInitials';
-import { Edit as EditIcon } from 'react-feather';
+import { Edit as EditIcon, Delete as DeleteIcon } from 'react-feather';
 import { useOfficialViewState } from '../../../states';
+import { setOpenDialog } from 'src/states/deleteDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -34,22 +41,51 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Results = ({ className, officials, ...rest }) => {
-  const [officialViewState, { setOfficialID }] = useOfficialViewState();
+  const [
+    officialViewState,
+    {
+      setOfficialID,
+      setShowOfficialFormView,
+      setShowOfficialListView,
+      setRefreshList
+    }
+  ] = useOfficialViewState();
 
   const classes = useStyles();
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [myOfficialID, setMyOfficialID] = useState();
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
-
+  const [
+    { data: deleteData, loading: deleteLoading, error: deleteError },
+    executeDelete
+  ] = useAxios(
+    { url: `/records/officials/${myOfficialID}`, method: 'DELETE' },
+    {
+      manual: true
+    }
+  );
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-  const handleEditClick = () => {
-    //setOfficialID(2);
+  const handleEditClick = officialID => {
+    setOfficialID(officialID);
+    setShowOfficialFormView(true);
+    setShowOfficialListView(false);
+  };
+  const handleDelete = id => {
+    console.log(id);
+    setMyOfficialID(id);
+    setOpenDeleteDialog(true);
+  };
+  const handleConfirm = () => {
+    executeDelete();
+    setOpenDeleteDialog(false);
+    setRefreshList(true);
   };
 
   return (
@@ -91,8 +127,17 @@ const Results = ({ className, officials, ...rest }) => {
                     <TableCell>{official.title}</TableCell>
 
                     <TableCell>
-                      <IconButton aria-label="Edit" onClick={handleEditClick}>
+                      <IconButton
+                        aria-label="Edit"
+                        onClick={() => handleEditClick(official.official_id)}
+                      >
                         <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="Edit"
+                        onClick={() => handleDelete(official.official_id)}
+                      >
+                        <DeleteIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -110,6 +155,28 @@ const Results = ({ className, officials, ...rest }) => {
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
+      <Dialog
+        fullWidth
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Delete Record</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Do you want to delete this record
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => handleConfirm()} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
