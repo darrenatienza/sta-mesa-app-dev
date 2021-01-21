@@ -58,9 +58,9 @@ const items = [
     title: 'Brgy Health Workers'
   },
   {
-    href: '/app/products',
+    href: '/app/document-requests',
     icon: FileIcon,
-    title: 'Document Request'
+    title: 'Document Requests'
   },
   {
     href: '/app/settings',

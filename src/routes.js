@@ -18,6 +18,9 @@ import ResidentFormView from './views/residents/ResidentFormView';
 import ResidentView from './views/residents';
 import OfficialView from './views/official';
 import HealtWorkerView from './views/health-workers';
+import DocumentRequestView from './views/document-request';
+import BarangayClearanceView from './views/document-request/barangay-clearance';
+import BlotterView from './views/document-request/blotter';
 const routes = [
   {
     path: 'app',
@@ -31,7 +34,19 @@ const routes = [
       { path: 'resident-form', element: <ResidentFormView /> },
       { path: 'health-workers', element: <HealthWorkerListView /> },
       { path: 'dashboard', element: <DashboardView /> },
-      { path: 'products', element: <ProductListView /> },
+      {
+        path: 'document-requests',
+        element: <DocumentRequestView />
+      },
+      {
+        path: 'document-requests/barangay-clearance',
+        element: <BarangayClearanceView />
+      },
+      {
+        path: 'document-requests/blotter',
+        element: <BlotterView />
+      },
+
       { path: 'settings', element: <SettingsView /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]

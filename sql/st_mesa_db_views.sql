@@ -41,4 +41,19 @@ from
    
 join persons on
    persons.person_id =person_roles.person_id where person_roles.role_id = 3 ;
+   
+create
+or replace
+view view_barangay_clearances as select
+    barangay_clearances.barangay_clearance_id,
+    persons.person_id,
+    persons.first_name,
+    persons.middle_name,
+    persons.last_name,
+    barangay_clearances.reason
+from
+   barangay_clearances
+   
+join persons on
+   persons.person_id =barangay_clearances.person_id;
     

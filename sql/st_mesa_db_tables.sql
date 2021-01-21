@@ -72,4 +72,17 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
 
+CREATE TABLE barangay_clearances (
+	barangay_clearance_id INT NOT NULL AUTO_INCREMENT,
+	person_id INT NOT NULL,
+	reason varchar(250) not null,
+	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
+	CONSTRAINT barangay_clearance_pk PRIMARY KEY (barangay_clearance_id),
+	KEY `barangay_clearances_persons_fk` (`person_id`),
+  	CONSTRAINT `barangay_clearances_persons_fk` FOREIGN KEY (`person_id`) REFERENCES `persons` (`person_id`) ON DELETE cascade
+  	
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;
 
