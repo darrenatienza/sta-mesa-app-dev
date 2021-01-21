@@ -35,8 +35,7 @@ view view_health_workers as select
     persons.person_id,
     persons.first_name,
     persons.middle_name,
-    persons.last_name,
-    person_roles.role_id
+    persons.last_name
 from
    person_roles
    
