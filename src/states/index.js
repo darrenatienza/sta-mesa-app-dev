@@ -7,7 +7,7 @@ import * as residentViewState from './residentViewState';
 import * as personEntity from './personEntity';
 import * as residentChangeRoleViewState from './residentChangeRoleViewState';
 import * as officialViewState from './officialViewState';
-
+import * as healthWorkerViewState from './healthWorkerViewState';
 export const usePersonView = makeEntity(personView);
 export const useOfficial = makeEntity(official);
 export const useResidentSearch = makeEntity(residentSearch);
@@ -17,5 +17,5 @@ export const usePersonEntity = makeEntity(personEntity);
 export const useResidentChangeRoleViewState = makeEntity(
   residentChangeRoleViewState
 );
-
+export const useHealthWorkerViewState = makeEntity(healthWorkerViewState);
 export const useOfficialViewState = makeEntity(officialViewState);

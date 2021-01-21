@@ -1,32 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
-import data from './data';
-
+import useAxios from 'axios-hooks';
+import { useHealthWorkerViewState } from '../../../states';
 const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background.dark,
-    minHeight: '100%',
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3)
-  }
+  root: {}
 }));
 
 const HealthWorkerListView = () => {
   const classes = useStyles();
-  const [customers] = useState(data);
-
+  const [healthWorkers, setHealthWorkers] = useState([]);
+  const [healthWorkerViewState] = useHealthWorkerViewState();
+  const [
+    {
+      data: getHealthWorkerList,
+      loading: getHealthWorkerListLoading,
+      error: getHealthWorkerListError
+    },
+    refetch
+  ] = useAxios(
+    `/records/view_health_workers?filter=first_name,cs,${healthWorkerViewState.criteria}`
+  );
+  useEffect(() => {
+    getHealthWorkerList && setHealthWorkers(getHealthWorkerList.records);
+  }, [getHealthWorkerList]);
   return (
-    <Page className={classes.root} title="Customers">
-      <Container maxWidth={false}>
-        <Toolbar />
-        <Box mt={3}>
-          <Results customers={customers} />
-        </Box>
-      </Container>
-    </Page>
+    <>
+      <Toolbar />
+      <Box mt={3}>
+        <Results healthWorkers={healthWorkers} />
+      </Box>
+    </>
   );
 };
 

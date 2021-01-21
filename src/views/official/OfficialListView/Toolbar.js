@@ -39,10 +39,7 @@ const Toolbar = ({ className, ...rest }) => {
   useEffect(() => {
     setQuery(officialViewState.criteria);
   }, []);
-  //maintains value of the search box
-  useEffect(() => {
-    setQuery(officialViewState.criteria);
-  }, []);
+
   const handleAddOfficial = () => {
     setOfficialID(0);
     setShowOfficialFormView(true);

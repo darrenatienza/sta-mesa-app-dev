@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import { useHealthWorkerViewState } from '../../../states';
 import {
   Box,
   Button,
@@ -25,21 +26,28 @@ const useStyles = makeStyles(theme => ({
 
 const Toolbar = ({ className, ...rest }) => {
   const classes = useStyles();
+  const [query, setQuery] = useState('');
+  const [healthWorkerViewState, { setCriteria }] = useHealthWorkerViewState();
 
+  useEffect(() => {
+    const timeOutId = setTimeout(() => setCriteria(query), 500);
+    return () => clearTimeout(timeOutId);
+  }, [query]);
+
+  //maintains value of the search box
+  useEffect(() => {
+    setQuery(healthWorkerViewState.criteria);
+  }, []);
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Box display="flex" justifyContent="flex-end">
-        <Button className={classes.importButton}>Import</Button>
-        <Button className={classes.exportButton}>Export</Button>
-        <Button color="primary" variant="contained">
-          Add Health Workers
-        </Button>
-      </Box>
+      <Box display="flex" justifyContent="flex-end"></Box>
       <Box mt={3}>
         <Card>
           <CardContent>
             <Box maxWidth={500}>
               <TextField
+                value={query}
+                onChange={e => setQuery(e.target.value)}
                 fullWidth
                 InputProps={{
                   startAdornment: (
@@ -50,7 +58,7 @@ const Toolbar = ({ className, ...rest }) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search customer"
+                placeholder="Search Barangay Health Workers"
                 variant="outlined"
               />
             </Box>

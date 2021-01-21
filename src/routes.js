@@ -7,7 +7,7 @@ import CustomerListView from 'src/views/customer/CustomerListView';
 import DashboardView from 'src/views/reports/DashboardView';
 import LoginView from 'src/views/auth/LoginView';
 import NotFoundView from 'src/views/errors/NotFoundView';
-import ProductListView from 'src/views/product/ProductListView';
+import ProductListView from 'src/views/document-request/DocumentRequestListView';
 import RegisterView from 'src/views/auth/RegisterView';
 import SettingsView from 'src/views/settings/SettingsView';
 import OfficialListView from './views/official/OfficialListView';
@@ -17,6 +17,7 @@ import ResidentListView from './views/residents/ResidentListView';
 import ResidentFormView from './views/residents/ResidentFormView';
 import ResidentView from './views/residents';
 import OfficialView from './views/official';
+import HealtWorkerView from './views/health-workers';
 const routes = [
   {
     path: 'app',
@@ -26,7 +27,7 @@ const routes = [
       { path: 'customers', element: <CustomerListView /> },
       { path: 'officials', element: <OfficialView /> },
       { path: 'residents', element: <ResidentView /> },
-      { path: 'official-form', element: <OfficialFormView /> },
+      { path: 'health-workers', element: <HealtWorkerView /> },
       { path: 'resident-form', element: <ResidentFormView /> },
       { path: 'health-workers', element: <HealthWorkerListView /> },
       { path: 'dashboard', element: <DashboardView /> },

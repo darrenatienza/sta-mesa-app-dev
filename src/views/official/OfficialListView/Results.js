@@ -95,7 +95,7 @@ const Results = ({ className, officials, ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="default"></TableCell>
+                <TableCell padding="checkbox"></TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Position</TableCell>
                 <TableCell padding="default"></TableCell>
@@ -109,7 +109,7 @@ const Results = ({ className, officials, ...rest }) => {
                     key={official.official_id}
                     value={official.official_id}
                   >
-                    <TableCell padding="default"></TableCell>
+                    <TableCell padding="checkbox"></TableCell>
                     <TableCell>
                       <Box alignItems="center" display="flex">
                         <Avatar

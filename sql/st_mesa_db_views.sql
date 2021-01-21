@@ -28,3 +28,18 @@ join `persons` on
 join `roles` on
     ( `roles`.`role_id` = `person_roles`.`role_id` ));
     
+create
+or replace
+view view_health_workers as select
+    person_roles.person_role_id,
+    persons.person_id,
+    persons.first_name,
+    persons.middle_name,
+    persons.last_name,
+    person_roles.role_id
+from
+   person_roles
+   
+join persons on
+   persons.person_id =person_roles.person_id where person_roles.role_id = 3 ;
+    
