@@ -30,7 +30,7 @@ const Toolbar = ({ className, ...rest }) => {
     <div className={clsx(classes.root, className)} {...rest}>
       <Box display="flex" justifyContent="flex-end">
         <Button color="primary" variant="contained">
-          Add Barangay Clearance Request
+          Add Business Clearance
         </Button>
       </Box>
       <Box mt={3}>

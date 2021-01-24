@@ -15,9 +15,9 @@ export default [
     createdAt: '31/03/2019',
     description: '',
     media: '/static/images/products/product_2.png',
-    title: 'Blotter',
+    title: 'Business Clearance',
     totalDownloads: '625',
-    url: '/app/document-requests/blotter'
+    url: '/app/document-requests/business-clearance'
   },
 
   {

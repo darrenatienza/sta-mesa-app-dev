@@ -21,6 +21,7 @@ import HealtWorkerView from './views/health-workers';
 import DocumentRequestView from './views/document-request';
 import BarangayClearanceView from './views/document-request/barangay-clearance';
 import BlotterView from './views/document-request/blotter';
+import BusinessClearanceView from './views/document-request/business-clearance';
 const routes = [
   {
     path: 'app',
@@ -41,6 +42,11 @@ const routes = [
       {
         path: 'document-requests/barangay-clearance',
         element: <BarangayClearanceView />
+      },
+
+      {
+        path: 'document-requests/business-clearance',
+        element: <BusinessClearanceView />
       },
       {
         path: 'document-requests/blotter',

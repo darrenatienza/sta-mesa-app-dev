@@ -86,3 +86,44 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
 
+CREATE TABLE doc_statuses (
+	doc_status_id INT NOT NULL AUTO_INCREMENT,
+	name VARCHAR(100) NOT NULL,
+	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
+	CONSTRAINT doc_status_pk PRIMARY KEY (doc_status_id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;
+
+CREATE TABLE business_clearances (
+	business_clearance_id INT NOT NULL AUTO_INCREMENT,
+	name VARCHAR(100) NOT NULL,
+	address VARCHAR(100) NOT NULL,
+	business_nature VARCHAR(100) NOT NULL,
+	date_issued datetime  DEFAULT current_timestamp() NOT NULL,
+	or_number VARCHAR(100) NOT NULL,
+	doc_status_id int not null,
+	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
+	CONSTRAINT business_clearance_pk PRIMARY KEY (business_clearance_id),
+	KEY `business_clearances_doc_statues_fk` (`doc_status_id`),
+  	CONSTRAINT `business_clearances_doc_statuses_fk` FOREIGN KEY (`doc_status_id`) REFERENCES `doc_statuses` (`doc_status_id`) ON DELETE cascade
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;
+
+CREATE TABLE indigencies (
+	indigency_id INT NOT NULL AUTO_INCREMENT,
+	person_id INT NOT NULL,
+	parents VARCHAR(100) NOT NULL,
+	indigent_reason VARCHAR(100) NOT NULL,
+	date_issued datetime DEFAULT current_timestamp() NOT NULL,
+	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
+	CONSTRAINT indigencies_pk PRIMARY KEY (indigency_id),
+	KEY `indigencies_persons_fk` (`person_id`),
+  	CONSTRAINT `indigencies_persons_fk` FOREIGN KEY (`person_id`) REFERENCES `persons` (`person_id`) ON DELETE cascade
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;

@@ -33,54 +33,54 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Results = ({ className, barangayClearances, ...rest }) => {
+const Results = ({ className, businessClearances, ...rest }) => {
   const classes = useStyles();
   const [
-    selectedbarangayClearancesIds,
-    setSelectedbarangayClearancesIds
+    selectedbusinessClearancesIds,
+    setSelectedbusinessClearancesIds
   ] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
   const handleSelectAll = event => {
-    let newSelectedbarangayClearancesIds;
+    let newSelectedbusinessClearancesIds;
 
     if (event.target.checked) {
-      newSelectedbarangayClearancesIds = barangayClearances.map(
-        barangayClearances => barangayClearances.id
+      newSelectedbusinessClearancesIds = businessClearances.map(
+        businessClearances => businessClearances.id
       );
     } else {
-      newSelectedbarangayClearancesIds = [];
+      newSelectedbusinessClearancesIds = [];
     }
 
-    setSelectedbarangayClearancesIds(newSelectedbarangayClearancesIds);
+    setSelectedbusinessClearancesIds(newSelectedbusinessClearancesIds);
   };
 
   const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedbarangayClearancesIds.indexOf(id);
-    let newSelectedbarangayClearancesIds = [];
+    const selectedIndex = selectedbusinessClearancesIds.indexOf(id);
+    let newSelectedbusinessClearancesIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedbarangayClearancesIds = newSelectedbarangayClearancesIds.concat(
-        selectedbarangayClearancesIds,
+      newSelectedbusinessClearancesIds = newSelectedbusinessClearancesIds.concat(
+        selectedbusinessClearancesIds,
         id
       );
     } else if (selectedIndex === 0) {
-      newSelectedbarangayClearancesIds = newSelectedbarangayClearancesIds.concat(
-        selectedbarangayClearancesIds.slice(1)
+      newSelectedbusinessClearancesIds = newSelectedbusinessClearancesIds.concat(
+        selectedbusinessClearancesIds.slice(1)
       );
-    } else if (selectedIndex === selectedbarangayClearancesIds.length - 1) {
-      newSelectedbarangayClearancesIds = newSelectedbarangayClearancesIds.concat(
-        selectedbarangayClearancesIds.slice(0, -1)
+    } else if (selectedIndex === selectedbusinessClearancesIds.length - 1) {
+      newSelectedbusinessClearancesIds = newSelectedbusinessClearancesIds.concat(
+        selectedbusinessClearancesIds.slice(0, -1)
       );
     } else if (selectedIndex > 0) {
-      newSelectedbarangayClearancesIds = newSelectedbarangayClearancesIds.concat(
-        selectedbarangayClearancesIds.slice(0, selectedIndex),
-        selectedbarangayClearancesIds.slice(selectedIndex + 1)
+      newSelectedbusinessClearancesIds = newSelectedbusinessClearancesIds.concat(
+        selectedbusinessClearancesIds.slice(0, selectedIndex),
+        selectedbusinessClearancesIds.slice(selectedIndex + 1)
       );
     }
 
-    setSelectedbarangayClearancesIds(newSelectedbarangayClearancesIds);
+    setSelectedbusinessClearancesIds(newSelectedbusinessClearancesIds);
   };
 
   const handleLimitChange = event => {
@@ -101,42 +101,36 @@ const Results = ({ className, barangayClearances, ...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
-                <TableCell>Request Date</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Age</TableCell>
-                <TableCell>Civil Status</TableCell>
-                <TableCell>Reason</TableCell>
+                <TableCell>Address</TableCell>
+                <TableCell>Business Nature</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {barangayClearances.slice(0, limit).map(barangayClearance => (
-                <TableRow hover key={barangayClearance.barangay_clearance_id}>
+              {businessClearances.slice(0, limit).map(businessClearance => (
+                <TableRow hover key={businessClearance.barangay_clearance_id}>
                   <TableCell padding="checkbox"></TableCell>
-                  <TableCell>{barangayClearance.request_date}</TableCell>
                   <TableCell>
                     <Box alignItems="center" display="flex">
                       <Avatar
                         className={classes.avatar}
-                        src={barangayClearance.avatarUrl}
+                        src={businessClearance.avatarUrl}
                       >
-                        {getInitials(barangayClearance.first_name)}
+                        {getInitials(businessClearance.name)}
                       </Avatar>
                       <Typography color="textPrimary" variant="body1">
-                        {`${barangayClearance.first_name} ${barangayClearance.middle_name} ${barangayClearance.last_name}`}
+                        {`${businessClearance.name}`}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>
-                    {moment().diff(barangayClearance.birthdate, 'years')}
-                  </TableCell>
-                  <TableCell>{barangayClearance.civil_status}</TableCell>
-                  <TableCell>{barangayClearance.reason}</TableCell>
+                  <TableCell>{businessClearance.address}</TableCell>
+                  <TableCell>{businessClearance.business_nature}</TableCell>
                   <TableCell>
                     <Chip
                       color="primary"
-                      label={barangayClearance.doc_status}
+                      label={businessClearance.doc_status}
                       size="small"
                     />
                   </TableCell>
@@ -144,7 +138,7 @@ const Results = ({ className, barangayClearances, ...rest }) => {
                     <IconButton
                       aria-label="Edit"
                       onClick={() =>
-                        handleEdit(barangayClearance.barangay_clearance_id)
+                        handleEdit(businessClearance.barangay_clearance_id)
                       }
                     >
                       <EditIcon />
@@ -155,7 +149,7 @@ const Results = ({ className, barangayClearances, ...rest }) => {
                       aria-haspopup="true"
                       aria-label="Menu"
                       onClick={() =>
-                        handleDelete(barangayClearance.barangay_clearance_id)
+                        handleDelete(businessClearance.barangay_clearance_id)
                       }
                     >
                       <DeleteIcon />
@@ -169,7 +163,7 @@ const Results = ({ className, barangayClearances, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={barangayClearances.length}
+        count={businessClearances.length}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
@@ -182,7 +176,7 @@ const Results = ({ className, barangayClearances, ...rest }) => {
 
 Results.propTypes = {
   className: PropTypes.string,
-  barangayClearances: PropTypes.array.isRequired
+  businessClearances: PropTypes.array.isRequired
 };
 
 export default Results;
