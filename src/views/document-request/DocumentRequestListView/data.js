@@ -36,7 +36,7 @@ export default [
     media: '/static/images/products/product_5.png',
     title: 'Relationship',
     totalDownloads: '835',
-    url: '/app/document-requests/ralationship'
+    url: '/app/document-requests/relationship'
   },
   {
     id: uuid(),

@@ -79,4 +79,40 @@ from
    join doc_statuses on
    doc_statuses.doc_status_id =business_clearances.doc_status_id;
     
+   create or replace view view_indigencies as select 
+   indigencies.indigency_id,
+   persons.person_id,
+   persons.first_name,
+   persons.middle_name,
+   persons.last_name,
+   persons.birthdate,
+   persons.civil_status,
+   indigencies.parents,
+   indigencies.indigent_reason,
+   indigencies.date_issued,
+   doc_statuses.name doc_status,
+   indigencies.request_date
+   from indigencies
+   join persons on persons.person_id = indigencies.person_id
+   join doc_statuses on
+   doc_statuses.doc_status_id =indigencies.doc_status_id;
     
+   
+   create or replace view view_relationships as select 
+   relationships.relationship_id,
+   persons.person_id,
+   persons.first_name,
+   persons.middle_name,
+   persons.last_name,
+   persons.birthdate,
+   persons.civil_status,
+   relationships.person_related_with,
+   relationships.relationship,
+   relationships.reason,
+   doc_statuses.name doc_status,
+   relationships.request_date,
+   relationships.date_issued
+   from relationships
+   join persons on persons.person_id = relationships.person_id
+   join doc_statuses on
+   doc_statuses.doc_status_id =relationships.doc_status_id;

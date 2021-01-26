@@ -22,6 +22,8 @@ import DocumentRequestView from './views/document-request';
 import BarangayClearanceView from './views/document-request/barangay-clearance';
 import BlotterView from './views/document-request/blotter';
 import BusinessClearanceView from './views/document-request/business-clearance';
+import IndigencyView from './views/document-request/indigency';
+import RelationshipView from './views/document-request/relationship';
 const routes = [
   {
     path: 'app',
@@ -52,7 +54,14 @@ const routes = [
         path: 'document-requests/blotter',
         element: <BlotterView />
       },
-
+      {
+        path: 'document-requests/indigency',
+        element: <IndigencyView />
+      },
+      {
+        path: 'document-requests/relationship',
+        element: <RelationshipView />
+      },
       { path: 'settings', element: <SettingsView /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
