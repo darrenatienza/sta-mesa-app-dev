@@ -7,7 +7,6 @@ CREATE TABLE persons (
   create_time_stamp datetime NOT NULL DEFAULT current_timestamp(),
   phone_number varchar(100) NOT NULL,
   birthdate datetime DEFAULT current_timestamp(),
-   group varchar(100) not null default 'resident',
   PRIMARY KEY (person_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -37,7 +36,7 @@ CREATE TABLE officials (
 	person_id INT NOT NULL,
 	position_id int not null,
 	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
-	CONSTRAINT officials_pk PRIMARY KEY (official_id),
+	PRIMARY KEY (official_id),
 	KEY officials_persons_fk (person_id),
   	CONSTRAINT officials_persons_fk FOREIGN KEY (person_id) REFERENCES persons (person_id) ON DELETE cascade,
   	KEY officials_positions_fk (position_id),
@@ -50,7 +49,7 @@ COLLATE=utf8_general_ci;
 CREATE TABLE roles (
 	role_id INT NOT NULL AUTO_INCREMENT,
 	title varchar(100) NOT NULL,
-	CONSTRAINT roles_pk PRIMARY KEY (role_id)
+	PRIMARY KEY (role_id)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8
@@ -62,7 +61,7 @@ CREATE TABLE person_roles (
 	person_id INT NOT NULL,
 	role_id int not null,
 	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
-	CONSTRAINT person_roles_pk PRIMARY KEY (person_role_id),
+	PRIMARY KEY (person_role_id),
 	KEY person_roles_persons_fk (person_id),
   	CONSTRAINT person_roles_persons_fk FOREIGN KEY (person_id) REFERENCES persons (person_id) ON DELETE cascade,
   	KEY officials_positions_fk (role_id),
@@ -77,7 +76,7 @@ CREATE TABLE barangay_clearances (
 	person_id INT NOT NULL,
 	reason varchar(250) not null,
 	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
-	CONSTRAINT barangay_clearance_pk PRIMARY KEY (barangay_clearance_id),
+	PRIMARY KEY (barangay_clearance_id),
 	KEY barangay_clearances_persons_fk (person_id),
   	CONSTRAINT barangay_clearances_persons_fk FOREIGN KEY (person_id) REFERENCES persons (person_id) ON DELETE cascade
   	
@@ -90,7 +89,7 @@ CREATE TABLE doc_statuses (
 	doc_status_id INT NOT NULL AUTO_INCREMENT,
 	name VARCHAR(100) NOT NULL,
 	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
-	CONSTRAINT doc_status_pk PRIMARY KEY (doc_status_id)
+	PRIMARY KEY (doc_status_id)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8
@@ -105,7 +104,7 @@ CREATE TABLE business_clearances (
 	or_number VARCHAR(100) NOT NULL,
 	doc_status_id int not null,
 	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
-	CONSTRAINT business_clearance_pk PRIMARY KEY (business_clearance_id),
+	PRIMARY KEY (business_clearance_id),
 	KEY business_clearances_doc_statues_fk (doc_status_id),
   	CONSTRAINT business_clearances_doc_statuses_fk FOREIGN KEY (doc_status_id) REFERENCES doc_statuses (doc_status_id) ON DELETE cascade
 )
@@ -122,7 +121,7 @@ CREATE TABLE indigencies (
 	request_date datetime DEFAULT current_timestamp() NOT NULL,
 	date_issued datetime DEFAULT current_timestamp() NOT NULL,
 	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
-	CONSTRAINT indigencies_pk PRIMARY KEY (indigency_id),
+	PRIMARY KEY (indigency_id),
 	KEY indigencies_persons_fk (person_id),
   	CONSTRAINT indigencies_persons_fk FOREIGN KEY (person_id) REFERENCES persons (person_id) ON DELETE cascade,
   	KEY indigencies_doc_statues_fk (doc_status_id),
@@ -137,15 +136,13 @@ CREATE TABLE relationships (
 	relationship_id INT NOT NULL AUTO_INCREMENT,
 	person_id INT NOT NULL,
 	doc_status_id int not null,
-	
 	person_related_with VARCHAR(100) NOT NULL,
 	relationship VARCHAR(100) NOT NULL,
 	reason VARCHAR(100) NOT NULL,
-	
 	request_date datetime DEFAULT current_timestamp() NOT NULL,
 	date_issued datetime DEFAULT current_timestamp() NOT NULL,
 	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
-	CONSTRAINT relationships_pk PRIMARY KEY (relationship_id),
+	 PRIMARY KEY (relationship_id),
 	KEY relationships_persons_fk (person_id),
   	CONSTRAINT relationships_persons_fk FOREIGN KEY (person_id) REFERENCES persons (person_id) ON DELETE cascade,
   	KEY relationships_doc_statues_fk (doc_status_id),

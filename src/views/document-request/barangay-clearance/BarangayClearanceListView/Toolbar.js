@@ -11,6 +11,7 @@ import {
   SvgIcon,
   makeStyles
 } from '@material-ui/core';
+import {useBarangayClearanceViewState} from '../../../../states'
 import { Search as SearchIcon } from 'react-feather';
 
 const useStyles = makeStyles(theme => ({
@@ -25,11 +26,15 @@ const useStyles = makeStyles(theme => ({
 
 const Toolbar = ({ className, ...rest }) => {
   const classes = useStyles();
-
+  const [barangayClearanceViewState, {setShowFormView,setShowListView}] = useBarangayClearanceViewState();
+  const handleAddClick = ()=>{
+    setShowFormView(true);
+    setShowListView(false);
+  }
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained">
+        <Button color="primary" variant="contained" onClick ={()=> handleAddClick()}>
           Add Barangay Clearance Request
         </Button>
       </Box>

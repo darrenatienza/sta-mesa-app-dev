@@ -67,7 +67,7 @@ const Results = ({ className, indigencies, ...rest }) => {
             </TableHead>
             <TableBody>
               {indigencies.slice(0, limit).map(indigency => (
-                <TableRow hover key={indigency.barangay_clearance_id}>
+                <TableRow hover key={indigency.indigency_id}>
                   <TableCell padding="checkbox"></TableCell>
                   <TableCell>{indigency.request_date}</TableCell>
                   <TableCell>
@@ -84,7 +84,7 @@ const Results = ({ className, indigencies, ...rest }) => {
                     {moment().diff(indigency.birthdate, 'years')}
                   </TableCell>
                   <TableCell>{indigency.civil_status}</TableCell>
-                  <TableCell>{indigency.reason}</TableCell>
+                  <TableCell>{indigency.indigent_reason}</TableCell>
                   <TableCell>
                     <Chip
                       color="primary"

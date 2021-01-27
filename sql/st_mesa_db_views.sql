@@ -40,7 +40,7 @@ from
    person_roles
    
 join persons on
-   persons.person_id =person_roles.person_id where person_roles.role_id = 3 ;
+   persons.person_id =person_roles.person_id where person_roles.role_id = 2 ;
    
 create
 or replace

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, makeStyles } from '@material-ui/core';
+import { Box, Container, Collapse, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
 import data from './data';
 import useAxios from 'axios-hooks';
+import { useBarangayClearanceViewState } from '../../../../states';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -17,6 +18,7 @@ const useStyles = makeStyles(theme => ({
 const BarangayClearanceListView = () => {
   const classes = useStyles();
   const [customers] = useState(data);
+  const [barangayClearanceStateView, {setShowFormView,setShowListView}] = useBarangayClearanceViewState();
   const [barangayClearances, setBarangayClearances] = useState([]);
   const [
     {
@@ -31,12 +33,15 @@ const BarangayClearanceListView = () => {
       setBarangayClearances(getBarangayClearanceList.records);
   }, [getBarangayClearanceList]);
   return (
-    <>
+
+    <Collapse in={!barangayClearanceStateView.setShowListView}>
       <Toolbar />
       <Box mt={3}>
         <Results barangayClearances={barangayClearances} />
       </Box>
-    </>
+      </Collapse>
+
+   
   );
 };
 
