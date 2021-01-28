@@ -18,7 +18,10 @@ const useStyles = makeStyles(theme => ({
 const BarangayClearanceListView = () => {
   const classes = useStyles();
   const [customers] = useState(data);
-  const [barangayClearanceStateView, {setShowFormView,setShowListView}] = useBarangayClearanceViewState();
+  const [
+    barangayClearanceStateView,
+    { setShowFormView, setShowListView }
+  ] = useBarangayClearanceViewState();
   const [barangayClearances, setBarangayClearances] = useState([]);
   const [
     {
@@ -33,15 +36,12 @@ const BarangayClearanceListView = () => {
       setBarangayClearances(getBarangayClearanceList.records);
   }, [getBarangayClearanceList]);
   return (
-
-    <Collapse in={!barangayClearanceStateView.setShowListView}>
+    <>
       <Toolbar />
       <Box mt={3}>
         <Results barangayClearances={barangayClearances} />
       </Box>
-      </Collapse>
-
-   
+    </>
   );
 };
 

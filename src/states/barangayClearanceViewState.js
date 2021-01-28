@@ -1,12 +1,12 @@
 export const initialState = {
     barangayClearanceID: 0,
-    showFormView: true,
+    showFormView: false,
     showListView: true,
     criteria: '',
     refeshList: false
   };
   
-  export const barangayClearanceID = barangayClearanceViewState => value => {
+  export const setBarangayClearanceID = barangayClearanceViewState => value => {
     barangayClearanceViewState.setState({
         barangayClearanceID: value
     });
@@ -22,7 +22,7 @@ export const initialState = {
   
   export const setShowFormView = barangayClearanceViewState => value => {
     barangayClearanceViewState.setState({
-      showOFormView: value
+      showFormView: value
     });
   };
   

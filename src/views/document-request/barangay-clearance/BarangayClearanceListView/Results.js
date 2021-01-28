@@ -26,6 +26,7 @@ import {
   Menu as MenuIcon,
   Key as KeyIcon
 } from 'react-feather';
+import { useBarangayClearanceViewState } from '../../../../states';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -36,52 +37,11 @@ const useStyles = makeStyles(theme => ({
 const Results = ({ className, barangayClearances, ...rest }) => {
   const classes = useStyles();
   const [
-    selectedbarangayClearancesIds,
-    setSelectedbarangayClearancesIds
-  ] = useState([]);
+    barangayClearanceStateView,
+    { setShowFormView, setShowListView, setBarangayClearanceID }
+  ] = useBarangayClearanceViewState();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
-  const handleSelectAll = event => {
-    let newSelectedbarangayClearancesIds;
-
-    if (event.target.checked) {
-      newSelectedbarangayClearancesIds = barangayClearances.map(
-        barangayClearances => barangayClearances.id
-      );
-    } else {
-      newSelectedbarangayClearancesIds = [];
-    }
-
-    setSelectedbarangayClearancesIds(newSelectedbarangayClearancesIds);
-  };
-
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedbarangayClearancesIds.indexOf(id);
-    let newSelectedbarangayClearancesIds = [];
-
-    if (selectedIndex === -1) {
-      newSelectedbarangayClearancesIds = newSelectedbarangayClearancesIds.concat(
-        selectedbarangayClearancesIds,
-        id
-      );
-    } else if (selectedIndex === 0) {
-      newSelectedbarangayClearancesIds = newSelectedbarangayClearancesIds.concat(
-        selectedbarangayClearancesIds.slice(1)
-      );
-    } else if (selectedIndex === selectedbarangayClearancesIds.length - 1) {
-      newSelectedbarangayClearancesIds = newSelectedbarangayClearancesIds.concat(
-        selectedbarangayClearancesIds.slice(0, -1)
-      );
-    } else if (selectedIndex > 0) {
-      newSelectedbarangayClearancesIds = newSelectedbarangayClearancesIds.concat(
-        selectedbarangayClearancesIds.slice(0, selectedIndex),
-        selectedbarangayClearancesIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedbarangayClearancesIds(newSelectedbarangayClearancesIds);
-  };
 
   const handleLimitChange = event => {
     setLimit(event.target.value);
@@ -91,7 +51,11 @@ const Results = ({ className, barangayClearances, ...rest }) => {
     setPage(newPage);
   };
   // users actions
-  const handleEdit = () => {};
+  const handleEdit = barangayClearanceID => {
+    setBarangayClearanceID(barangayClearanceID);
+    setShowListView(false);
+    setShowFormView(true);
+  };
   const handleDelete = () => {};
   return (
     <Card className={clsx(classes.root, className)} {...rest}>

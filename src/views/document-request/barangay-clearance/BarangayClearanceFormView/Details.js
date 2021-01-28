@@ -3,6 +3,8 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useBarangayClearanceViewState } from '../../../../states';
 import useAxios from 'axios-hooks';
+import moment from 'moment';
+import { useForm, Controller } from 'react-hook-form';
 import {
   Box,
   Button,
@@ -16,10 +18,9 @@ import {
   InputLabel,
   Select,
   FormControl,
-
+  Checkbox,
   makeStyles
 } from '@material-ui/core';
-import SaveActionButton from './SaveActionButton';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -28,97 +29,55 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const Details = ({ className, ...rest }) => {
-  
-  const [personList, setPersonList] = useState([]);
-  const [positionList, setPositionList] = useState([]);
-
+const Details = ({ className, detail, persons, ...rest }) => {
   const [
-    barangayClearanceViewState,
-    { setShowListView, setShowFormView }
+    barangayClearanceStateView,
+    { setShowFormView, setShowListView }
   ] = useBarangayClearanceViewState();
-  const [
-    {
-      data: getPersonListData,
-      loading: getPersonListLoading,
-      error: getPersonListError
-    },
-    refetchPersonList
-  ] = useAxios(`/records/persons`);
+
+  const { register, handleSubmit, setValue, control, watch, errors } = useForm({
+    detail
+  });
 
   const [
+    { data: postData, loading: postLoading, error: postError },
+    executePost
+  ] = useAxios(
+    { url: `/records/officials`, method: 'POST' },
     {
-      data: getPositionListData,
-      loading: getPositionListLoading,
-      error: getPositionListError
-    },
-    refetchPositionList
-  ] = useAxios(`/records/positions`);
-
+      manual: true
+    }
+  );
   const [
-    {
-      data: getOfficialData,
-      loading: getOfficialLoading,
-      error: getOfficialError
-    },
-    refetchOfficialData
+    { data: putData, loading: putLoading, error: putError },
+    executePut
   ] = useAxios(
     {
-      url: `/records/officials/${barangayClearanceViewState.officialID}`,
-      method: 'GET'
+      url: `/records/officials/${barangayClearanceStateView.barangayClearanceID}`,
+      method: 'PUT'
     },
-    { manual: true }
-  );
-  const [values, setValues] = useState({
-    officialID: '',
-    personID: '',
-    positionID: ''
-  });
-  // if id found, set values (edit operation)
-  // if not set empty values (add operation)
-  useEffect(() => {}, [barangayClearanceViewState.officialID]);
-
-  useEffect(() => {
-    if (barangayClearanceViewState.showFormView) {
-      if (barangayClearanceViewState.barangayClearanceID > 0) {
-        refetchOfficialData();
-      } else {
-        setValues({
-          officialID: '',
-          personID: '',
-          positionID: ''
-        });
-      }
+    {
+      manual: true
     }
-  }, [barangayClearanceViewState.showFormView]);
-
-  useEffect(() => {
-    getOfficialData &&
-      setValues({
-        ...values,
-        officialID: getOfficialData.official_id,
-        personID: getOfficialData.person_id,
-        positionID: getOfficialData.position_id
-      });
-  }, [getOfficialData]);
-
-  useEffect(() => {
-    getPersonListData && setPersonList(getPersonListData.records);
-  }, [getPersonListData]);
-
-  useEffect(() => {
-    getPositionListData && setPositionList(getPositionListData.records);
-  }, [getPositionListData]);
-
-  const handleChange = event => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
+  );
+  const onSubmit = data => {
+    console.log(data);
+    //if (barangayClearanceStateView.barangayClearanceID > 0) {
+    //  executePut({
+    //    data: { person_id: data.personID, position_id: value.positionID }
+    //  });
+    //} else {
+    //  executePost({
+    //    data: { person_id: value.personID, position_id: value.positionID }
+    //  });
+    //}
   };
 
+  useEffect(() => {
+    setValue('dateIssued', detail.dateIssued);
+  }, [detail]);
+
   const handleClose = () => {
-    
     setShowListView(true);
     setShowFormView(false);
   };
@@ -126,6 +85,7 @@ const Details = ({ className, ...rest }) => {
 
   return (
     <form
+      onSubmit={handleSubmit(onSubmit)}
       autoComplete="off"
       noValidate
       className={clsx(classes.root, className)}
@@ -140,6 +100,27 @@ const Details = ({ className, ...rest }) => {
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
+              <Controller
+                name="dateIssued"
+                control={control}
+                value={detail.dateIssued}
+                rules={{ required: true }}
+                render={props => (
+                  <TextField
+                    type="date"
+                    variant="outlined"
+                    onChange={e => props.onChange(e.target.value)}
+                    label={props.value}
+                    value={moment(props.value).format('YYYY-MM-DD')}
+                    className={classes.textField}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                  ></TextField>
+                )} // props contains: onChange, onBlur and value
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
               <FormControl
                 fullWidth
                 variant="outlined"
@@ -148,51 +129,31 @@ const Details = ({ className, ...rest }) => {
                 <InputLabel id="demo-simple-select-outlined-label">
                   Residents
                 </InputLabel>
-                <Select
-                  fullWidth
+
+                <Controller
                   name="personID"
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  value={values.personID}
-                  onChange={handleChange}
-                  label="Residents"
-                  variant="outlined"
-                >
-                  {personList &&
-                    personList?.map(option => (
-                      <MenuItem key={option.person_id} value={option.person_id}>
-                        {option.first_name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <FormControl
-                fullWidth
-                variant="outlined"
-                className={classes.formControl}
-              >
-                <InputLabel id="position-label">Position</InputLabel>
-                <Select
-                  fullWidth
-                  name="positionID"
-                  labelId="position-label"
-                  id="position-label"
-                  value={values.positionID}
-                  onChange={handleChange}
-                  label="Position"
-                >
-                  {positionList &&
-                    positionList?.map(option => (
-                      <MenuItem
-                        key={option.position_id}
-                        value={option.position_id}
-                      >
-                        {option.title}
-                      </MenuItem>
-                    ))}
-                </Select>
+                  control={control}
+                  rules={{ required: true }}
+                  render={props => (
+                    <Select
+                      labelId="demo-simple-select-outlined-label"
+                      id="demo-simple-select-outlined"
+                      label="Residents"
+                      variant="outlined"
+                      value={props.value}
+                    >
+                      {persons &&
+                        persons.map(option => (
+                          <MenuItem
+                            key={option.person_id}
+                            value={option.person_id}
+                          >
+                            {option.first_name}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  )} // props contains: onChange, onBlur and value
+                />
               </FormControl>
             </Grid>
           </Grid>
@@ -207,7 +168,9 @@ const Details = ({ className, ...rest }) => {
           >
             Cancel
           </Button>
-          <SaveActionButton value={values} />
+          <Button color="primary" variant="contained" onSubmit="submit">
+            {postLoading || putLoading ? `Loading...` : `Save Official`}
+          </Button>
         </Box>
       </Card>
     </form>

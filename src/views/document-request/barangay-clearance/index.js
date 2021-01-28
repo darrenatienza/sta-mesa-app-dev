@@ -1,8 +1,9 @@
 import React from 'react';
 import Page from 'src/components/Page';
-import { Box, Container, Grid, makeStyles } from '@material-ui/core';
+import { Box, Container, Grid, Collapse, makeStyles } from '@material-ui/core';
 import BarangayClearanceListView from './BarangayClearanceListView';
 import BarangayClearanceFormView from './BarangayClearanceFormView';
+import { useBarangayClearanceViewState } from '../../../states';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -16,11 +17,19 @@ const useStyles = makeStyles(theme => ({
 }));
 const BarangayClearanceView = () => {
   const classes = useStyles();
+  const [
+    barangayClearanceStateView,
+    { setShowFormView, setShowListView }
+  ] = useBarangayClearanceViewState();
   return (
     <Page className={classes.root} title="Barangay Clearance">
       <Container maxWidth={false}>
-        <BarangayClearanceListView />
-        <BarangayClearanceFormView />
+        <Collapse in={barangayClearanceStateView.showListView}>
+          <BarangayClearanceListView />
+        </Collapse>
+        <Collapse in={barangayClearanceStateView.showFormView}>
+          <BarangayClearanceFormView />
+        </Collapse>
       </Container>
     </Page>
   );
