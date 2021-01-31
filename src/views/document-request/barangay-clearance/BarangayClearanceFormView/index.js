@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
 const BarangayClearanceFormView = () => {
   const classes = useStyles();
 
-  const [persons, setPersons] = useState([]);
   const [detail, setDetail] = useState({
     personID: '',
     reason: '',
@@ -41,16 +40,6 @@ const BarangayClearanceFormView = () => {
     barangayClearanceViewState,
     { setShowFormView, setShowListView }
   ] = useBarangayClearanceViewState();
-
-  // fetch list of persons from database
-  const [
-    {
-      data: getpersonsData,
-      loading: getpersonsLoading,
-      error: getpersonsError
-    },
-    refetchpersons
-  ] = useAxios(`/records/persons`);
 
   // fetch barangay clearance data from database
   const [
@@ -67,10 +56,6 @@ const BarangayClearanceFormView = () => {
     },
     { manual: true }
   );
-  useEffect(() => {
-    getpersonsData && setPersons(getpersonsData.records);
-  }, [getpersonsData]);
-
   useEffect(() => {
     if (barangayClearanceViewState.showFormView) {
       if (barangayClearanceViewState.barangayClearanceID > 0) {
@@ -95,7 +80,7 @@ const BarangayClearanceFormView = () => {
   }, [getBarangayClearanceData]);
   return (
     <Container maxWidth="lg">
-      <Details detail={detail && detail} persons={persons} />
+      <Details detail={detail} />
     </Container>
   );
 };

@@ -19,17 +19,43 @@ import {
   Select,
   FormControl,
   Checkbox,
-  makeStyles
+  makeStyles,
+  Typography
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
   root: {},
   cancelButton: {
     marginRight: '10px'
+  },
+  title2: {
+    marginTop: '10px'
   }
 }));
 
-const Details = ({ className, detail, persons, ...rest }) => {
+const Details = ({ className, detail, ...rest }) => {
+  const [persons, setPersons] = useState([]);
+  const [docStatuses, setDocStatuses] = useState([]);
+
+  // fetch list of persons from database
+  const [
+    {
+      data: getpersonsData,
+      loading: getpersonsLoading,
+      error: getpersonsError
+    },
+    refetchpersons
+  ] = useAxios(`/records/persons`);
+  // fetch list of persons from database
+
+  const [
+    {
+      data: getDocStatusData,
+      loading: getDocStatusDataLoading,
+      error: getDocStatusDataError
+    },
+    refetchDocStatuses
+  ] = useAxios(`/records/doc_statuses`);
   const [
     barangayClearanceStateView,
     { setShowFormView, setShowListView }
@@ -43,7 +69,7 @@ const Details = ({ className, detail, persons, ...rest }) => {
     { data: postData, loading: postLoading, error: postError },
     executePost
   ] = useAxios(
-    { url: `/records/officials`, method: 'POST' },
+    { url: `/records/barangay_clearances`, method: 'POST' },
     {
       manual: true
     }
@@ -60,21 +86,28 @@ const Details = ({ className, detail, persons, ...rest }) => {
       manual: true
     }
   );
+
+  useEffect(() => {
+    getDocStatusData && setDocStatuses(getDocStatusData.records);
+  }, [getDocStatusData]);
+
+  useEffect(() => {
+    getpersonsData && setPersons(getpersonsData.records);
+  }, [getpersonsData]);
+
   const onSubmit = data => {
+    // submit
     console.log(data);
-    //if (barangayClearanceStateView.barangayClearanceID > 0) {
-    //  executePut({
-    //    data: { person_id: data.personID, position_id: value.positionID }
-    //  });
-    //} else {
-    //  executePost({
-    //    data: { person_id: value.personID, position_id: value.positionID }
-    //  });
-    //}
   };
 
   useEffect(() => {
-    setValue('dateIssued', detail.dateIssued);
+    console.table(detail);
+    setValue('dateIssued', moment(detail.dateIssued).format('YYYY-MM-DD'));
+    setValue('person', detail.personID);
+    setValue('reason', detail.reason);
+    setValue('docStatus', detail.docStatusID);
+    setValue('resCertNo', detail.resCertNo);
+    setValue('requestDate', moment(detail.requestDate).format('YYYY-MM-DD'));
   }, [detail]);
 
   const handleClose = () => {
@@ -94,71 +127,110 @@ const Details = ({ className, detail, persons, ...rest }) => {
       <Card>
         <CardHeader
           subheader="The information can be edited"
-          title="Official Profile"
+          title="Barangay Clearance Request Detail"
         />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+            <Grid item lg={12} md={12} xs={12}>
               <Controller
-                name="dateIssued"
+                fullWidth
+                variant="outlined"
+                label="Date Requested"
+                type="date"
+                as={TextField}
+                name="requestDate"
                 control={control}
-                value={detail.dateIssued}
-                rules={{ required: true }}
-                render={props => (
-                  <TextField
-                    type="date"
-                    variant="outlined"
-                    onChange={e => props.onChange(e.target.value)}
-                    label={props.value}
-                    value={moment(props.value).format('YYYY-MM-DD')}
-                    className={classes.textField}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                  ></TextField>
-                )} // props contains: onChange, onBlur and value
+                defaultValue=""
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <FormControl
+              <Controller
+                fullWidth
+                as={TextField}
+                select
+                label="Resident"
+                name="person"
+                control={control}
+                variant="outlined"
+                defaultValue={''}
+              >
+                {persons &&
+                  persons.map(option => (
+                    <MenuItem key={option.person_id} value={option.person_id}>
+                      {option.first_name}
+                    </MenuItem>
+                  ))}
+              </Controller>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Controller
                 fullWidth
                 variant="outlined"
-                className={classes.formControl}
+                label="Reason"
+                as={TextField}
+                name="reason"
+                control={control}
+                defaultValue=""
+              />
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <Divider />
+              <Box className={classes.title2}>
+                <Typography variant="body2" component="body2">
+                  This portion must be accomplish by Admin Official
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item lg={6} md={6} xs={12}>
+              <Controller
+                fullWidth
+                variant="outlined"
+                label="Res Cert No."
+                as={TextField}
+                name="resCertNo"
+                control={control}
+                defaultValue=""
+              />
+            </Grid>
+            <Grid item lg={6} md={6} xs={12}>
+              <Controller
+                fullWidth
+                variant="outlined"
+                label="Date Issued"
+                as={TextField}
+                name="dateIssued"
+                type="date"
+                control={control}
+                defaultValue=""
+              />
+            </Grid>
+            <Grid item lg={12} md={12} xs={12}>
+              <Controller
+                fullWidth
+                variant="outlined"
+                label="Doc Status"
+                select
+                as={TextField}
+                name="docStatus"
+                control={control}
+                defaultValue=""
               >
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Residents
-                </InputLabel>
-
-                <Controller
-                  name="personID"
-                  control={control}
-                  rules={{ required: true }}
-                  render={props => (
-                    <Select
-                      labelId="demo-simple-select-outlined-label"
-                      id="demo-simple-select-outlined"
-                      label="Residents"
-                      variant="outlined"
-                      value={props.value}
+                {docStatuses &&
+                  docStatuses.map(option => (
+                    <MenuItem
+                      key={option.doc_status_id}
+                      value={option.doc_status_id}
                     >
-                      {persons &&
-                        persons.map(option => (
-                          <MenuItem
-                            key={option.person_id}
-                            value={option.person_id}
-                          >
-                            {option.first_name}
-                          </MenuItem>
-                        ))}
-                    </Select>
-                  )} // props contains: onChange, onBlur and value
-                />
-              </FormControl>
+                      {option.name}
+                    </MenuItem>
+                  ))}
+              </Controller>
             </Grid>
           </Grid>
         </CardContent>
         <Divider />
+
         <Box display="flex" justifyContent="flex-end" p={2}>
           <Button
             color="primary"
@@ -168,8 +240,8 @@ const Details = ({ className, detail, persons, ...rest }) => {
           >
             Cancel
           </Button>
-          <Button color="primary" variant="contained" onSubmit="submit">
-            {postLoading || putLoading ? `Loading...` : `Save Official`}
+          <Button color="primary" variant="contained" type="submit">
+            {postLoading || putLoading ? `Loading...` : `Confirm`}
           </Button>
         </Box>
       </Card>
