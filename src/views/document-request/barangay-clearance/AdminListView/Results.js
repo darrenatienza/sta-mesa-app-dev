@@ -55,7 +55,15 @@ const Results = ({
   ] = useBarangayClearanceViewState();
   // http request hooks
   const [{ data, loading, error }, refetch] = useAxios(
-    `/records/view_barangay_clearances`
+    {
+      url: `/records/view_barangay_clearances?filter1=first_name,cs,${barangayClearanceStateView.filterCriteria}&filter2=last_name,cs,${barangayClearanceStateView.filterCriteria}&filter=request_date,cs,${barangayClearanceStateView.filterDate}`,
+      method: 'GET'
+    },
+    {
+      manual: true
+      //&&
+      //!barangayClearanceStateView.filterDate
+    }
   );
   const [
     { data: deleteData, loading: deleteLoading, error: deleteError },
@@ -67,11 +75,21 @@ const Results = ({
     }
   );
   // array holder for list
-  const [records, setRecords] = useState([{}]);
+  const [records, setRecords] = useState([]);
   // occurs when data has change, set it to records hook
   useEffect(() => {
-    data && setRecords(data.records);
+    if (data) {
+      setRecords(data.records);
+    }
   }, [data]);
+  //occurs when filter values change
+  useEffect(() => {
+    refetch();
+  }, [barangayClearanceStateView.filterCriteria]);
+  //occurs when filter values change
+  useEffect(() => {
+    refetch();
+  }, [barangayClearanceStateView.filterDate]);
   // after successful delete, perform refetch operation
   useEffect(() => {
     if (affectedRows > 0) {
@@ -107,6 +125,10 @@ const Results = ({
     }
     setOpen(false);
   };
+  // performs filter
+  useEffect(() => {
+    console.log(barangayClearanceStateView.queryFilter);
+  }, [barangayClearanceStateView.queryFilter]);
   return (
     <>
       <Card className={clsx(classes.root, className)} {...rest}>
@@ -125,52 +147,44 @@ const Results = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {records.length > 0 ? (
-                  records.slice(0, limit).map(record => (
-                    <TableRow hover key={record.barangay_clearance_id}>
-                      <TableCell padding="checkbox"></TableCell>
-                      <TableCell>
-                        {moment(record.request_date).format('DD/MM/YYYY')}
-                      </TableCell>
-                      <TableCell>{`${record.first_name} ${record.middle_name} ${record.last_name}`}</TableCell>
-                      <TableCell>{`${record.phone_number}`}</TableCell>
-                      <TableCell>{record.reason}</TableCell>
-                      <TableCell>{record.doc_status}</TableCell>
-                      <TableCell>
-                        <IconButton
-                          aria-label="Edit"
-                          onClick={() =>
-                            handleEdit(record.barangay_clearance_id)
-                          }
-                        >
-                          <EditIcon />
-                        </IconButton>
+                {(records || []).slice(0, limit).map(record => (
+                  <TableRow hover key={record.barangay_clearance_id}>
+                    <TableCell padding="checkbox"></TableCell>
+                    <TableCell>
+                      {moment(record.request_date).format('DD/MM/YYYY')}
+                    </TableCell>
+                    <TableCell>{`${record.first_name} ${record.middle_name} ${record.last_name}`}</TableCell>
+                    <TableCell>{`${record.phone_number}`}</TableCell>
+                    <TableCell>{record.reason}</TableCell>
+                    <TableCell>{record.doc_status}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        aria-label="Edit"
+                        onClick={() => handleEdit(record.barangay_clearance_id)}
+                      >
+                        <EditIcon />
+                      </IconButton>
 
-                        <IconButton
-                          aria-controls="simple-menu"
-                          aria-haspopup="true"
-                          aria-label="Menu"
-                          onClick={() =>
-                            handleDelete(record.barangay_clearance_id)
-                          }
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow key="0">
-                    <TableCell>Loading...</TableCell>
+                      <IconButton
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        aria-label="Menu"
+                        onClick={() =>
+                          handleDelete(record.barangay_clearance_id)
+                        }
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
-                )}
+                ))}
               </TableBody>
             </Table>
           </Box>
         </PerfectScrollbar>
         <TablePagination
           component="div"
-          count={records.length}
+          count={(records || []).length}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleLimitChange}
           page={page}

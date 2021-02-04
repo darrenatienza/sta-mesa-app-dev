@@ -228,18 +228,14 @@ const AdminFormView = ({ className, ...rest }) => {
                 defaultValue=""
                 error={errors.docStatus && true}
               >
-                {docStats.length ? (
-                  docStats.map(option => (
-                    <MenuItem
-                      key={option.doc_status_id}
-                      value={option.doc_status_id}
-                    >
-                      {option.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem key={0}>Loading...</MenuItem>
-                )}
+                {(docStats || []).map(option => (
+                  <MenuItem
+                    key={option.doc_status_id}
+                    value={option.doc_status_id}
+                  >
+                    {option.name}
+                  </MenuItem>
+                ))}
               </Controller>
             </Grid>
           </Grid>

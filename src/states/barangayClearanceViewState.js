@@ -1,11 +1,24 @@
+import moment from 'moment';
 export const initialState = {
   barangayClearanceID: 0,
   showFormView: false,
   showListView: true,
   criteria: '',
+  filterCriteria: '',
+  filterDate: moment().format('YYYY-MM-DD'),
   refeshList: false
 };
 
+export const setFilterCriteria = barangayClearanceViewState => value => {
+  barangayClearanceViewState.setState({
+    filterCriteria: value
+  });
+};
+export const setFilterDate = barangayClearanceViewState => value => {
+  barangayClearanceViewState.setState({
+    filterDate: value
+  });
+};
 export const setBarangayClearanceID = barangayClearanceViewState => value => {
   barangayClearanceViewState.setState({
     barangayClearanceID: value
