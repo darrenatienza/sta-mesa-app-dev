@@ -67,10 +67,10 @@ const Results = ({
     }
   );
   // array holder for list
-  const [records, setRecords] = useState([]);
+  const [records, setRecords] = useState([{}]);
   // occurs when data has change, set it to records hook
   useEffect(() => {
-    data && setRecords(...records, data.records);
+    data && setRecords(data.records);
   }, [data]);
   // after successful delete, perform refetch operation
   useEffect(() => {
