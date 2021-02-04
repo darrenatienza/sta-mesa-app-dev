@@ -9,7 +9,7 @@ import * as residentChangeRoleViewState from './residentChangeRoleViewState';
 import * as officialViewState from './officialViewState';
 import * as healthWorkerViewState from './healthWorkerViewState';
 import * as barangayClearanceViewState from './barangayClearanceViewState';
-
+import * as currentUser from './currentUser';
 
 export const usePersonView = makeEntity(personView);
 export const useOfficial = makeEntity(official);
@@ -22,4 +22,7 @@ export const useResidentChangeRoleViewState = makeEntity(
 );
 export const useHealthWorkerViewState = makeEntity(healthWorkerViewState);
 export const useOfficialViewState = makeEntity(officialViewState);
-export const useBarangayClearanceViewState = makeEntity(barangayClearanceViewState);
+export const useBarangayClearanceViewState = makeEntity(
+  barangayClearanceViewState
+);
+export const useCurrentUser = makeEntity(currentUser);

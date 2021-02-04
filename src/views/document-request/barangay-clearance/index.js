@@ -3,7 +3,11 @@ import Page from 'src/components/Page';
 import { Box, Container, Grid, Collapse, makeStyles } from '@material-ui/core';
 import BarangayClearanceListView from './BarangayClearanceListView';
 import BarangayClearanceFormView from './BarangayClearanceFormView';
-import { useBarangayClearanceViewState } from '../../../states';
+import { useBarangayClearanceViewState, useCurrentUser } from '../../../states';
+import ClientListView from './ClientListView';
+import ClientFormView from './ClientFormView';
+import AdminListView from './AdminListView';
+import AdminFormView from './AdminFormView';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -21,15 +25,32 @@ const BarangayClearanceView = () => {
     barangayClearanceStateView,
     { setShowFormView, setShowListView }
   ] = useBarangayClearanceViewState();
+  const [currentUser] = useCurrentUser();
   return (
     <Page className={classes.root} title="Barangay Clearance">
       <Container maxWidth={false}>
-        <Collapse in={barangayClearanceStateView.showListView}>
-          <BarangayClearanceListView />
-        </Collapse>
-        <Collapse in={barangayClearanceStateView.showFormView}>
-          <BarangayClearanceFormView />
-        </Collapse>
+        {currentUser.isAdmin && (
+          <>
+            <Collapse in={barangayClearanceStateView.showListView}>
+              <AdminListView />
+            </Collapse>
+            <Collapse in={barangayClearanceStateView.showFormView}>
+              <AdminFormView />
+            </Collapse>
+          </>
+        )}
+
+        {/** for non admin user render this jsx */}
+        {!currentUser.isAdmin && (
+          <>
+            <Collapse in={barangayClearanceStateView.showListView}>
+              {<ClientListView />}
+            </Collapse>
+            <Collapse in={barangayClearanceStateView.showFormView}>
+              <ClientFormView />
+            </Collapse>
+          </>
+        )}
       </Container>
     </Page>
   );

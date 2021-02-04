@@ -24,7 +24,7 @@ import {
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
-  root: {},
+  root: { marginTop: '5px' },
   cancelButton: {
     marginRight: '10px'
   },
@@ -117,22 +117,23 @@ const Details = ({ className, detail, ...rest }) => {
   const classes = useStyles();
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      autoComplete="off"
-      noValidate
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
-      <Card>
-        <CardHeader
-          subheader="The information can be edited"
-          title="Barangay Clearance Request Detail"
-        />
-        <Divider />
-        <CardContent>
-          <Grid container spacing={3}>
-            <Grid item lg={12} md={12} xs={12}>
+    <>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        noValidate
+        className={clsx(classes.root, className)}
+        {...rest}
+      >
+        <Card>
+          <CardHeader
+            subheader="The information can be edited"
+            title="Barangay Clearance Request Detail"
+          />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={3}>
+              {/**<Grid item lg={12} md={12} xs={12}>
               <Controller
                 fullWidth
                 variant="outlined"
@@ -143,8 +144,8 @@ const Details = ({ className, detail, ...rest }) => {
                 control={control}
                 defaultValue=""
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+        </Grid> */}
+              {/**<Grid item md={6} xs={12}>
               <Controller
                 fullWidth
                 as={TextField}
@@ -162,90 +163,113 @@ const Details = ({ className, detail, ...rest }) => {
                     </MenuItem>
                   ))}
               </Controller>
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <Controller
-                fullWidth
-                variant="outlined"
-                label="Reason"
-                as={TextField}
-                name="reason"
-                control={control}
-                defaultValue=""
-              />
-            </Grid>
-            <Grid item md={12} xs={12}>
-              <Divider />
-              <Box className={classes.title2}>
-                <Typography variant="body2" component="body2">
-                  This portion must be accomplish by Admin Official
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item lg={6} md={6} xs={12}>
-              <Controller
-                fullWidth
-                variant="outlined"
-                label="Res Cert No."
-                as={TextField}
-                name="resCertNo"
-                control={control}
-                defaultValue=""
-              />
-            </Grid>
-            <Grid item lg={6} md={6} xs={12}>
-              <Controller
-                fullWidth
-                variant="outlined"
-                label="Date Issued"
-                as={TextField}
-                name="dateIssued"
-                type="date"
-                control={control}
-                defaultValue=""
-              />
-            </Grid>
-            <Grid item lg={12} md={12} xs={12}>
-              <Controller
-                fullWidth
-                variant="outlined"
-                label="Doc Status"
-                select
-                as={TextField}
-                name="docStatus"
-                control={control}
-                defaultValue=""
-              >
-                {docStatuses &&
-                  docStatuses.map(option => (
-                    <MenuItem
-                      key={option.doc_status_id}
-                      value={option.doc_status_id}
-                    >
-                      {option.name}
-                    </MenuItem>
-                  ))}
-              </Controller>
-            </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
+            </Grid> */}
 
-        <Box display="flex" justifyContent="flex-end" p={2}>
-          <Button
-            color="primary"
-            variant="outlined"
-            className={classes.cancelButton}
-            onClick={handleClose}
-          >
-            Cancel
-          </Button>
-          <Button color="primary" variant="contained" type="submit">
-            {postLoading || putLoading ? `Loading...` : `Confirm`}
-          </Button>
-        </Box>
-      </Card>
-    </form>
+              <Grid item md={12} xs={12}>
+                <Controller
+                  fullWidth
+                  variant="outlined"
+                  label="Reason of Request"
+                  as={TextField}
+                  name="reason"
+                  control={control}
+                  defaultValue=""
+                />
+              </Grid>
+            </Grid>
+          </CardContent>
+          <Divider />
+
+          <Box display="flex" justifyContent="flex-end" p={2}>
+            <Button
+              color="primary"
+              variant="outlined"
+              className={classes.cancelButton}
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+            <Button color="primary" variant="contained" type="submit">
+              {postLoading || putLoading ? `Loading...` : `Confirm`}
+            </Button>
+          </Box>
+        </Card>
+      </form>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        noValidate
+        className={clsx(classes.root, className)}
+        {...rest}
+      >
+        <Card>
+          <CardHeader subheader="This portion must be accomplish by Admin Official" />
+          <CardContent>
+            <Grid container spacing={3}>
+              <Grid item lg={6} md={6} xs={12}>
+                <Controller
+                  fullWidth
+                  variant="outlined"
+                  label="Res Cert No."
+                  as={TextField}
+                  name="resCertNo"
+                  control={control}
+                  defaultValue=""
+                />
+              </Grid>
+              <Grid item lg={6} md={6} xs={12}>
+                <Controller
+                  fullWidth
+                  variant="outlined"
+                  label="Date Issued"
+                  as={TextField}
+                  name="dateIssued"
+                  type="date"
+                  control={control}
+                  defaultValue=""
+                />
+              </Grid>
+              <Grid item lg={12} md={12} xs={12}>
+                <Controller
+                  fullWidth
+                  variant="outlined"
+                  label="Doc Status"
+                  select
+                  as={TextField}
+                  name="docStatus"
+                  control={control}
+                  defaultValue=""
+                >
+                  {docStatuses &&
+                    docStatuses.map(option => (
+                      <MenuItem
+                        key={option.doc_status_id}
+                        value={option.doc_status_id}
+                      >
+                        {option.name}
+                      </MenuItem>
+                    ))}
+                </Controller>
+              </Grid>
+            </Grid>
+          </CardContent>
+          <Divider />
+          <Box display="flex" justifyContent="flex-end" p={2}>
+            <Button
+              color="primary"
+              variant="outlined"
+              className={classes.cancelButton}
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+            <Button color="primary" variant="contained" type="submit">
+              {postLoading || putLoading ? `Loading...` : `Confirm`}
+            </Button>
+          </Box>
+        </Card>
+      </form>
+    </>
   );
 };
 

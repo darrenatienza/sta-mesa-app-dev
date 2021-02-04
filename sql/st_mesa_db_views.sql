@@ -27,7 +27,7 @@ join `persons` on
     ( `persons`.person_id = `person_roles`.person_id ))
 join `roles` on
     ( `roles`.`role_id` = `person_roles`.`role_id` ));
-    
+/**    
 create
 or replace
 view view_health_workers as select
@@ -40,7 +40,7 @@ from
    person_roles
    
 join persons on
-   persons.person_id =person_roles.person_id where person_roles.role_id = 2 ;
+   persons.person_id =person_roles.person_id where person_roles.role_id = 2 ; */
    
 create
 or replace
@@ -49,6 +49,7 @@ view view_barangay_clearances as select
     persons.person_id,
     persons.first_name,
     persons.middle_name,
+    persons.phone_number,
     persons.last_name,
     barangay_clearances.reason,
     barangay_clearances.request_date,
@@ -75,7 +76,6 @@ view view_business_clearance as select
   	doc_statuses.name as doc_status
 from
    business_clearances
-
    join doc_statuses on
    doc_statuses.doc_status_id =business_clearances.doc_status_id;
     

@@ -71,19 +71,6 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
 
-CREATE TABLE barangay_clearances (
-	barangay_clearance_id INT NOT NULL AUTO_INCREMENT,
-	person_id INT NOT NULL,
-	reason varchar(250) not null,
-	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
-	PRIMARY KEY (barangay_clearance_id),
-	KEY barangay_clearances_persons_fk (person_id),
-  	CONSTRAINT barangay_clearances_persons_fk FOREIGN KEY (person_id) REFERENCES persons (person_id) ON DELETE cascade
-  	
-)
-ENGINE=InnoDB
-DEFAULT CHARSET=utf8
-COLLATE=utf8_general_ci;
 
 CREATE TABLE doc_statuses (
 	doc_status_id INT NOT NULL AUTO_INCREMENT,
@@ -94,6 +81,29 @@ CREATE TABLE doc_statuses (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
+
+CREATE TABLE barangay_clearances (
+	barangay_clearance_id INT NOT NULL AUTO_INCREMENT,
+	person_id INT NOT NULL,
+	doc_status_id int not null,
+	reason varchar(250) not null,
+	res_cert_no varchar(250) not null default "",
+	date_issued DATETIME DEFAULT current_timestamp() NOT NULL,
+	place_issued varchar(250) not null default "",
+	request_date DATETIME DEFAULT current_timestamp() NOT NULL,
+	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
+	PRIMARY KEY (barangay_clearance_id),
+	KEY barangay_clearances_persons_fk (person_id),
+  	CONSTRAINT barangay_clearances_persons_fk FOREIGN KEY (person_id) REFERENCES persons (person_id) ON DELETE cascade,
+  	KEY business_clearances_doc_statues_fk (doc_status_id),
+  	CONSTRAINT barangay_clearances_doc_statuses_fk FOREIGN KEY (doc_status_id) REFERENCES doc_statuses (doc_status_id) ON DELETE cascade
+  	
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;
+
+
 
 CREATE TABLE business_clearances (
 	business_clearance_id INT NOT NULL AUTO_INCREMENT,
