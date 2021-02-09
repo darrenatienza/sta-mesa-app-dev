@@ -5,6 +5,7 @@ import Results from './Results';
 import Toolbar from './Toolbar';
 import data from './data';
 import useAxios from 'axios-hooks';
+import { useCurrentUser } from '../../../../states';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -14,28 +15,29 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const IndigencyListView = () => {
+const ClientListView = () => {
   const classes = useStyles();
-  const [indigencies, setIndigencies] = useState([]);
-  const [
-    {
-      data: getIndigencyList,
-      loading: getIndigencyListLoading,
-      error: getIndigencyListError
-    },
-    refetch
-  ] = useAxios(`/records/view_indigencies`);
-  useEffect(() => {
-    getIndigencyList && setIndigencies(getIndigencyList.records);
-  }, [getIndigencyList]);
+  const [currentUser] = useCurrentUser();
+  const [{ data, loading, error }, refetch] = useAxios(
+    `/records/view_indigencies?filter=person_id,eq,${currentUser.currentPersonID}`
+  );
+  const reloadList = async () => {
+    await refetch();
+  };
   return (
     <>
-      <Toolbar />
+      <Toolbar
+        currentPersonID={currentUser.currentPersonID}
+        reloadList={reloadList}
+      />
       <Box mt={3}>
-        <Results indigencies={indigencies} />
+        <Results
+          indigencies={data ? data.records : []}
+          reloadList={reloadList}
+        />
       </Box>
     </>
   );
 };
 
-export default IndigencyListView;
+export default ClientListView;

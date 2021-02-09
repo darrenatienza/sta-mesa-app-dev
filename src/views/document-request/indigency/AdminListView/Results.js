@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import useAxios from 'axios-hooks';
 import {
   Avatar,
   Box,
@@ -20,12 +21,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Menu as MenuIcon,
-  Key as KeyIcon
-} from 'react-feather';
+import { Printer as PrintIcon, Delete as DeleteIcon } from 'react-feather';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -33,15 +29,20 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Results = ({ className, businessClearances, ...rest }) => {
+const Results = ({ className, indigencies, reloadList, ...rest }) => {
   const classes = useStyles();
-  const [
-    selectedbusinessClearancesIds,
-    setSelectedbusinessClearancesIds
-  ] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
+  const [selectedID, setSelectedID] = useState(0);
+  const [
+    { data: deleteData, loading: deleteLoading, error: deleteError },
+    executeDelete
+  ] = useAxios(
+    { url: `/records/indigencies/${selectedID}`, method: 'DELETE' },
+    {
+      manual: true
+    }
+  );
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
@@ -49,9 +50,26 @@ const Results = ({ className, businessClearances, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
   // users actions
-  const handleEdit = () => {};
-  const handleDelete = () => {};
+  const handlePrint = () => {};
+  // users actions
+  const handleDelete = id => {
+    console.log(id);
+    setSelectedID(id);
+  };
+  //performs delete
+  useEffect(() => {
+    if (selectedID > 0) {
+      const performDelete = async () => {
+        const { data: row } = await executeDelete();
+        if (row > 0) {
+          reloadList();
+        }
+      };
+      performDelete();
+    }
+  }, [selectedID]);
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
       <PerfectScrollbar>
@@ -60,57 +78,56 @@ const Results = ({ className, businessClearances, ...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
+                <TableCell>Request Date</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Business Nature</TableCell>
+                <TableCell>Age</TableCell>
+                <TableCell>Civil Status</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {businessClearances &&
-                businessClearances.slice(0, limit).map(businessClearance => (
-                  <TableRow hover key={businessClearance.barangay_clearance_id}>
+              {indigencies &&
+                indigencies.slice(0, limit).map(indigency => (
+                  <TableRow hover key={indigency.indigency_id}>
                     <TableCell padding="checkbox"></TableCell>
+                    <TableCell>{indigency.request_date}</TableCell>
                     <TableCell>
                       <Box alignItems="center" display="flex">
-                        <Avatar
-                          className={classes.avatar}
-                          src={businessClearance.avatarUrl}
-                        >
-                          {getInitials(businessClearance.name)}
+                        <Avatar className={classes.avatar}>
+                          {getInitials(indigency.first_name)}
                         </Avatar>
                         <Typography color="textPrimary" variant="body1">
-                          {`${businessClearance.name}`}
+                          {`${indigency.first_name} ${indigency.middle_name} ${indigency.last_name}`}
                         </Typography>
                       </Box>
                     </TableCell>
-                    <TableCell>{businessClearance.address}</TableCell>
-                    <TableCell>{businessClearance.business_nature}</TableCell>
+                    <TableCell>
+                      {moment().diff(indigency.birthdate, 'years')}
+                    </TableCell>
+                    <TableCell>{indigency.civil_status}</TableCell>
+
                     <TableCell>
                       <Chip
                         color="primary"
-                        label={businessClearance.doc_status}
+                        label={indigency.doc_status}
                         size="small"
                       />
                     </TableCell>
                     <TableCell>
                       <IconButton
-                        aria-label="Edit"
-                        onClick={() =>
-                          handleEdit(businessClearance.barangay_clearance_id)
-                        }
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        aria-label="Menu"
+                        onClick={() => handlePrint(indigency.indigency_id)}
                       >
-                        <EditIcon />
+                        <PrintIcon />
                       </IconButton>
-
                       <IconButton
                         aria-controls="simple-menu"
                         aria-haspopup="true"
                         aria-label="Menu"
-                        onClick={() =>
-                          handleDelete(businessClearance.barangay_clearance_id)
-                        }
+                        onClick={() => handleDelete(indigency.indigency_id)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -123,7 +140,7 @@ const Results = ({ className, businessClearances, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={businessClearances ? businessClearances.length : 0}
+        count={indigencies ? indigencies.length : 0}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
@@ -136,7 +153,7 @@ const Results = ({ className, businessClearances, ...rest }) => {
 
 Results.propTypes = {
   className: PropTypes.string,
-  businessClearances: PropTypes.array.isRequired
+  indigencies: PropTypes.array.isRequired
 };
 
 export default Results;

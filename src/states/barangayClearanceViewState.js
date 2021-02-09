@@ -6,7 +6,7 @@ export const initialState = {
   criteria: '',
   filterCriteria: '',
   filterDate: moment().format('YYYY-MM-DD'),
-  refeshList: false
+  refreshList: false
 };
 
 export const setFilterCriteria = barangayClearanceViewState => value => {
@@ -47,7 +47,7 @@ export const setShowListView = barangayClearanceViewState => value => {
 };
 export const setRefreshList = barangayClearanceViewState => value => {
   barangayClearanceViewState.setState({
-    refeshList: value
+    refreshList: value
   });
 };
 export const setCriteria = barangayClearanceViewState => value => {

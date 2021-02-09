@@ -1,7 +1,8 @@
 import React from 'react';
 import Page from 'src/components/Page';
-import { Box, Container, Grid, makeStyles } from '@material-ui/core';
-import IndigencyListView from './IndigencyListView';
+import { Container, makeStyles } from '@material-ui/core';
+import AdminListView from './AdminListView';
+import ClientListView from './ClientListView';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -18,7 +19,8 @@ const IndigencyView = () => {
   return (
     <Page className={classes.root} title="Indigency">
       <Container maxWidth={false}>
-        <IndigencyListView />
+        <AdminListView />
+        <ClientListView />
       </Container>
     </Page>
   );

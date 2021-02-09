@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
   Box,
-  Button,
   Card,
   CardContent,
   TextField,
   InputAdornment,
   SvgIcon,
+  Typography,
   makeStyles
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
@@ -23,15 +23,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ className, search, ...rest }) => {
   const classes = useStyles();
-
+  const [query, setQuery] = useState('');
+  useEffect(() => {
+    const timeOutId = setTimeout(() => search(query), 500);
+    return () => clearTimeout(timeOutId);
+  }, [query]);
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained">
-          Add Barangay Clearance Request
-        </Button>
+      <Box>
+        <Typography variant="h2" component="h4">
+          Barangay Indigency Request (Admin)
+        </Typography>
       </Box>
       <Box mt={3}>
         <Card>
@@ -39,6 +43,7 @@ const Toolbar = ({ className, ...rest }) => {
             <Box maxWidth={500}>
               <TextField
                 fullWidth
+                onChange={e => setQuery(e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">

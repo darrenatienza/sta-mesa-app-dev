@@ -73,7 +73,7 @@ const Toolbar = ({ className, ...rest }) => {
         <Card>
           <CardContent>
             <Grid container spacing={3}>
-              <Grid item lg={8} md={6} sx={12}>
+              <Grid item lg={8} md={6} xs={12}>
                 <TextField
                   fullWidth
                   name="criteria"
@@ -92,7 +92,7 @@ const Toolbar = ({ className, ...rest }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid item lg={4} md={6} sx={12}>
+              <Grid item lg={4} md={6} xs={12}>
                 <TextField
                   fullWidth
                   name="date"

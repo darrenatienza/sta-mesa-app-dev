@@ -5,7 +5,6 @@ import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useBarangayClearanceViewState } from '../../../../states';
 import {
-  Avatar,
   Box,
   Card,
   Table,
@@ -23,10 +22,9 @@ import {
   Button,
   makeStyles
 } from '@material-ui/core';
-import getInitials from 'src/utils/getInitials';
 import useAxios from 'axios-hooks';
-import ClientFormView from '../ClientFormView';
 import { Edit as EditIcon, Delete as DeleteIcon } from 'react-feather';
+
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -40,7 +38,6 @@ const Results = ({
   ...rest
 }) => {
   const classes = useStyles();
-  const [affectedRows, setAffectedRows] = useState(0);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [open, setOpen] = useState(false);
@@ -51,7 +48,7 @@ const Results = ({
   //global state
   const [
     barangayClearanceStateView,
-    { setBarangayClearanceID, setShowFormView, setShowListView }
+    { setBarangayClearanceID, setShowFormView, setShowListView, setRefreshList }
   ] = useBarangayClearanceViewState();
   // http request hooks
   const [{ data, loading, error }, refetch] = useAxios(
@@ -61,12 +58,14 @@ const Results = ({
     },
     {
       manual: true
-      //&&
-      //!barangayClearanceStateView.filterDate
     }
   );
   const [
-    { data: deleteData, loading: deleteLoading, error: deleteError },
+    {
+      //data: deleteData,
+      loading: deleteLoading,
+      error: deleteError
+    },
     executeDelete
   ] = useAxios(
     { url: `/records/barangay_clearances/${selectedID}`, method: 'DELETE' },
@@ -74,33 +73,26 @@ const Results = ({
       manual: true
     }
   );
-  // array holder for list
-  const [records, setRecords] = useState([]);
-  // occurs when data has change, set it to records hook
-  useEffect(() => {
-    if (data) {
-      setRecords(data.records);
-    }
-  }, [data]);
   //occurs when filter values change
   useEffect(() => {
-    refetch();
-  }, [barangayClearanceStateView.filterCriteria]);
-  //occurs when filter values change
+    const reloadList = async () => {
+      await refetch();
+    };
+    reloadList();
+  }, [
+    barangayClearanceStateView.filterCriteria ||
+      barangayClearanceStateView.filterDate
+  ]);
   useEffect(() => {
-    refetch();
-  }, [barangayClearanceStateView.filterDate]);
-  // after successful delete, perform refetch operation
-  useEffect(() => {
-    if (affectedRows > 0) {
-      refetch();
-      setAffectedRows(0);
-    }
-  }, [affectedRows]);
-  //perform refetch after showing the list
-  useEffect(() => {
-    barangayClearanceStateView.showListView && refetch();
-  }, [barangayClearanceStateView.showListView]);
+    const reloadList = async () => {
+      if (barangayClearanceStateView.refreshList) {
+        await refetch();
+      }
+    };
+    reloadList();
+    setRefreshList(false);
+  }, [barangayClearanceStateView.refreshList]);
+
   // misc
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -118,17 +110,14 @@ const Results = ({
   };
   //  dialog close callback
   // perform delete request if agree
-  const handleClose = async agree => {
+  const handleDialogClose = async agree => {
     if (agree) {
-      const { data: row } = await executeDelete();
-      setAffectedRows(row);
+      await executeDelete();
+      await refetch();
     }
     setOpen(false);
   };
-  // performs filter
-  useEffect(() => {
-    console.log(barangayClearanceStateView.queryFilter);
-  }, [barangayClearanceStateView.queryFilter]);
+
   return (
     <>
       <Card className={clsx(classes.root, className)} {...rest}>
@@ -147,44 +136,49 @@ const Results = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(records || []).slice(0, limit).map(record => (
-                  <TableRow hover key={record.barangay_clearance_id}>
-                    <TableCell padding="checkbox"></TableCell>
-                    <TableCell>
-                      {moment(record.request_date).format('DD/MM/YYYY')}
-                    </TableCell>
-                    <TableCell>{`${record.first_name} ${record.middle_name} ${record.last_name}`}</TableCell>
-                    <TableCell>{`${record.phone_number}`}</TableCell>
-                    <TableCell>{record.reason}</TableCell>
-                    <TableCell>{record.doc_status}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-label="Edit"
-                        onClick={() => handleEdit(record.barangay_clearance_id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
+                {loading && <p>Loading...</p>}
+                {error && <p>Error!</p>}
+                {data &&
+                  data.records.slice(0, limit).map(record => (
+                    <TableRow hover key={record.barangay_clearance_id}>
+                      <TableCell padding="checkbox"></TableCell>
+                      <TableCell>
+                        {moment(record.request_date).format('DD/MM/YYYY')}
+                      </TableCell>
+                      <TableCell>{`${record.first_name} ${record.middle_name} ${record.last_name}`}</TableCell>
+                      <TableCell>{`${record.phone_number}`}</TableCell>
+                      <TableCell>{record.reason}</TableCell>
+                      <TableCell>{record.doc_status}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          aria-label="Edit"
+                          onClick={() =>
+                            handleEdit(record.barangay_clearance_id)
+                          }
+                        >
+                          <EditIcon />
+                        </IconButton>
 
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Menu"
-                        onClick={() =>
-                          handleDelete(record.barangay_clearance_id)
-                        }
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        <IconButton
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          aria-label="Menu"
+                          onClick={() =>
+                            handleDelete(record.barangay_clearance_id)
+                          }
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </Box>
         </PerfectScrollbar>
         <TablePagination
           component="div"
-          count={(records || []).length}
+          count={data ? data.records.length : 0}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleLimitChange}
           page={page}
@@ -195,7 +189,7 @@ const Results = ({
 
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={handleDialogClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -208,11 +202,19 @@ const Results = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleClose(false)} color="primary">
+          <Button onClick={() => handleDialogClose(false)} color="primary">
             Disagree
           </Button>
-          <Button onClick={() => handleClose(true)} color="primary" autoFocus>
-            Agree
+          <Button
+            onClick={() => handleDialogClose(true)}
+            color="primary"
+            autoFocus
+          >
+            {deleteLoading
+              ? 'Please Wait ...'
+              : deleteError
+              ? 'Error while deleting record'
+              : 'Agree'}
           </Button>
         </DialogActions>
       </Dialog>

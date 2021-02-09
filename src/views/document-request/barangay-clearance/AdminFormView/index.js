@@ -35,13 +35,13 @@ const useStyles = makeStyles(() => ({
 const AdminFormView = ({ className, ...rest }) => {
   const classes = useStyles();
   // row states
-  const [affecteRows, setAffectedRows] = useState(0);
+  const [affectedRows, setAffectedRows] = useState(0);
 
   const [docStats, setDocStats] = useState([]);
   //global state
   const [
     barangayClearanceStateView,
-    { setShowFormView, setShowListView }
+    { setShowFormView, setShowListView, setRefreshList }
   ] = useBarangayClearanceViewState();
 
   // react hook form manager
@@ -122,12 +122,16 @@ const AdminFormView = ({ className, ...rest }) => {
       setValue('docStatus', data.doc_status_id);
     }
   }, [data]);
+
   // occurs when affected rows changes
   useEffect(() => {
-    setShowFormView(false);
-    setShowListView(true);
-    setAffectedRows(0);
-  }, [affecteRows]);
+    if (affectedRows > 0) {
+      setShowFormView(false);
+      setShowListView(true);
+      setRefreshList(true);
+      setAffectedRows(0);
+    }
+  }, [affectedRows]);
 
   // submit form callback
   const onSubmit = async data => {
