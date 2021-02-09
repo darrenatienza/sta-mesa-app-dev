@@ -5,10 +5,7 @@ import Results from './Results';
 import Toolbar from './Toolbar';
 import data from './data';
 import useAxios from 'axios-hooks';
-import {
-  useBarangayClearanceViewState,
-  useCurrentUser
-} from '../../../../states';
+
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -20,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 
 const AdminListView = () => {
   const classes = useStyles();
-  const [currentUser] = useCurrentUser();
+
   const [criteria, setCriteria] = useState('');
   const [{ data, loading, error }, refetch] = useAxios(
     {

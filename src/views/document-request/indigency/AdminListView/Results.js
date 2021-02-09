@@ -8,7 +8,6 @@ import {
   Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -53,9 +52,7 @@ const Results = ({ className, indigencies, reloadList, ...rest }) => {
 
   // users actions
   const handlePrint = () => {};
-  // users actions
   const handleDelete = id => {
-    console.log(id);
     setSelectedID(id);
   };
   //performs delete

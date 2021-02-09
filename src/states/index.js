@@ -10,6 +10,7 @@ import * as officialViewState from './officialViewState';
 import * as healthWorkerViewState from './healthWorkerViewState';
 import * as barangayClearanceViewState from './barangayClearanceViewState';
 import * as currentUser from './currentUser';
+import * as businessClearanceViewState from './businessClearanceViewState';
 
 export const usePersonView = makeEntity(personView);
 export const useOfficial = makeEntity(official);
@@ -26,3 +27,7 @@ export const useBarangayClearanceViewState = makeEntity(
   barangayClearanceViewState
 );
 export const useCurrentUser = makeEntity(currentUser);
+
+export const useBusinessClearanceViewState = makeEntity(
+  businessClearanceViewState
+);

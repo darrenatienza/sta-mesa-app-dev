@@ -1,7 +1,8 @@
 import React from 'react';
 import Page from 'src/components/Page';
 import { Box, Container, Grid, makeStyles } from '@material-ui/core';
-import BusinessClearanceListView from './BarangayClearanceListView';
+import BusinessClearanceListView from './BusinessClearanceListView';
+import BusinessClearanceFormView from './BusinessClearanceFormView';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -19,6 +20,7 @@ const BusinessClearanceView = () => {
     <Page className={classes.root} title="Barangay Clearance">
       <Container maxWidth={false}>
         <BusinessClearanceListView />
+        <BusinessClearanceFormView />
       </Container>
     </Page>
   );

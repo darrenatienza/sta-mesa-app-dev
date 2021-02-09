@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import useAxios from 'axios-hooks';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -20,12 +19,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Menu as MenuIcon,
-  Key as KeyIcon
-} from 'react-feather';
+import { Edit as EditIcon, Delete as DeleteIcon } from 'react-feather';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -33,12 +27,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Results = ({ className, businessClearances, ...rest }) => {
+const Results = ({
+  className,
+  businessClearances,
+  reloadList,
+  onEdit,
+  onDelete,
+  ...rest
+}) => {
   const classes = useStyles();
-  const [
-    selectedbusinessClearancesIds,
-    setSelectedbusinessClearancesIds
-  ] = useState([]);
+
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
@@ -49,9 +47,16 @@ const Results = ({ className, businessClearances, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
   // users actions
-  const handleEdit = () => {};
-  const handleDelete = () => {};
+  const handlePrint = () => {};
+  const handleDelete = id => {
+    onDelete(id);
+  };
+
+  const handleEdit = id => {
+    onEdit(id);
+  };
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
       <PerfectScrollbar>
@@ -60,9 +65,9 @@ const Results = ({ className, businessClearances, ...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Business Nature</TableCell>
+                <TableCell>Business Name</TableCell>
+                <TableCell>Business Address</TableCell>
+                <TableCell>Business Engagement</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
@@ -70,7 +75,7 @@ const Results = ({ className, businessClearances, ...rest }) => {
             <TableBody>
               {businessClearances &&
                 businessClearances.slice(0, limit).map(businessClearance => (
-                  <TableRow hover key={businessClearance.barangay_clearance_id}>
+                  <TableRow hover key={businessClearance.business_clearance_id}>
                     <TableCell padding="checkbox"></TableCell>
                     <TableCell>
                       <Box alignItems="center" display="flex">
@@ -98,7 +103,7 @@ const Results = ({ className, businessClearances, ...rest }) => {
                       <IconButton
                         aria-label="Edit"
                         onClick={() =>
-                          handleEdit(businessClearance.barangay_clearance_id)
+                          handleEdit(businessClearance.business_clearance_id)
                         }
                       >
                         <EditIcon />
@@ -109,7 +114,7 @@ const Results = ({ className, businessClearances, ...rest }) => {
                         aria-haspopup="true"
                         aria-label="Menu"
                         onClick={() =>
-                          handleDelete(businessClearance.barangay_clearance_id)
+                          handleDelete(businessClearance.business_clearance_id)
                         }
                       >
                         <DeleteIcon />
