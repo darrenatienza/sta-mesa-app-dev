@@ -46,9 +46,7 @@ const FormView = forwardRef(
     // occurs when data change after fetching data
     useEffect(() => {
       if (data) {
-        setValue('personRelatedWith', data.person_related_with);
-        setValue('relationship', data.relationship);
-        setValue('reason', data.reason);
+        setValue('residingSpan', data.residing_span);
       }
     }, [data]);
     useEffect(() => {
@@ -57,9 +55,7 @@ const FormView = forwardRef(
     }, [reset]);
     useImperativeHandle(ref, () => ({
       resetFields() {
-        setValue('personRelatedWith', '');
-        setValue('relationship', '');
-        setValue('reason', '');
+        setValue('residingSpan', '');
       }
     }));
     return (
@@ -82,39 +78,13 @@ const FormView = forwardRef(
                 <Controller
                   fullWidth
                   variant="outlined"
-                  label="Person related with"
+                  label="Residing Span"
                   as={TextField}
-                  name="personRelatedWith"
+                  name="residingSpan"
                   control={control}
                   rules={{ required: true }}
                   defaultValue=""
-                  error={errors.personRelatedWith && true}
-                />
-              </Grid>
-              <Grid item lg={4} md={6} xs={12}>
-                <Controller
-                  fullWidth
-                  variant="outlined"
-                  label="Relationship"
-                  as={TextField}
-                  name="relationship"
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: true }}
-                  error={errors.relationship && true}
-                />
-              </Grid>
-              <Grid item lg={12} md={12} xs={12}>
-                <Controller
-                  fullWidth
-                  variant="outlined"
-                  label="Reason of request"
-                  as={TextField}
-                  name="reason"
-                  control={control}
-                  rules={{ required: true }}
-                  defaultValue=""
-                  error={errors.reason && true}
+                  error={errors.residingSpan && true}
                 />
               </Grid>
             </Grid>

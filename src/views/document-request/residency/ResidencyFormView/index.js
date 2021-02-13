@@ -4,10 +4,7 @@ import clsx from 'clsx';
 import _ from 'lodash/fp';
 import PropTypes from 'prop-types';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  useBarangayClearanceViewState,
-  useRelationship
-} from '../../../../states';
+import { useResidency } from '../../../../states';
 import FormView from './FormView';
 import moment from 'moment';
 import {
@@ -36,25 +33,20 @@ const useStyles = makeStyles(() => ({
     marginTop: '10px'
   }
 }));
-const RelationshipFormView = ({ className, ...rest }) => {
+const ResidencyFormView = ({ className, ...rest }) => {
   const classes = useStyles();
   const formRef = useRef();
   const [reset, setReset] = useState(false);
   //global state
   const [
-    relationship,
-    {
-      setSelectedRelationshipID,
-      setShowFormView,
-      setShowListView,
-      setRefreshList
-    }
-  ] = useRelationship();
+    residency,
+    { setSelectedResidencyID, setShowFormView, setShowListView, setRefreshList }
+  ] = useResidency();
 
   // http request hooks
   const [{ data, loading, error }, refetch] = useAxios(
     {
-      url: `/records/relationships/${relationship.selectedRelationshipID}`,
+      url: `/records/residencies/${residency.selectedResidencyID}`,
       method: 'GET'
     },
     {
@@ -66,7 +58,7 @@ const RelationshipFormView = ({ className, ...rest }) => {
     { data: postData, loading: postLoading, error: postError },
     executePost
   ] = useAxios(
-    { url: `/records/relationships`, method: 'POST' },
+    { url: `/records/residencies`, method: 'POST' },
     {
       manual: true
     }
@@ -76,7 +68,7 @@ const RelationshipFormView = ({ className, ...rest }) => {
     executePut
   ] = useAxios(
     {
-      url: `/records/relationships/${relationship.selectedRelationshipID}`,
+      url: `/records/residencies/${residency.selectedResidencyID}`,
       method: 'PUT'
     },
     {
@@ -85,22 +77,20 @@ const RelationshipFormView = ({ className, ...rest }) => {
   );
   // occurs when form view changes
   useEffect(() => {
-    if (relationship.selectedRelationshipID > 0) {
+    if (residency.selectedResidencyID > 0) {
       refetch();
     } else {
       formRef.current.resetFields();
     }
-  }, [relationship.selectedRelationshipID]);
+  }, [residency.selectedResidencyID]);
 
   // submit form callback
   const onSubmit = async data => {
     // submit
-    if (relationship.selectedRelationshipID > 0) {
+    if (residency.selectedResidencyID > 0) {
       const { data: row } = await executePut({
         data: {
-          person_related_with: data.personRelatedWith,
-          relationship: data.relationship,
-          reason: data.reason
+          residing_span: data.residingSpan
         }
       });
     } else {
@@ -108,13 +98,11 @@ const RelationshipFormView = ({ className, ...rest }) => {
         data: {
           person_id: 1,
           doc_status_id: 1,
-          person_related_with: data.personRelatedWith,
-          relationship: data.relationship,
-          reason: data.reason
+          residing_span: data.residingSpan
         }
       });
     }
-    setSelectedRelationshipID(0);
+    setSelectedResidencyID(0);
     formRef.current.resetFields();
     setRefreshList(true);
     setRefreshList(false);
@@ -126,7 +114,7 @@ const RelationshipFormView = ({ className, ...rest }) => {
     setShowListView(true);
     setRefreshList(true);
     setRefreshList(false);
-    setSelectedRelationshipID(0);
+    setSelectedResidencyID(0);
     formRef.current.resetFields();
   };
 
@@ -135,4 +123,4 @@ const RelationshipFormView = ({ className, ...rest }) => {
   );
 };
 
-export default RelationshipFormView;
+export default ResidencyFormView;

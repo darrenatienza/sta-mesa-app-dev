@@ -4,7 +4,7 @@ import Page from 'src/components/Page';
 import Results from './Results';
 import AdminResults from './AdminResults';
 import Toolbar from './Toolbar';
-import { useRelationship } from '../../../../states';
+import { useResidency } from '../../../../states';
 import useAxios from 'axios-hooks';
 import DocumentStatusDialog from '../../../shared/DocumentStatusDialog';
 import moment from 'moment';
@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const RelationshipListView = () => {
+const ResidencyListView = () => {
   const classes = useStyles();
   const [selecteIDToDelete, setSelectedIDToDelete] = useState(0);
   const [
@@ -29,12 +29,12 @@ const RelationshipListView = () => {
   );
   const [criteria, setCriteria] = useState('');
   const [
-    relationship,
-    { setSelectedRelationshipID, setShowFormView, setShowListView }
-  ] = useRelationship();
+    residency,
+    { setSelectedResidencyID, setShowFormView, setShowListView }
+  ] = useResidency();
   const [{ data, loading, error }, refetch] = useAxios(
     {
-      url: `/records/view_relationships?filter1=first_name,cs,${criteria}`,
+      url: `/records/view_residencies?filter1=first_name,cs,${criteria}`,
       method: 'GET'
     },
     { manual: true }
@@ -43,7 +43,7 @@ const RelationshipListView = () => {
     { data: deleteData, loading: deleteLoading, error: deleteError },
     executeDelete
   ] = useAxios(
-    { url: `/records/relationships/${selecteIDToDelete}`, method: 'DELETE' },
+    { url: `/records/residencies/${selecteIDToDelete}`, method: 'DELETE' },
     { manual: true }
   );
   const [
@@ -55,7 +55,7 @@ const RelationshipListView = () => {
     executePutDocStatus
   ] = useAxios(
     {
-      url: `/records/relationships/${selecteIDToUpdateDocumentStatus}`,
+      url: `/records/residencies/${selecteIDToUpdateDocumentStatus}`,
       method: 'PUT'
     },
     { manual: true }
@@ -73,14 +73,15 @@ const RelationshipListView = () => {
     refetch();
   }, [criteria]);
   useEffect(() => {
-    relationship.refreshList && refetch();
-  }, [relationship.refreshList]);
+    residency.refreshList && refetch();
+  }, [residency.refreshList]);
   //callback functions
   const onAdd = () => {
-    setSelectedRelationshipID(-1);
+    setSelectedResidencyID(-1);
   };
   const onEdit = id => {
-    setSelectedRelationshipID(id);
+    console.log(id);
+    setSelectedResidencyID(id);
   };
   const onDelete = id => {
     setSelectedIDToDelete(id);
@@ -95,7 +96,7 @@ const RelationshipListView = () => {
     await executePutDocStatus({
       data: {
         doc_status_id: id,
-        date_issued: moment().format('YYYY-MM-DD')
+        update_time_stamp: moment().format('YYYY-MM-DD')
       }
     });
     await refetch();
@@ -113,13 +114,13 @@ const RelationshipListView = () => {
         <Results
           onEdit={onEdit}
           onDelete={onDelete}
-          relationships={data ? data.records : []}
+          residencies={data ? data.records : []}
         />
         <AdminResults
           onEdit={onEdit}
           onDelete={onDelete}
           onUpdateDocumentStatus={onUpdateDocumentStatus}
-          relationships={data ? data.records : []}
+          residencies={data ? data.records : []}
         />
         <DocumentStatusDialog
           open={documentStatusDialogOpen}
@@ -131,4 +132,4 @@ const RelationshipListView = () => {
   );
 };
 
-export default RelationshipListView;
+export default ResidencyListView;

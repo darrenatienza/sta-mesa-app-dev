@@ -24,6 +24,7 @@ import BlotterView from './views/document-request/blotter';
 import BusinessClearanceView from './views/document-request/business-clearance';
 import IndigencyView from './views/document-request/indigency';
 import RelationshipView from './views/document-request/relationship';
+import ResidencyView from './views/document-request/residency';
 const routes = [
   {
     path: 'app',
@@ -65,6 +66,11 @@ const routes = [
       { path: 'settings', element: <SettingsView /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
+  },
+  {
+    path: 'app/document-requests',
+    element: <DashboardLayout />,
+    children: [{ path: 'residency', element: <ResidencyView /> }]
   },
   {
     path: '/',

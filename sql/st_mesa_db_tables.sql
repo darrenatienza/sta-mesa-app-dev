@@ -161,3 +161,21 @@ CREATE TABLE relationships (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
+
+
+CREATE TABLE residencies (
+	residency_id INT NOT NULL AUTO_INCREMENT,
+	person_id INT NOT NULL,
+	doc_status_id int not null,
+	residing_span VARCHAR(100) NOT NULL,
+	update_time_stamp datetime DEFAULT current_timestamp() NOT NULL,
+	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
+	PRIMARY KEY (residency_id),
+	KEY residencies_persons_fk (person_id),
+  	CONSTRAINT residencies_persons_fk FOREIGN KEY (person_id) REFERENCES persons (person_id) ON DELETE cascade,
+  	KEY residencies_doc_statues_fk (doc_status_id),
+  	CONSTRAINT residencies_doc_statuses_fk FOREIGN KEY (doc_status_id) REFERENCES doc_statuses (doc_status_id) ON DELETE cascade
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;

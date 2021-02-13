@@ -116,3 +116,20 @@ from
    join persons on persons.person_id = relationships.person_id
    join doc_statuses on
    doc_statuses.doc_status_id =relationships.doc_status_id;
+  
+  create or replace view view_residencies as select 
+   residencies.residency_id,
+   persons.person_id,
+   persons.first_name,
+   persons.middle_name,
+   persons.last_name,
+   persons.birthdate,
+   persons.civil_status,
+   residencies.residing_span,
+   doc_statuses.name doc_status,
+   residencies.create_time_stamp,
+   residencies.update_time_stamp 
+   from residencies 
+   join persons on persons.person_id = residencies.person_id
+   join doc_statuses on
+   doc_statuses.doc_status_id =residencies.doc_status_id;

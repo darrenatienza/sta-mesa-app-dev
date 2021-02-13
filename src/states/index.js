@@ -12,7 +12,9 @@ import * as barangayClearanceViewState from './barangayClearanceViewState';
 import * as currentUser from './currentUser';
 import * as businessClearanceViewState from './businessClearanceViewState';
 import * as relationship from './relationship';
+import * as residency from './residency';
 
+export const useResidency = makeEntity(residency);
 export const useRelationship = makeEntity(relationship);
 export const usePersonView = makeEntity(personView);
 export const useOfficial = makeEntity(official);

@@ -38,8 +38,7 @@ const Results = ({
   onEdit,
   onDelete,
   onUpdateDocumentStatus,
-  relationships,
-
+  residencies,
   ...rest
 }) => {
   const classes = useStyles();
@@ -65,38 +64,39 @@ const Results = ({
                 <TableCell>Name</TableCell>
                 <TableCell>Age</TableCell>
                 <TableCell>Civil Status</TableCell>
-                <TableCell>Reason</TableCell>
+                <TableCell>Residing Span</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {relationships.slice(0, limit).map(relationship => (
-                <TableRow hover key={relationship.relationship_id}>
+              {residencies.slice(0, limit).map(residency => (
+                <TableRow hover key={residency.residency_id}>
                   <TableCell padding="checkbox"></TableCell>
-                  <TableCell>{relationship.request_date}</TableCell>
+                  <TableCell>{residency.request_date}</TableCell>
                   <TableCell>
                     <Box alignItems="center" display="flex">
                       <Avatar className={classes.avatar}>
-                        {getInitials(relationship.first_name)}
+                        {getInitials(residency.first_name)}
                       </Avatar>
                       <Typography color="textPrimary" variant="body1">
-                        {`${relationship.first_name} ${relationship.middle_name} ${relationship.last_name}`}
+                        {`${residency.first_name} ${residency.middle_name} ${residency.last_name}`}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {moment().diff(relationship.birthdate, 'years')}
+                    {moment().diff(residency.birthdate, 'years')}
                   </TableCell>
-                  <TableCell>{relationship.civil_status}</TableCell>
-                  <TableCell>{relationship.reason}</TableCell>
+                  <TableCell>{residency.civil_status}</TableCell>
+                  <TableCell>{residency.residing_span}</TableCell>
+
                   <TableCell>
                     <Chip
                       color="primary"
-                      label={relationship.doc_status}
+                      label={residency.doc_status}
                       size="small"
                       onClick={() =>
-                        onUpdateDocumentStatus(relationship.relationship_id)
+                        onUpdateDocumentStatus(residency.residency_id)
                       }
                     />
                   </TableCell>
@@ -105,7 +105,7 @@ const Results = ({
                       aria-controls="simple-menu"
                       aria-haspopup="true"
                       aria-label="Menu"
-                      onClick={() => onDelete(relationship.relationship_id)}
+                      onClick={() => onDelete(residency.residency_id)}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -118,7 +118,7 @@ const Results = ({
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={relationships.length}
+        count={residencies.length}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
@@ -131,7 +131,7 @@ const Results = ({
 
 Results.propTypes = {
   className: PropTypes.string,
-  relationships: PropTypes.array.isRequired
+  residencies: PropTypes.array.isRequired
 };
 
 export default Results;
