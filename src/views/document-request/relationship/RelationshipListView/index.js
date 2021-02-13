@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Box, Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
+import AdminResults from './AdminResults';
 import Toolbar from './Toolbar';
-import data from './data';
+import { useRelationship } from '../../../../states';
 import useAxios from 'axios-hooks';
+import DocumentStatusDialog from '../../../shared/DocumentStatusDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -16,23 +18,92 @@ const useStyles = makeStyles(theme => ({
 
 const RelationshipListView = () => {
   const classes = useStyles();
-  const [relationships, setRelationships] = useState([]);
+  const [selecteIDToDelete, setSelectedIDToDelete] = useState(0);
   const [
+    selecteIDToUpdateDocumentStatus,
+    setSelecteIDToUpdateDocumentStatus
+  ] = useState(0);
+  const [documentStatusDialogOpen, setDocumentStatusDialogOpen] = useState(
+    false
+  );
+  const [criteria, setCriteria] = useState('');
+  const [
+    relationship,
+    { setSelectedRelationshipID, setShowFormView, setShowListView }
+  ] = useRelationship();
+  const [{ data, loading, error }, refetch] = useAxios(
     {
-      data: getRelationshipList,
-      loading: getRelationshipListLoading,
-      error: getRelationshipListError
+      url: `/records/view_relationships?filter1=first_name,cs,${criteria}`,
+      method: 'GET'
     },
-    refetch
-  ] = useAxios(`/records/view_relationships`);
+    { manual: true }
+  );
+  const [
+    { data: deleteData, loading: deleteLoading, error: deleteError },
+    executeDelete
+  ] = useAxios(
+    { url: `/records/relationships/${selecteIDToDelete}`, method: 'DELETE' },
+    { manual: true }
+  );
   useEffect(() => {
-    getRelationshipList && setRelationships(getRelationshipList.records);
-  }, [getRelationshipList]);
+    if (selecteIDToDelete > 0) {
+      const performDelete = async () => {
+        await executeDelete();
+        await refetch();
+      };
+      performDelete();
+    }
+  }, [selecteIDToDelete]);
+  useEffect(() => {
+    refetch();
+  }, [criteria]);
+  useEffect(() => {
+    relationship.refreshList && refetch();
+  }, [relationship.refreshList]);
+  //callback functions
+  const onAdd = () => {
+    setSelectedRelationshipID(-1);
+  };
+  const onEdit = id => {
+    setSelectedRelationshipID(id);
+  };
+  const onDelete = id => {
+    setSelectedIDToDelete(id);
+  };
+  const onSearch = criteria => {
+    setCriteria(criteria);
+  };
+  const onCloseDocumentStatusDialog = () => {
+    setDocumentStatusDialogOpen(false);
+  };
+  const onConfirmDocumentStatusDialog = id => {
+    setDocumentStatusDialogOpen(false);
+  };
+  const onUpdateDocumentStatus = id => {
+    setSelecteIDToUpdateDocumentStatus(id);
+    setDocumentStatusDialogOpen(true);
+  };
+  //jsx
   return (
     <>
-      <Toolbar />
+      <Toolbar onSearch={onSearch} onAdd={onAdd} />
       <Box mt={3}>
-        <Results relationships={relationships} />
+        <Results
+          onEdit={onEdit}
+          onDelete={onDelete}
+          relationships={data ? data.records : []}
+        />
+        <AdminResults
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onUpdateDocumentStatus={onUpdateDocumentStatus}
+          relationships={data ? data.records : []}
+        />
+        <DocumentStatusDialog
+          open={documentStatusDialogOpen}
+          onClose={onCloseDocumentStatusDialog}
+          onConfirm={onConfirmDocumentStatusDialog}
+        />
       </Box>
     </>
   );

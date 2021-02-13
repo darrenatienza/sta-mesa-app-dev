@@ -33,7 +33,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Results = ({ className, onEdit, onDelete, relationships, ...rest }) => {
+const Results = ({
+  className,
+  onEdit,
+  onDelete,
+  onUpdateDocumentStatus,
+  relationships,
+
+  ...rest
+}) => {
   const classes = useStyles();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -54,8 +62,9 @@ const Results = ({ className, onEdit, onDelete, relationships, ...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
                 <TableCell>Request Date</TableCell>
-                <TableCell>Person Related with</TableCell>
-                <TableCell>Relationship</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Age</TableCell>
+                <TableCell>Civil Status</TableCell>
                 <TableCell>Reason</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
@@ -66,14 +75,29 @@ const Results = ({ className, onEdit, onDelete, relationships, ...rest }) => {
                 <TableRow hover key={relationship.relationship_id}>
                   <TableCell padding="checkbox"></TableCell>
                   <TableCell>{relationship.request_date}</TableCell>
-                  <TableCell>{relationship.person_related_with}</TableCell>
-                  <TableCell>{relationship.relationship}</TableCell>
+                  <TableCell>
+                    <Box alignItems="center" display="flex">
+                      <Avatar className={classes.avatar}>
+                        {getInitials(relationship.first_name)}
+                      </Avatar>
+                      <Typography color="textPrimary" variant="body1">
+                        {`${relationship.first_name} ${relationship.middle_name} ${relationship.last_name}`}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    {moment().diff(relationship.birthdate, 'years')}
+                  </TableCell>
+                  <TableCell>{relationship.civil_status}</TableCell>
                   <TableCell>{relationship.reason}</TableCell>
                   <TableCell>
                     <Chip
                       color="primary"
                       label={relationship.doc_status}
                       size="small"
+                      onClick={() =>
+                        onUpdateDocumentStatus(relationship.relationship_id)
+                      }
                     />
                   </TableCell>
                   <TableCell>

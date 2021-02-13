@@ -2,6 +2,7 @@ import React from 'react';
 import Page from 'src/components/Page';
 import { Box, Container, Grid, makeStyles } from '@material-ui/core';
 import RelationshipListView from './RelationshipListView';
+import RelationshipFormView from './RelationshipFormView';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -19,6 +20,7 @@ const RelationshipView = () => {
     <Page className={classes.root} title="Relationship">
       <Container maxWidth={false}>
         <RelationshipListView />
+        <RelationshipFormView />
       </Container>
     </Page>
   );

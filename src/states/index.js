@@ -11,7 +11,9 @@ import * as healthWorkerViewState from './healthWorkerViewState';
 import * as barangayClearanceViewState from './barangayClearanceViewState';
 import * as currentUser from './currentUser';
 import * as businessClearanceViewState from './businessClearanceViewState';
+import * as relationship from './relationship';
 
+export const useRelationship = makeEntity(relationship);
 export const usePersonView = makeEntity(personView);
 export const useOfficial = makeEntity(official);
 export const useResidentSearch = makeEntity(residentSearch);
