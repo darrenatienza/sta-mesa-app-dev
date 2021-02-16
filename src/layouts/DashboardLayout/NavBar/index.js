@@ -22,7 +22,7 @@ import {
   UserPlus as UserPlusIcon,
   Users as UsersIcon
 } from 'react-feather';
-import { BiCapsule as CapsuleIcon } from 'react-icons/bi';
+
 import NavItem from './NavItem';
 
 const user = {
