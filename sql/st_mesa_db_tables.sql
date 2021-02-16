@@ -195,3 +195,15 @@ CREATE TABLE time_schedules (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
+
+CREATE TABLE medicines (
+	medecine_id INT NOT NULL AUTO_INCREMENT,
+	name VARCHAR(250) NOT NULL,
+	description VARCHAR(250) not null,
+	quantity int not null,
+	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
+	PRIMARY KEY (medecine_id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;

@@ -25,7 +25,7 @@ import {
   Calendar as CalendarIcon
 } from 'react-feather';
 import NavItem from './NavItem';
-
+import { BiCapsule as CapsuleIcon } from 'react-icons/bi';
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
   jobTitle: '',
@@ -42,6 +42,11 @@ const items = [
     href: '/app/account',
     icon: UserIcon,
     title: 'Account'
+  },
+  {
+    href: '/app/medicines',
+    icon: CapsuleIcon,
+    title: 'Medicines'
   },
   {
     href: '/app/residents',

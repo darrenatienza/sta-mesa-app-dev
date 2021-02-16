@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(3)
   }
 }));
-const TimeScheduleView = () => {
+const MedicineView = () => {
   const classes = useStyles();
   const [currentID, setCurrentID] = useState(0);
 
@@ -74,13 +74,7 @@ const TimeScheduleView = () => {
       manual: true
     }
   );
-
   useEffect(() => {
-    //listData && console.log(listData);
-  }, [listData]);
-
-  useEffect(() => {
-    //console.log(dateSearch);
     refetchList();
   }, [dateSearch.dateFrom, dateSearch.dateTo]);
   useEffect(() => {
@@ -115,7 +109,7 @@ const TimeScheduleView = () => {
     await refetch();
   };
   return (
-    <Page className={classes.root} title="Time Schedules">
+    <Page className={classes.root} title="Medicines">
       <Details
         details={data && data.records[0]}
         onTimeIn={onTimeIn}
@@ -127,4 +121,4 @@ const TimeScheduleView = () => {
   );
 };
 
-export default TimeScheduleView;
+export default MedicineView;

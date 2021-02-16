@@ -26,6 +26,7 @@ import IndigencyView from './views/document-request/indigency';
 import RelationshipView from './views/document-request/relationship';
 import ResidencyView from './views/document-request/residency';
 import TimeScheduleView from './views/time-schedule';
+import MedicineView from './views/medecine';
 const routes = [
   {
     path: 'app',
@@ -40,6 +41,7 @@ const routes = [
       { path: 'health-workers', element: <HealthWorkerListView /> },
       { path: 'dashboard', element: <DashboardView /> },
       { path: 'time-schedule', element: <TimeScheduleView /> },
+      { path: 'medicines', element: <MedicineView /> },
       {
         path: 'document-requests',
         element: <DocumentRequestView />
