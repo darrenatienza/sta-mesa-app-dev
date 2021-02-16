@@ -21,7 +21,8 @@ import {
   User as UserIcon,
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
-  File as FileIcon
+  File as FileIcon,
+  Calendar as CalendarIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -51,6 +52,11 @@ const items = [
     href: '/app/officials',
     icon: UsersIcon,
     title: 'Brgy Officials'
+  },
+  {
+    href: '/app/time-schedule',
+    icon: CalendarIcon,
+    title: 'Time Schedule'
   },
   {
     href: '/app/health-workers',

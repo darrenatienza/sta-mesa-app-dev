@@ -10,9 +10,8 @@ import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
 import { useOfficialViewState } from '../../../states';
-import data from './data';
 import useAxios from 'axios-hooks';
-import { get } from 'lodash';
+
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,

@@ -25,6 +25,7 @@ import BusinessClearanceView from './views/document-request/business-clearance';
 import IndigencyView from './views/document-request/indigency';
 import RelationshipView from './views/document-request/relationship';
 import ResidencyView from './views/document-request/residency';
+import TimeScheduleView from './views/time-schedule';
 const routes = [
   {
     path: 'app',
@@ -38,6 +39,7 @@ const routes = [
       { path: 'resident-form', element: <ResidentFormView /> },
       { path: 'health-workers', element: <HealthWorkerListView /> },
       { path: 'dashboard', element: <DashboardView /> },
+      { path: 'time-schedule', element: <TimeScheduleView /> },
       {
         path: 'document-requests',
         element: <DocumentRequestView />

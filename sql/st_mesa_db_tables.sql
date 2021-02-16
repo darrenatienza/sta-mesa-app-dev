@@ -179,3 +179,19 @@ CREATE TABLE residencies (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
+
+CREATE TABLE time_schedules (
+	time_schedule_id INT NOT NULL AUTO_INCREMENT,
+	person_id INT NOT NULL,
+	log_date DATETIME DEFAULT date(current_timestamp()) NOT NULL,
+	time_in datetime default current_timestamp() not null,
+	time_out datetime default current_timestamp() not null,
+	has_time_out boolean default false,
+	create_time_stamp DATETIME DEFAULT current_timestamp() NOT NULL,
+	PRIMARY KEY (time_schedule_id),
+	KEY residencies_persons_fk (person_id),
+  	CONSTRAINT time_schedules_fk FOREIGN KEY (person_id) REFERENCES persons (person_id) ON DELETE cascade
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;
