@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import moment from 'moment';
 import {
   Box,
   Button,
@@ -11,75 +10,61 @@ import {
   InputAdornment,
   SvgIcon,
   makeStyles,
-  Typography
+  Typography,
+  Grid
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    paddingTop: theme.spacing(3),
-    paddingRight: theme.spacing(3),
-    paddingLeft: theme.spacing(3)
-  },
-  timeFromTextField: {
-    paddingRight: theme.spacing(1),
-    paddingLeft: theme.spacing(1)
-  },
-  timeToTextField: {
-    paddingRight: theme.spacing(1),
-    paddingLeft: theme.spacing(1)
-  }
+  root: {}
 }));
-const Toolbar = ({ className, onSearch, ...rest }) => {
-  const classes = useStyles();
-  const [timeFrom, setTimeFrom] = useState(moment().format('YYYY-MM-DD'));
-  const [timeTo, setTimeTo] = useState(
-    moment()
-      .add(1, 'day')
-      .format('YYYY-MM-DD')
-  );
 
-  useEffect(() => {
-    const timeOutId = setTimeout(() => onSearch(timeFrom, timeTo), 500);
-    return () => clearTimeout(timeOutId);
-  }, [timeTo, timeFrom]);
+const Toolbar = ({ className, ...rest }) => {
+  const classes = useStyles();
+
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Box display="flex" justifyContent="flex-end">
-        <TextField
-          className={classes.timeFromTextField}
-          onChange={e => setTimeFrom(e.target.value)}
-          variant="outlined"
-          type="date"
-          color="primary"
-          defaultValue={moment().format('YYYY-MM-DD')}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Typography variant="body1">From</Typography>
-              </InputAdornment>
-            )
-          }}
-        />
+      <Grid container justify="space-between" alignItems="center">
+        <Grid item lg={6} md={6} xs={12}>
+          <Typography variant="h1">Medicine Records</Typography>
+        </Grid>
+        <Grid item lg={6} md={6} xs={12}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button color="primary" variant="contained">
+              Add new Medicine
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
 
-        <TextField
-          className={classes.timeToTextField}
-          onChange={e => setTimeTo(e.target.value)}
-          variant="outlined"
-          type="date"
-          color="primary"
-          defaultValue={moment().format('YYYY-MM-DD')}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Typography variant="body1">To</Typography>
-              </InputAdornment>
-            )
-          }}
-        />
+      <Box mt={3}>
+        <Card>
+          <CardContent>
+            <Box maxWidth={500}>
+              <TextField
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SvgIcon fontSize="small" color="action">
+                        <SearchIcon />
+                      </SvgIcon>
+                    </InputAdornment>
+                  )
+                }}
+                placeholder="Search Medicines"
+                variant="outlined"
+              />
+            </Box>
+          </CardContent>
+        </Card>
       </Box>
     </div>
   );
+};
+
+Toolbar.propTypes = {
+  className: PropTypes.string
 };
 
 export default Toolbar;

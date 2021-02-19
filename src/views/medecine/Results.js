@@ -1,76 +1,103 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
 import moment from 'moment';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
+  Avatar,
   Box,
-  Button,
   Card,
-  CardContent,
-  TextField,
-  InputAdornment,
-  Divider,
-  SvgIcon,
-  makeStyles,
-  CardHeader,
-  Typography,
+  Checkbox,
   Table,
-  TableHead,
-  TableRow,
+  TableBody,
   TableCell,
-  TableBody
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
+  makeStyles
 } from '@material-ui/core';
+import getInitials from 'src/utils/getInitials';
+
 const useStyles = makeStyles(theme => ({
-  root: {
-    paddingTop: theme.spacing(3),
-    paddingRight: theme.spacing(3),
-    paddingLeft: theme.spacing(3)
+  root: {},
+  avatar: {
+    marginRight: theme.spacing(2)
   }
 }));
-const Results = ({ className, list, ...rest }) => {
+
+const Results = ({ className, customers, ...rest }) => {
   const classes = useStyles();
+  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(0);
+
+  const handleLimitChange = event => {
+    setLimit(event.target.value);
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
 
   return (
-    <div className={clsx(classes.root, className)} {...rest}>
-      <Card>
-        <CardHeader title="Time Records" />
-        <Divider />
-        <CardContent>
+    <Card className={clsx(classes.root, className)} {...rest}>
+      <PerfectScrollbar>
+        <Box minWidth={1050}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Date / Time</TableCell>
-                <TableCell>Time In</TableCell>
-                <TableCell>Time Out</TableCell>
+                <TableCell padding="default" />
+                <TableCell>Medicine Name</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Quantity</TableCell>
+                <TableCell>Phone</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {list &&
-                list.map(item => (
-                  <TableRow key={item.time_schedule_id}>
-                    <TableCell>{item.create_time_stamp}</TableCell>
-                    <TableCell>
-                      {moment(item.time_in).format('HH:MM:SS')}
-                    </TableCell>
-                    <TableCell>
-                      {item.has_time_out &&
-                        moment(item.time_out).format('HH:MM:SS')}
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {customers.slice(0, limit).map(customer => (
+                <TableRow
+                  hover
+                  key={customer.id}
+                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                >
+                  <TableCell padding="default" />
+                  <TableCell>
+                    <Box alignItems="center" display="flex">
+                      <Typography color="textPrimary" variant="body1">
+                        {customer.name}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>{customer.email}</TableCell>
+                  <TableCell>
+                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                  </TableCell>
+                  <TableCell>{customer.phone}</TableCell>
+                  <TableCell>Actions here</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
-        </CardContent>
-        <Divider />
-
-        <Box display="flex" justifyContent="flex-end" p={1}>
-          <Button variant="contained" color="primary">
-            Print Preview
-          </Button>
         </Box>
-      </Card>
-    </div>
+      </PerfectScrollbar>
+      <TablePagination
+        component="div"
+        count={customers.length}
+        onChangePage={handlePageChange}
+        onChangeRowsPerPage={handleLimitChange}
+        page={page}
+        rowsPerPage={limit}
+        rowsPerPageOptions={[5, 10, 25]}
+      />
+    </Card>
   );
+};
+
+Results.propTypes = {
+  className: PropTypes.string,
+  customers: PropTypes.array.isRequired
 };
 
 export default Results;

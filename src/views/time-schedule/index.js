@@ -17,12 +17,11 @@ const useStyles = makeStyles(theme => ({
 const TimeScheduleView = () => {
   const classes = useStyles();
   const [currentID, setCurrentID] = useState(0);
-
+  const sqlDateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+  const sqlDateFormat = 'YYYY-MM-DD';
   const [dateSearch, setDateSearch] = useState({
-    dateFrom: moment().format('YYYY-MM-DD'),
-    dateTo: moment()
-      .add(1, 'day')
-      .format('YYYY-MM-DD')
+    dateFrom: moment().format(sqlDateFormat),
+    dateTo: moment().format(sqlDateFormat)
   });
 
   const [
@@ -97,7 +96,8 @@ const TimeScheduleView = () => {
   const onTimeIn = async () => {
     await executePost({
       data: {
-        time_in: moment().format('YYYY-MM-DD HH:MM:SS'),
+        // time in not required to provide json value because it is auto generated once
+        // the record created
         person_id: 1
       }
     });
@@ -107,7 +107,7 @@ const TimeScheduleView = () => {
   const onTimeOut = async () => {
     await executePut({
       data: {
-        time_out: moment().format('YYYY-MM-DD HH:MM:SS'),
+        time_out: moment().format(sqlDateTimeFormat),
         has_time_out: 1
       }
     });
