@@ -4,7 +4,7 @@ import Page from 'src/components/Page';
 import Results from './Results';
 import AdminResults from './AdminResults';
 import Toolbar from './Toolbar';
-import { useResidency } from '../../../../states';
+import { useCurrentUser, useResidency } from '../../../../states';
 import useAxios from 'axios-hooks';
 import DocumentStatusDialog from '../../../shared/DocumentStatusDialog';
 import moment from 'moment';
@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
 
 const ResidencyListView = () => {
   const classes = useStyles();
+  const [currentUser] = useCurrentUser();
   const [selecteIDToDelete, setSelectedIDToDelete] = useState(0);
   const [
     selecteIDToUpdateDocumentStatus,
@@ -77,10 +78,14 @@ const ResidencyListView = () => {
   }, [residency.refreshList]);
   //callback functions
   const onAdd = () => {
+    setShowFormView(true);
+    setShowListView(false);
     setSelectedResidencyID(-1);
   };
   const onEdit = id => {
     console.log(id);
+    setShowFormView(true);
+    setShowListView(false);
     setSelectedResidencyID(id);
   };
   const onDelete = id => {
@@ -109,19 +114,27 @@ const ResidencyListView = () => {
   //jsx
   return (
     <>
-      <Toolbar onSearch={onSearch} onAdd={onAdd} />
+      <Toolbar
+        isAdmin={currentUser.isAdmin}
+        onSearch={onSearch}
+        onAdd={onAdd}
+      />
       <Box mt={3}>
-        <Results
-          onEdit={onEdit}
-          onDelete={onDelete}
-          residencies={data ? data.records : []}
-        />
-        <AdminResults
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onUpdateDocumentStatus={onUpdateDocumentStatus}
-          residencies={data ? data.records : []}
-        />
+        {currentUser.isAdmin ? (
+          <AdminResults
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onUpdateDocumentStatus={onUpdateDocumentStatus}
+            residencies={data ? data.records : []}
+          />
+        ) : (
+          <Results
+            onEdit={onEdit}
+            onDelete={onDelete}
+            residencies={data ? data.records : []}
+          />
+        )}
+
         <DocumentStatusDialog
           open={documentStatusDialogOpen}
           onClose={onCloseDocumentStatusDialog}

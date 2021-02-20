@@ -9,7 +9,9 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  makeStyles
+  makeStyles,
+  Grid,
+  Typography
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 
@@ -17,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   root: {}
 }));
 
-const Toolbar = ({ className, onSearch, onAdd, ...rest }) => {
+const Toolbar = ({ className, isAdmin, onSearch, onAdd, ...rest }) => {
   const classes = useStyles();
   const [query, setQuery] = useState('');
   useEffect(() => {
@@ -26,11 +28,21 @@ const Toolbar = ({ className, onSearch, onAdd, ...rest }) => {
   }, [query]);
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained" onClick={onAdd}>
-          Add New Relationship Request
-        </Button>
-      </Box>
+      <Grid container justify="space-between">
+        <Grid item>
+          <Typography variant="h1">Residency</Typography>
+        </Grid>
+        <Grid item>
+          {!isAdmin && (
+            <Box display="flex" justifyContent="flex-end">
+              <Button color="primary" variant="contained" onClick={onAdd}>
+                Add New Relationship Request
+              </Button>
+            </Box>
+          )}
+        </Grid>
+      </Grid>
+
       <Box mt={3}>
         <Card>
           <CardContent>

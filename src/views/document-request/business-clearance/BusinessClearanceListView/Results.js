@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import useAxios from 'axios-hooks';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useBusinessClearanceViewState } from '../../../../states';
 import {
   Avatar,
   Box,
@@ -39,7 +40,10 @@ const Results = ({
 
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
+  const [
+    barangayClearanceStateView,
+    { setShowFormView, setShowListView }
+  ] = useBusinessClearanceViewState();
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
@@ -56,6 +60,8 @@ const Results = ({
 
   const handleEdit = id => {
     onEdit(id);
+    setShowFormView(true);
+    setShowListView(false);
   };
   return (
     <Card className={clsx(classes.root, className)} {...rest}>

@@ -104,6 +104,8 @@ const ResidencyFormView = ({ className, ...rest }) => {
     }
     setSelectedResidencyID(0);
     formRef.current.resetFields();
+    setShowFormView(false);
+    setShowListView(true);
     setRefreshList(true);
     setRefreshList(false);
   };

@@ -1,8 +1,9 @@
 import React from 'react';
 import Page from 'src/components/Page';
-import { Box, Container, Grid, makeStyles } from '@material-ui/core';
+import { Box, Collapse, Container, Grid, makeStyles } from '@material-ui/core';
 import RelationshipListView from './RelationshipListView';
 import RelationshipFormView from './RelationshipFormView';
+import { useRelationship } from '../../../states';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -16,11 +17,19 @@ const useStyles = makeStyles(theme => ({
 }));
 const RelationshipView = () => {
   const classes = useStyles();
+  const [
+    relationship,
+    { setShowFormView, setShowListView }
+  ] = useRelationship();
   return (
     <Page className={classes.root} title="Relationship">
       <Container maxWidth={false}>
-        <RelationshipListView />
-        <RelationshipFormView />
+        <Collapse in={relationship.showListView}>
+          <RelationshipListView />
+        </Collapse>
+        <Collapse in={relationship.showFormView}>
+          <RelationshipFormView />
+        </Collapse>
       </Container>
     </Page>
   );

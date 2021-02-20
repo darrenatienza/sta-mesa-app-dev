@@ -1,8 +1,10 @@
 import React from 'react';
 import Page from 'src/components/Page';
-import { Box, Container, Grid, makeStyles } from '@material-ui/core';
+import { Box, Collapse, Container, Grid, makeStyles } from '@material-ui/core';
 import ResidencyListView from './ResidencyListView';
 import ResidencyFormView from './ResidencyFormView';
+import { useResidency } from '../../../states';
+
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -16,11 +18,16 @@ const useStyles = makeStyles(theme => ({
 }));
 const ResidencyView = () => {
   const classes = useStyles();
+  const [residency, { setShowFormView, setShowListView }] = useResidency();
   return (
     <Page className={classes.root} title="Residency">
       <Container maxWidth={false}>
-        <ResidencyListView />
-        <ResidencyFormView />
+        <Collapse in={residency.showListView}>
+          <ResidencyListView />
+        </Collapse>
+        <Collapse in={residency.showFormView}>
+          <ResidencyFormView />
+        </Collapse>
       </Container>
     </Page>
   );

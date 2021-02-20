@@ -8,6 +8,7 @@ import { useRelationship } from '../../../../states';
 import useAxios from 'axios-hooks';
 import DocumentStatusDialog from '../../../shared/DocumentStatusDialog';
 import moment from 'moment';
+import { useCurrentUser } from '../../../../states';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -19,6 +20,7 @@ const useStyles = makeStyles(theme => ({
 
 const RelationshipListView = () => {
   const classes = useStyles();
+  const [currentUser] = useCurrentUser();
   const [selecteIDToDelete, setSelectedIDToDelete] = useState(0);
   const [
     selecteIDToUpdateDocumentStatus,
@@ -77,9 +79,13 @@ const RelationshipListView = () => {
   }, [relationship.refreshList]);
   //callback functions
   const onAdd = () => {
+    setShowFormView(true);
+    setShowListView(false);
     setSelectedRelationshipID(-1);
   };
   const onEdit = id => {
+    setShowFormView(true);
+    setShowListView(false);
     setSelectedRelationshipID(id);
   };
   const onDelete = id => {
@@ -108,19 +114,31 @@ const RelationshipListView = () => {
   //jsx
   return (
     <>
-      <Toolbar onSearch={onSearch} onAdd={onAdd} />
-      <Box mt={3}>
-        <Results
-          onEdit={onEdit}
-          onDelete={onDelete}
-          relationships={data ? data.records : []}
-        />
-        <AdminResults
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onUpdateDocumentStatus={onUpdateDocumentStatus}
-          relationships={data ? data.records : []}
-        />
+      <Toolbar
+        isAdmin={currentUser.isAdmin}
+        onSearch={onSearch}
+        onAdd={onAdd}
+      />
+      <Box mt={1}>
+        {!currentUser.isAdmin && (
+          <>
+            <Results
+              onEdit={onEdit}
+              onDelete={onDelete}
+              relationships={data ? data.records : []}
+            />
+          </>
+        )}
+
+        {currentUser.isAdmin && (
+          <AdminResults
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onUpdateDocumentStatus={onUpdateDocumentStatus}
+            relationships={data ? data.records : []}
+          />
+        )}
+
         <DocumentStatusDialog
           open={documentStatusDialogOpen}
           onClose={onCloseDocumentStatusDialog}

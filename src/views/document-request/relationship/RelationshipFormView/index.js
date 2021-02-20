@@ -116,6 +116,8 @@ const RelationshipFormView = ({ className, ...rest }) => {
     }
     setSelectedRelationshipID(0);
     formRef.current.resetFields();
+    setShowFormView(false);
+    setShowListView(true);
     setRefreshList(true);
     setRefreshList(false);
   };

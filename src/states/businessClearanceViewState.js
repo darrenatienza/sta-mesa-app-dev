@@ -1,6 +1,6 @@
 export const initialState = {
   selectedBusinessClearanceID: 0,
-  showListView: false,
+  showListView: true,
   showFormView: false,
   refreshList: false
 };

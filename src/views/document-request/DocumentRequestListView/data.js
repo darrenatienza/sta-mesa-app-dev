@@ -46,50 +46,5 @@ export default [
     title: 'Residency',
     totalDownloads: '835',
     url: '/app/document-requests/residency'
-  },
-  {
-    id: uuid(),
-    createdAt: '04/04/2019',
-    description: '',
-    media: '/static/images/products/product_6.png',
-    title: 'Transfer',
-    totalDownloads: '835',
-    url: '/app/document-requests/transfer'
-  },
-  {
-    id: uuid(),
-    createdAt: '04/04/2019',
-    description: '',
-    media: '/static/images/products/product_6.png',
-    title: 'Not a Resident',
-    totalDownloads: '835',
-    url: '/app/document-requests/not-resident'
-  },
-  {
-    id: uuid(),
-    createdAt: '04/04/2019',
-    description: '',
-    media: '/static/images/products/product_6.png',
-    title: 'Senior',
-    totalDownloads: '835',
-    url: '/app/document-requests/senior'
-  },
-  {
-    id: uuid(),
-    createdAt: '04/04/2019',
-    description: '',
-    media: '/static/images/products/product_6.png',
-    title: 'SSS',
-    totalDownloads: '835',
-    url: '/app/document-requests/sss'
-  },
-  {
-    id: uuid(),
-    createdAt: '04/04/2019',
-    description: '',
-    media: '/static/images/products/product_6.png',
-    title: 'Clearance',
-    totalDownloads: '835',
-    url: '/app/document-requests/clearance'
   }
 ];

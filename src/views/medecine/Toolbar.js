@@ -34,7 +34,7 @@ const Toolbar = ({ className, onSearch, onAdd, ...rest }) => {
         </Grid>
         <Grid item lg={6} md={6} xs={12}>
           <Box display="flex" justifyContent="flex-end">
-            <Button color="primary" variant="contained">
+            <Button color="primary" variant="contained" onClick={onAdd}>
               Add new Medicine
             </Button>
           </Box>

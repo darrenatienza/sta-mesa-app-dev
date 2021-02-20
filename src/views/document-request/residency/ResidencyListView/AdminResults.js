@@ -73,7 +73,7 @@ const Results = ({
               {residencies.slice(0, limit).map(residency => (
                 <TableRow hover key={residency.residency_id}>
                   <TableCell padding="checkbox"></TableCell>
-                  <TableCell>{residency.request_date}</TableCell>
+                  <TableCell>{residency.create_time_stamp}</TableCell>
                   <TableCell>
                     <Box alignItems="center" display="flex">
                       <Avatar className={classes.avatar}>

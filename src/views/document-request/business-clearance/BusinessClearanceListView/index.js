@@ -24,7 +24,7 @@ const BusinessClearanceListView = () => {
     businessClearanceViewState,
     { setSelectedBusinessClearanceID, setShowListView, setShowFormView }
   ] = useBusinessClearanceViewState();
-  const [{ data, Loading, error }, refetch] = useAxios(
+  const [{ data, loading, error }, refetch] = useAxios(
     { url: `/records/view_business_clearance?filter=name,cs,${criteria}` },
     { manual: true }
   );

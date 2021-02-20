@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, makeStyles } from '@material-ui/core';
+import { Box, Container, Collapse, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
@@ -21,8 +21,6 @@ const CustomerListView = () => {
   const [criteria, setCriteria] = useState('');
   const [selectedID, setSelectedID] = useState(0);
   const [openDelete, setOpenDelete] = useState(false);
-  const [action, setAction] = useState('');
-  const [reset, setReset] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [{ data, loading, error }, refetch] = useAxios(
     {
@@ -41,7 +39,7 @@ const CustomerListView = () => {
     },
     { manual: true }
   );
-  const [{ putData, putLoading, putError }, executePut] = useAxios(
+  const [{ data: putData, putLoading, putError }, executePut] = useAxios(
     {
       url: `/records/medicines/${selectedID}`,
       method: 'PUT'
@@ -75,7 +73,9 @@ const CustomerListView = () => {
     setCriteria(criteria);
   };
   const onAdd = () => {
+    console.log('add');
     setSelectedID(0);
+    setShowForm(true);
   };
   const onEdit = id => {
     console.log(id);
@@ -106,9 +106,10 @@ const CustomerListView = () => {
       });
     }
     setSelectedID(0);
+    setShowForm(false);
     await refetch();
   };
-  const onCloseDelete = async result => {
+  const onCloseDeleteDialog = async result => {
     setOpenDelete(false);
     if (result) {
       console.log(selectedID);
@@ -117,19 +118,27 @@ const CustomerListView = () => {
       setSelectedID(0);
     }
   };
+  const onCloseForm = () => {
+    setShowForm(false);
+    setSelectedID(0);
+  };
   return (
     <Page className={classes.root} title="Medicines">
       <Container maxWidth={false}>
-        <Toolbar onSearch={onSearch} onAdd={onAdd} />
-        <Box mt={3}>
-          <Results
-            medicines={data ? data.records : []}
-            onEdit={onEdit}
-            onDelete={onDelete}
-          />
-          <DeleteDialog open={openDelete} onClose={onCloseDelete} />
-          <Form medicine={getData} onSave={onSave} />
-        </Box>
+        <Collapse in={!showForm}>
+          <Toolbar onSearch={onSearch} onAdd={onAdd} />
+          <Box mt={3}>
+            <Results
+              medicines={data ? data.records : []}
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          </Box>
+          <DeleteDialog open={openDelete} onClose={onCloseDeleteDialog} />
+        </Collapse>
+        <Collapse in={showForm}>
+          <Form medicine={getData} onSave={onSave} onCloseForm={onCloseForm} />
+        </Collapse>
       </Container>
     </Page>
   );

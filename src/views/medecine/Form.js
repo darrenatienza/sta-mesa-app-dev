@@ -18,7 +18,13 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const ProfileDetails = ({ className, medicine, onSave, ...rest }) => {
+const ProfileDetails = ({
+  className,
+  medicine,
+  onSave,
+  onCloseForm,
+  ...rest
+}) => {
   const classes = useStyles();
   // react hook form manager
   const {
@@ -38,11 +44,19 @@ const ProfileDetails = ({ className, medicine, onSave, ...rest }) => {
       setValue('quantity', medicine.quantity);
     }
   }, [medicine]);
+
   const onSubmit = data => {
+    onSave(data);
+    resetForm();
+  };
+  const onClose = () => {
+    resetForm();
+    onCloseForm();
+  };
+  const resetForm = () => {
     setValue('name', '');
     setValue('description', '');
     setValue('quantity', '');
-    onSave(data);
   };
   return (
     <form
@@ -104,6 +118,12 @@ const ProfileDetails = ({ className, medicine, onSave, ...rest }) => {
         </CardContent>
         <Divider />
         <Box display="flex" justifyContent="flex-end" p={2}>
+          <Box mr={1}>
+            <Button color="primary" variant="outlined" onClick={onClose}>
+              Close
+            </Button>
+          </Box>
+
           <Button color="primary" variant="contained" type="submit">
             Save
           </Button>

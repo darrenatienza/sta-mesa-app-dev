@@ -50,7 +50,7 @@ const Toolbar = ({ className, search, onAdd, ...rest }) => {
         <Grid item>
           <Box>
             <Typography variant="h2" component="h4">
-              Barangay Indigency Request
+              Business Clearance Request
             </Typography>
           </Box>
         </Grid>

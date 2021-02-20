@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Page from 'src/components/Page';
-import { Box, Container, Grid, makeStyles } from '@material-ui/core';
+import { Box, Container, Grid, makeStyles, Collapse } from '@material-ui/core';
 import BusinessClearanceListView from './BusinessClearanceListView';
 import BusinessClearanceFormView from './BusinessClearanceFormView';
+import { useBusinessClearanceViewState } from '../../../states';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -16,11 +17,19 @@ const useStyles = makeStyles(theme => ({
 }));
 const BusinessClearanceView = () => {
   const classes = useStyles();
+  const [
+    barangayClearanceStateView,
+    { setShowFormView, setShowListView }
+  ] = useBusinessClearanceViewState();
   return (
-    <Page className={classes.root} title="Barangay Clearance">
+    <Page className={classes.root} title="Business Clearance">
       <Container maxWidth={false}>
-        <BusinessClearanceListView />
-        <BusinessClearanceFormView />
+        <Collapse in={barangayClearanceStateView.showListView}>
+          <BusinessClearanceListView />
+        </Collapse>
+        <Collapse in={barangayClearanceStateView.showFormView}>
+          <BusinessClearanceFormView />
+        </Collapse>
       </Container>
     </Page>
   );
