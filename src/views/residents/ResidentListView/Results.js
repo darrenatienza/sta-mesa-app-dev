@@ -32,7 +32,7 @@ import {
   Key as KeyIcon
 } from 'react-feather';
 import DeleteDialog from '../../shared/DeleteDialog';
-import ConfirmationDialog from '../../shared/ConfirmationDialog';
+
 import ResidentDeleteView from '../ResidentDeleteView';
 
 const useStyles = makeStyles(theme => ({

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
@@ -19,9 +19,13 @@ const useStyles = makeStyles(theme => ({
   root: {}
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ className, onSearch, onAdd, ...rest }) => {
   const classes = useStyles();
-
+  const [query, setQuery] = useState('');
+  useEffect(() => {
+    const timeOutId = setTimeout(() => onSearch(query), 500);
+    return () => clearTimeout(timeOutId);
+  }, [query]);
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Grid container justify="space-between" alignItems="center">
@@ -43,6 +47,7 @@ const Toolbar = ({ className, ...rest }) => {
             <Box maxWidth={500}>
               <TextField
                 fullWidth
+                onChange={e => setQuery(e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">

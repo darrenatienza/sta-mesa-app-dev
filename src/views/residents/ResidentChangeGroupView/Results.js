@@ -35,8 +35,7 @@ import {
   Menu as MenuIcon,
   Key as KeyIcon
 } from 'react-feather';
-import DeleteDialog from '../../shared/DeleteDialog';
-import ConfirmationDialog from '../../shared/ConfirmationDialog';
+
 import ResidentDeleteView from '../ResidentDeleteView';
 import { version } from 'moment';
 const useStyles = makeStyles(theme => ({

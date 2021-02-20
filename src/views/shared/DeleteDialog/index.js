@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,22 +9,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDeleteDialog } from '../../../states';
 import useAxios from 'axios-hooks';
 
-const DeleteDialog = ({open,setOpen,setResult}) => {
- 
-  const handleClose = () => {
-    setResult(false)
-    setOpen(false);
-  };
-
-  const handleOk = () => {
-    setResult(true)
-    setOpen(false);
-  };
+const DeleteDialog = ({ open, onClose }) => {
   return (
     <Dialog
       fullWidth
       open={open}
-      onClose={handleClose}
+      onClose={onClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
@@ -35,10 +25,10 @@ const DeleteDialog = ({open,setOpen,setResult}) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={() => onClose(false)} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleOk} color="primary" autoFocus>
+        <Button onClick={() => onClose(true)} color="primary" autoFocus>
           Ok
         </Button>
       </DialogActions>

@@ -13,7 +13,6 @@ import Toolbar from './Toolbar';
 import data from './data';
 import { useOfficial, useResidentViewState } from '../../../states';
 import useAxios from 'axios-hooks';
-import DeleteDialog from '../../shared/DeleteDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {

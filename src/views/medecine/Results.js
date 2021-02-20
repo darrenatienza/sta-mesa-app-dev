@@ -15,8 +15,10 @@ import {
   TablePagination,
   TableRow,
   Typography,
+  IconButton,
   makeStyles
 } from '@material-ui/core';
+import { FiDelete as DeleteIcon, FiEdit as EditIcon } from 'react-icons/fi';
 import getInitials from 'src/utils/getInitials';
 
 const useStyles = makeStyles(theme => ({
@@ -26,9 +28,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Results = ({ className, customers, ...rest }) => {
+const Results = ({ className, medicines, onEdit, onDelete, ...rest }) => {
   const classes = useStyles();
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
@@ -51,40 +53,50 @@ const Results = ({ className, customers, ...rest }) => {
                 <TableCell>Medicine Name</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Quantity</TableCell>
-                <TableCell>Phone</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map(customer => (
-                <TableRow
-                  hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
-                >
-                  <TableCell padding="default" />
-                  <TableCell>
-                    <Box alignItems="center" display="flex">
-                      <Typography color="textPrimary" variant="body1">
-                        {customer.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>{customer.phone}</TableCell>
-                  <TableCell>Actions here</TableCell>
-                </TableRow>
-              ))}
+              {medicines &&
+                medicines.slice(0, limit).map(medicine => (
+                  <TableRow hover key={medicine.medecine_id}>
+                    <TableCell padding="default" />
+                    <TableCell>
+                      <Box alignItems="center" display="flex">
+                        <Typography color="textPrimary" variant="body1">
+                          {medicine.name}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{medicine.description}</TableCell>
+                    <TableCell>{medicine.quantity}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        aria-label="Menu"
+                        onClick={() => onEdit(medicine.medecine_id)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        aria-label="Menu"
+                        onClick={() => onDelete(medicine.medecine_id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Box>
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={medicines ? medicines.length : 0}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
@@ -97,7 +109,7 @@ const Results = ({ className, customers, ...rest }) => {
 
 Results.propTypes = {
   className: PropTypes.string,
-  customers: PropTypes.array.isRequired
+  medicines: PropTypes.array.isRequired
 };
 
 export default Results;
