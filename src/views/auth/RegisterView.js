@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
+
+import moment from 'moment';
 import {
   Box,
   Button,
@@ -11,192 +11,260 @@ import {
   Link,
   TextField,
   Typography,
-  makeStyles
+  Grid,
+  Card,
+  CardMedia,
+  makeStyles,
+  CardContent,
+  Divider
 } from '@material-ui/core';
+import { useForm, Controller } from 'react-hook-form';
+import useAxios from 'axios-hooks';
 import Page from 'src/components/Page';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
-    height: '100%',
+    //height: '100%',
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3)
+  },
+  media: {
+    height: 140
   }
 }));
 
 const RegisterView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const methods = useForm();
 
+  const civilStats = [
+    {
+      value: 'single',
+      label: 'Single'
+    },
+    {
+      value: 'married',
+      label: 'Married'
+    },
+    {
+      value: 'separated',
+      label: 'Separated'
+    },
+    {
+      value: 'widowed',
+      label: 'Widowed'
+    }
+  ];
+
+  const [
+    { data: postUserData, loading: postUserLoading, error: postUserError },
+    executePostUser
+  ] = useAxios(
+    { url: `/records/users`, method: 'POST' },
+    {
+      manual: true
+    }
+  );
+  const [
+    {
+      data: postPersonData,
+      loading: postPersonLoading,
+      error: postPersonError
+    },
+    executePostPerson
+  ] = useAxios(
+    { url: `/records/persons`, method: 'POST' },
+    {
+      manual: true
+    }
+  );
+
+  // callbacks
+  const { handleSubmit, control, errors } = methods;
+  const onSubmit = async data => {
+    const { data: newPersonID } = await executePostPerson({
+      data: {
+        first_name: data.firstName,
+        middle_name: data.middleName,
+        last_name: data.lastName,
+        civil_status: data.civilStatus,
+        phone_number: data.phoneNumber,
+        birthdate: data.birthDate
+      }
+    });
+
+    if (newPersonID > 0) {
+      const { data: user_id } = await executePostUser({
+        data: {
+          username: data.userName,
+          password: data.password,
+          person_id: 5,
+          active: 1
+        }
+      });
+      // success saving records
+      user_id > 0 && navigate('/login');
+    }
+  };
   return (
-    <Page
-      className={classes.root}
-      title="Register"
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        justifyContent="center"
-      >
+    <Page className={classes.root} title="Register">
+      <Box display="flex" flexDirection="column" justifyContent="center">
         <Container maxWidth="sm">
-          <Formik
-            initialValues={{
-              email: '',
-              firstName: '',
-              lastName: '',
-              password: '',
-              policy: false
-            }}
-            validationSchema={
-              Yup.object().shape({
-                email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                firstName: Yup.string().max(255).required('First name is required'),
-                lastName: Yup.string().max(255).required('Last name is required'),
-                password: Yup.string().max(255).required('password is required'),
-                policy: Yup.boolean().oneOf([true], 'This field must be checked')
-              })
-            }
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
-            }}
-          >
-            {({
-              errors,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              isSubmitting,
-              touched,
-              values
-            }) => (
-              <form onSubmit={handleSubmit}>
-                <Box mb={3}>
-                  <Typography
-                    color="textPrimary"
-                    variant="h2"
-                  >
-                    Create new account
-                  </Typography>
-                  <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body2"
-                  >
-                    Use your email to create new account
-                  </Typography>
-                </Box>
-                <TextField
-                  error={Boolean(touched.firstName && errors.firstName)}
+          <Card>
+            <CardMedia
+              className={classes.media}
+              image="/static/sta_mesa_logo.png"
+              title="Contemplative Reptile"
+            />
+            <CardContent>
+              <Box textAlign="center">
+                <Typography color="textPrimary" variant="h2">
+                  Register new residents Record
+                </Typography>
+                <Typography color="textSecondary" gutterBottom variant="body2">
+                  Please specify correct information here
+                </Typography>
+              </Box>
+              <Box>
+                <Controller
                   fullWidth
-                  helperText={touched.firstName && errors.firstName}
-                  label="First name"
                   margin="normal"
-                  name="firstName"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.firstName}
-                  variant="outlined"
+                  as={TextField}
+                  name="userName"
+                  label="User Name"
+                  control={control}
+                  defaultValue=""
+                  variant="filled"
+                  rules={{ required: true }}
+                  error={errors.userName && true}
                 />
-                <TextField
-                  error={Boolean(touched.lastName && errors.lastName)}
+                <Controller
                   fullWidth
-                  helperText={touched.lastName && errors.lastName}
-                  label="Last name"
                   margin="normal"
-                  name="lastName"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.lastName}
-                  variant="outlined"
-                />
-                <TextField
-                  error={Boolean(touched.email && errors.email)}
-                  fullWidth
-                  helperText={touched.email && errors.email}
-                  label="Email Address"
-                  margin="normal"
-                  name="email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="email"
-                  value={values.email}
-                  variant="outlined"
-                />
-                <TextField
-                  error={Boolean(touched.password && errors.password)}
-                  fullWidth
-                  helperText={touched.password && errors.password}
-                  label="Password"
-                  margin="normal"
+                  as={TextField}
                   name="password"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="password"
-                  value={values.password}
+                  label="Password"
+                  control={control}
+                  defaultValue=""
+                  variant="filled"
+                  rules={{ required: true }}
+                  error={errors.password && true}
+                />
+              </Box>
+
+              <Box mt={3}>
+                <Typography variant="h6">Personal Information</Typography>
+                <Controller
+                  fullWidth
+                  margin="normal"
+                  as={TextField}
+                  name="firstName"
+                  label="First Name"
+                  control={control}
+                  defaultValue=""
+                  variant="outlined"
+                  rules={{ required: true }}
+                  error={errors.firstName && true}
+                />
+                <Controller
+                  fullWidth
+                  margin="normal"
+                  as={TextField}
+                  name="middleName"
+                  label="Middle Name"
+                  control={control}
+                  defaultValue=""
+                  variant="outlined"
+                  rules={{ required: true }}
+                  error={errors.middleName && true}
+                />
+
+                <Controller
+                  fullWidth
+                  margin="normal"
+                  as={TextField}
+                  name="lastName"
+                  label="Last Name"
+                  control={control}
+                  defaultValue=""
+                  variant="outlined"
+                  rules={{ required: true }}
+                  error={errors.lastName && true}
+                />
+                <Controller
+                  fullWidth
+                  margin="normal"
+                  as={TextField}
+                  select
+                  name="civilStatus"
+                  label="Civil Status"
+                  control={control}
+                  defaultValue="single"
+                  variant="outlined"
+                  SelectProps={{
+                    native: true
+                  }}
+                >
+                  {civilStats.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Controller>
+                <Controller
+                  fullWidth
+                  margin="normal"
+                  as={TextField}
+                  name="phoneNumber"
+                  label="Phone Number"
+                  control={control}
+                  defaultValue="+639"
+                  variant="outlined"
+                  rules={{ required: true }}
+                  error={errors.phoneNumber && true}
+                />
+                <Controller
+                  fullWidth
+                  margin="normal"
+                  as={TextField}
+                  type="date"
+                  name="birthDate"
+                  label="Birth Date"
+                  control={control}
+                  defaultValue={moment().format('YYYY-MM-DD')}
                   variant="outlined"
                 />
-                <Box
-                  alignItems="center"
-                  display="flex"
-                  ml={-1}
-                >
-                  <Checkbox
-                    checked={values.policy}
-                    name="policy"
-                    onChange={handleChange}
-                  />
-                  <Typography
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    I have read the
-                    {' '}
-                    <Link
-                      color="primary"
-                      component={RouterLink}
-                      to="#"
-                      underline="always"
-                      variant="h6"
-                    >
-                      Terms and Conditions
-                    </Link>
-                  </Typography>
-                </Box>
-                {Boolean(touched.policy && errors.policy) && (
-                  <FormHelperText error>
-                    {errors.policy}
-                  </FormHelperText>
-                )}
-                <Box my={2}>
-                  <Button
-                    color="primary"
-                    disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                  >
-                    Sign up now
-                  </Button>
-                </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Have an account?
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/login"
-                    variant="h6"
-                  >
+              </Box>
+            </CardContent>
+            <Divider />
+
+            <Box
+              m={2}
+              display="flex"
+              justifyContent="flex-end"
+              alignItems="center"
+            >
+              <Box mr={3}>
+                <Typography color="textSecondary" variant="body1">
+                  Already have account?{' '}
+                  <Link component={RouterLink} to="/login" variant="h6">
                     Sign in
                   </Link>
                 </Typography>
-              </form>
-            )}
-          </Formik>
+              </Box>
+              <Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit(onSubmit)}
+                >
+                  Register
+                </Button>
+              </Box>
+            </Box>
+          </Card>
         </Container>
       </Box>
     </Page>

@@ -12,7 +12,8 @@ import Axios from 'axios';
 const App = () => {
   const routing = useRoutes(routes);
   const axios = Axios.create({
-    baseURL: process.env.REACT_APP_API_URL
+    baseURL: process.env.REACT_APP_API_URL,
+    withCredentials: true
   });
   const cache = new LRU({ max: 10 });
 
