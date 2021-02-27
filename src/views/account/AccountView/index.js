@@ -3,7 +3,8 @@ import { Container, Grid, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Profile from './Profile';
 import ProfileDetails from './ProfileDetails';
-
+import { useCurrentUser } from '../../../states';
+import useAxios from 'axios-hooks';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -15,7 +16,10 @@ const useStyles = makeStyles(theme => ({
 
 const Account = () => {
   const classes = useStyles();
-
+  const [currentUser] = useCurrentUser();
+  const [{ data, loading, error }, refetch] = useAxios(
+    `/records/persons/${currentUser.currentPersonID}`
+  );
   return (
     <Page className={classes.root} title="Account">
       <Container maxWidth="lg">
@@ -24,7 +28,7 @@ const Account = () => {
             <Profile />
           </Grid>
           <Grid item lg={8} md={6} xs={12}>
-            <ProfileDetails />
+            <ProfileDetails profile={data} />
           </Grid>
         </Grid>
       </Container>

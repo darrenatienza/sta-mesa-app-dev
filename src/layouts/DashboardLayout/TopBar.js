@@ -16,7 +16,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 import Logo from 'src/components/Logo';
-import useAxios from 'axios-hooks';
+
+import { useCurrentUser } from '../../states';
 const useStyles = makeStyles(() => ({
   root: {},
   logo: { marginRight: '10px' },
@@ -24,23 +25,17 @@ const useStyles = makeStyles(() => ({
   avatar: {
     width: 60,
     height: 60
+  },
+  userName: {
+    fontWeight: 'bold'
   }
 }));
 
-const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
-  const navigate = useNavigate();
+const TopBar = ({ className, onMobileNavOpen, onLogout, ...rest }) => {
   const classes = useStyles();
   const [notifications] = useState([]);
-  const [{ data, loading, error, response }, executeLogout] = useAxios(
-    { url: `/logout`, method: 'POST' },
-    {
-      manual: true
-    }
-  );
-  const logout = async () => {
-    await executeLogout();
-    navigate('/login');
-  };
+  const [currentUser] = useCurrentUser();
+
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
       <Toolbar>
@@ -55,8 +50,12 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
           </Box>
         </RouterLink>
         <Box flexGrow={1} />
+        <Typography variant="body1" className={classes.title}>
+          Welcome{' '}
+          <span className={classes.userName}>{currentUser.userName}</span>
+        </Typography>
         <Hidden mdDown>
-          <IconButton color="inherit" onClick={logout}>
+          <IconButton color="inherit" onClick={onLogout}>
             <InputIcon />
           </IconButton>
         </Hidden>

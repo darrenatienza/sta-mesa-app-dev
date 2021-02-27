@@ -14,8 +14,10 @@ import {
   Card,
   CardHeader,
   CardContent,
+  Snackbar,
   Divider
 } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 import FacebookIcon from 'src/icons/Facebook';
 import GoogleIcon from 'src/icons/Google';
 import Page from 'src/components/Page';
@@ -23,6 +25,7 @@ import { values } from 'lodash';
 import { useForm, Controller } from 'react-hook-form';
 import useAxios from 'axios-hooks';
 import { useCurrentUser } from '../../states';
+
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -32,15 +35,22 @@ const useStyles = makeStyles(theme => ({
   },
   signUp: {
     marginRight: '10px'
+  },
+  alert: {
+    marginBottom: '10px'
   }
 }));
-
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const methods = useForm();
   const { handleSubmit, control, errors } = methods;
   const [currentUser, { setUserName, setCurrentPersonID }] = useCurrentUser();
+  const [open, setOpen] = React.useState(false);
+
   // http request
   const [{ data, loading, error, response }, executeLogin] = useAxios(
     { url: `/login`, method: 'POST' },
@@ -48,6 +58,10 @@ const LoginView = () => {
       manual: true
     }
   );
+  useEffect(() => {
+    (loading && setOpen(true)) || (error && setOpen(true));
+  }, [loading, error]);
+
   const onSubmit = async data => {
     console.log(data);
     const { data: user } = await executeLogin({
@@ -56,13 +70,17 @@ const LoginView = () => {
         password: data.password
       }
     });
-    setUserName(data.username);
+    setUserName(data.userName);
     console.log(user);
     if (user.user_id > 0) {
       navigate('/app/dashboard');
       setCurrentPersonID(user.person_id);
     }
   };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Page className={classes.root} title="Login">
       <Box
@@ -72,6 +90,17 @@ const LoginView = () => {
         justifyContent="center"
       >
         <Container maxWidth="sm">
+          {loading && (
+            <Alert severity="success" className={classes.alert}>
+              Loading please wait...
+            </Alert>
+          )}
+
+          {error && (
+            <Alert severity="error" className={classes.alert}>
+              Login failed
+            </Alert>
+          )}
           <Card>
             <CardHeader
               title=" Sign in"

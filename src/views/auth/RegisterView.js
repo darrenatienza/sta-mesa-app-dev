@@ -21,7 +21,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import useAxios from 'axios-hooks';
 import Page from 'src/components/Page';
-
+import MuiAlert from '@material-ui/lab/Alert';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -33,7 +33,9 @@ const useStyles = makeStyles(theme => ({
     height: 140
   }
 }));
-
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 const RegisterView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -100,7 +102,7 @@ const RegisterView = () => {
         data: {
           username: data.userName,
           password: data.password,
-          person_id: 5,
+          person_id: newPersonID,
           active: 1
         }
       });
@@ -238,6 +240,19 @@ const RegisterView = () => {
                 />
               </Box>
             </CardContent>
+            {postPersonLoading ||
+              (postUserLoading && (
+                <Alert severity="success" className={classes.alert}>
+                  Loading please wait...
+                </Alert>
+              ))}
+
+            {postPersonError ||
+              (postUserError && (
+                <Alert severity="error" className={classes.alert}>
+                  Login failed
+                </Alert>
+              ))}
             <Divider />
 
             <Box

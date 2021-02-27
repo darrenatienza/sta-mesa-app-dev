@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/core';
 import NavBar from './NavBar';
 import TopBar from './TopBar';
 import AdminNavBar from './NavBar/AdminNavBar';
+import useAxios from 'axios-hooks';
+import Cookies from 'js-cookie';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -35,11 +38,25 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardLayout = () => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-
+  const [{ data, loading, error, response }, executeLogout] = useAxios(
+    { url: `/logout`, method: 'POST' },
+    {
+      manual: true
+    }
+  );
+  const logout = async () => {
+    await executeLogout();
+    Cookies.remove('PHPSESSID');
+    navigate('/login');
+  };
   return (
     <div className={classes.root}>
-      <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
+      <TopBar
+        onMobileNavOpen={() => setMobileNavOpen(true)}
+        onLogout={logout}
+      />
       <AdminNavBar
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}

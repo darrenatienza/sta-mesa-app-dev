@@ -34,6 +34,7 @@ const RelationshipListView = () => {
     relationship,
     { setSelectedRelationshipID, setShowFormView, setShowListView }
   ] = useRelationship();
+
   const [{ data, loading, error }, refetch] = useAxios(
     {
       url: `/records/view_relationships?filter1=first_name,cs,${criteria}`,
