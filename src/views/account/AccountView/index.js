@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Grid, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Profile from './Profile';
@@ -17,20 +17,48 @@ const useStyles = makeStyles(theme => ({
 const Account = () => {
   const classes = useStyles();
   const [currentUser] = useCurrentUser();
+  const [isSuccess, setIsSuccess] = useState(false);
   const [{ data, loading, error }, refetch] = useAxios(
     `/records/persons/${currentUser.currentPersonID}`
   );
+  const [
+    { data: putData, loading: putLoading, error: putError },
+    executePut
+  ] = useAxios(
+    { url: `/records/persons/${currentUser.currentPersonID}`, method: 'PUT' },
+    {
+      manual: true
+    }
+  );
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => setIsSuccess(false), 3000);
+    return () => clearTimeout(timeOutId);
+  }, [isSuccess]);
+
+  const onSave = async data => {
+    const { data: val } = await executePut({
+      data: {
+        first_name: data.firstName,
+        middle_name: data.middleName,
+        last_name: data.lastName,
+        civil_status: data.civilStatus,
+        phone_number: data.phoneNumber,
+        birthdate: data.birthDate
+      }
+    });
+    val > 0 && setIsSuccess(true);
+  };
   return (
     <Page className={classes.root} title="Account">
       <Container maxWidth="lg">
-        <Grid container spacing={3}>
-          <Grid item lg={4} md={6} xs={12}>
-            <Profile />
-          </Grid>
-          <Grid item lg={8} md={6} xs={12}>
-            <ProfileDetails profile={data} />
-          </Grid>
-        </Grid>
+        <ProfileDetails
+          profile={data}
+          onSave={onSave}
+          isLoading={putLoading}
+          isError={putError}
+          isSuccess={isSuccess}
+        />
       </Container>
     </Page>
   );

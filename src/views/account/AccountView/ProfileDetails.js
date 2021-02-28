@@ -12,7 +12,9 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-
+import { useForm, Controller } from 'react-hook-form';
+import moment from 'moment';
+import { Alert } from '@material-ui/lab';
 const states = [
   {
     value: 'alabama',
@@ -31,30 +33,51 @@ const states = [
 const useStyles = makeStyles(() => ({
   root: {}
 }));
-
-const ProfileDetails = ({ className, profile, ...rest }) => {
+const civilStats = [
+  {
+    value: 'single',
+    label: 'Single'
+  },
+  {
+    value: 'married',
+    label: 'Married'
+  },
+  {
+    value: 'separated',
+    label: 'Separated'
+  },
+  {
+    value: 'widowed',
+    label: 'Widowed'
+  }
+];
+const ProfileDetails = ({
+  className,
+  profile,
+  onSave,
+  isLoading,
+  isError,
+  isSuccess,
+  ...rest
+}) => {
   const classes = useStyles();
+  const methods = useForm();
+  const { handleSubmit, control, reset, setValue, errors } = methods;
 
-  const [values, setValues] = useState({
-    firstName: '',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
-  });
   useEffect(() => {
-    profile && setValues({ ...values, firstName: profile.first_name });
+    if (profile) {
+      setValue('firstName', profile.first_name);
+      setValue('middleName', profile.middle_name);
+      setValue('lastName', profile.last_name);
+      setValue('civilStatus', profile.civil_status);
+      setValue('phoneNumber', profile.phone_number);
+      setValue('birthDate', moment(profile.birthdate).format('YYYY-MM-DD'));
+    }
   }, [profile]);
-  const handleChange = event => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
 
   return (
     <form
+      onSubmit={handleSubmit(onSave)}
       autoComplete="off"
       noValidate
       className={clsx(classes.root, className)}
@@ -64,87 +87,118 @@ const ProfileDetails = ({ className, profile, ...rest }) => {
         <CardHeader subheader="The information can be edited" title="Profile" />
         <Divider />
         <CardContent>
+          {isSuccess && (
+            <Alert severity="success" variant="filled">
+              Successfully saved!
+            </Alert>
+          )}
+          {isLoading && (
+            <Alert severity="info" variant="filled">
+              Loading please wait..
+            </Alert>
+          )}
+          {isError && (
+            <Alert severity="error" variant="filled">
+              Error while saving your details.
+            </Alert>
+          )}
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
-              <TextField
+              <Controller
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
+                margin="normal"
+                as={TextField}
                 name="firstName"
-                onChange={handleChange}
-                required
-                value={values.firstName}
+                label="First Name"
+                control={control}
+                defaultValue=""
                 variant="outlined"
+                rules={{ required: true }}
+                error={errors.firstName && true}
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
+              <Controller
                 fullWidth
-                label="Last name"
+                margin="normal"
+                as={TextField}
+                name="middleName"
+                label="Middle Name"
+                control={control}
+                defaultValue=""
+                variant="outlined"
+                rules={{ required: true }}
+                error={errors.middleName && true}
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Controller
+                fullWidth
+                margin="normal"
+                as={TextField}
                 name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
+                label="Last Name"
+                control={control}
+                defaultValue=""
                 variant="outlined"
+                rules={{ required: true }}
+                error={errors.lastName && true}
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
+              <Controller
                 fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
+                margin="normal"
+                as={TextField}
                 select
-                SelectProps={{ native: true }}
-                value={values.state}
+                name="civilStatus"
+                label="Civil Status"
+                control={control}
+                defaultValue="single"
                 variant="outlined"
+                SelectProps={{
+                  native: true
+                }}
               >
-                {states.map(option => (
+                {civilStats.map(option => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
-              </TextField>
+              </Controller>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Controller
+                fullWidth
+                margin="normal"
+                as={TextField}
+                name="phoneNumber"
+                label="Phone Number"
+                control={control}
+                defaultValue="+639"
+                variant="outlined"
+                rules={{ required: true }}
+                error={errors.phoneNumber && true}
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Controller
+                fullWidth
+                margin="normal"
+                as={TextField}
+                type="date"
+                name="birthDate"
+                label="Birth Date"
+                control={control}
+                defaultValue={moment().format('YYYY-MM-DD')}
+                variant="outlined"
+              />
             </Grid>
           </Grid>
         </CardContent>
         <Divider />
         <Box display="flex" justifyContent="flex-end" p={2}>
-          <Button color="primary" variant="contained">
+          <Button color="primary" variant="contained" type="submit">
             Save details
           </Button>
         </Box>
