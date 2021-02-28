@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
@@ -20,11 +20,14 @@ import {
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Calendar as CalendarIcon,
+  File as FileIcon
 } from 'react-feather';
 
 import NavItem from './NavItem';
-
+import { useCurrentUser } from '../../../states';
+import { BiCapsule as CapsuleIcon } from 'react-icons/bi';
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
   jobTitle: 'Senior Developer',
@@ -33,40 +36,128 @@ const user = {
 
 const items = [
   {
+    id: 1,
     href: '/app/dashboard',
     icon: BarChartIcon,
     title: 'Dashboard'
   },
   {
-    href: '/app/customers',
-    icon: UsersIcon,
-    title: 'Customers'
-  },
-
-  {
+    id: 2,
     href: '/app/account',
     icon: UserIcon,
     title: 'Account'
   },
   {
+    id: 3,
+    href: '/app/medicines',
+    icon: CapsuleIcon,
+    title: 'Medicines'
+  },
+  {
+    id: 4,
+    href: '/app/residents',
+    icon: UsersIcon,
+    title: 'Residents'
+  },
+  {
+    id: 5,
+    href: '/app/officials',
+    icon: UsersIcon,
+    title: 'Brgy Officials'
+  },
+  {
+    id: 6,
+    href: '/app/time-schedule',
+    icon: CalendarIcon,
+    title: 'Time Schedule'
+  },
+  {
+    id: 7,
+    href: '/app/health-workers',
+    icon: UsersIcon,
+    title: 'Brgy Health Workers'
+  },
+  {
+    id: 8,
+    href: '/app/document-requests',
+    icon: FileIcon,
+    title: 'Document Requests'
+  },
+  {
+    id: 9,
     href: '/app/settings',
     icon: SettingsIcon,
     title: 'Settings'
+  }
+];
+const resident = [
+  {
+    id: 2,
+    href: '/app/account',
+    icon: UserIcon,
+    title: 'Account'
   },
   {
-    href: '/login',
-    icon: LockIcon,
-    title: 'Login'
+    id: 3,
+    href: '/app/medicines',
+    icon: CapsuleIcon,
+    title: 'Medicines'
+  },
+
+  {
+    id: 8,
+    href: '/app/document-requests',
+    icon: FileIcon,
+    title: 'Document Requests'
   },
   {
-    href: '/register',
-    icon: UserPlusIcon,
-    title: 'Register'
+    id: 9,
+    href: '/app/settings',
+    icon: SettingsIcon,
+    title: 'Settings'
+  }
+];
+const admin = [
+  {
+    id: 5,
+    href: '/app/officials',
+    icon: UsersIcon,
+    title: 'Brgy Officials'
+  },
+
+  {
+    id: 7,
+    href: '/app/health-workers',
+    icon: UsersIcon,
+    title: 'Brgy Health Workers'
+  }
+];
+
+const official = [
+  {
+    id: 4,
+    href: '/app/residents',
+    icon: UsersIcon,
+    title: 'Residents'
+  },
+
+  {
+    id: 6,
+    href: '/app/time-schedule',
+    icon: CalendarIcon,
+    title: 'Time Schedule'
   },
   {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
+    id: 8,
+    href: '/app/document-requests',
+    icon: FileIcon,
+    title: 'Document Requests'
+  },
+  {
+    id: 9,
+    href: '/app/settings',
+    icon: SettingsIcon,
+    title: 'Settings'
   }
 ];
 
@@ -89,7 +180,25 @@ const useStyles = makeStyles(() => ({
 const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
+  const [listItems, setListItems] = useState(resident);
 
+  const [currentUser] = useCurrentUser();
+
+  useEffect(() => {
+    console.log(listItems);
+    currentUser.roles.map(x => {
+      switch (x.title) {
+        case 'admin':
+          setListItems(listItems => listItems.concat(admin));
+          break;
+        case 'official':
+          setListItems(listItems => listItems.concat(official));
+          break;
+        default:
+          break;
+      }
+    });
+  }, [currentUser.roles]);
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
@@ -116,14 +225,16 @@ const NavBar = ({ onMobileClose, openMobile }) => {
       <Divider />
       <Box p={2}>
         <List>
-          {items.map(item => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-            />
-          ))}
+          {listItems
+            .sort((a, b) => (a.id > b.id ? 1 : -1))
+            .map(item => (
+              <NavItem
+                href={item.href}
+                key={item.title}
+                title={item.title}
+                icon={item.icon}
+              />
+            ))}
         </List>
       </Box>
       <Box flexGrow={1} />

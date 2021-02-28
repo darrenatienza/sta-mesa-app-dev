@@ -20,8 +20,8 @@ import {
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
-  Users as UsersIcon,
   File as FileIcon,
+  Users as UsersIcon,
   Calendar as CalendarIcon
 } from 'react-feather';
 import NavItem from './NavItem';

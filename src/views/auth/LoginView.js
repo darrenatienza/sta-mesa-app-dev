@@ -48,12 +48,27 @@ const LoginView = () => {
   const navigate = useNavigate();
   const methods = useForm();
   const { handleSubmit, control, errors } = methods;
-  const [currentUser, { setUserName, setCurrentPersonID }] = useCurrentUser();
+  const [
+    currentUser,
+    { setUserName, setCurrentPersonID, setRoles }
+  ] = useCurrentUser();
   const [open, setOpen] = React.useState(false);
 
   // http request
-  const [{ data, loading, error, response }, executeLogin] = useAxios(
+  const [{ data, loading, error }, executeLogin] = useAxios(
     { url: `/login`, method: 'POST' },
+    {
+      manual: true
+    }
+  );
+  const [
+    { data: getRoleData, loading: getRoleLoading, error: getRoleError },
+    refetchRole
+  ] = useAxios(
+    {
+      url: `/records/view_person_roles?filter=person_id,eq,${currentUser.currentPersonID}`,
+      method: 'GET'
+    },
     {
       manual: true
     }
@@ -70,12 +85,14 @@ const LoginView = () => {
         password: data.password
       }
     });
-    setUserName(data.userName);
-    console.log(user);
-    if (user.user_id > 0) {
-      navigate('/app/dashboard');
-      setCurrentPersonID(user.person_id);
+    setCurrentPersonID(user.person_id);
+    const { data: result } = await refetchRole();
+    console.log(result);
+    if (result) {
+      setRoles(result.records);
     }
+    setUserName(data.userName);
+    navigate('/app/dashboard');
   };
   const handleClose = () => {
     setOpen(false);

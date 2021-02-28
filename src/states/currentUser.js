@@ -2,7 +2,7 @@ export const initialState = {
   isAdmin: true,
   currentPersonID: localStorage.getItem('currentPersonID') || 0,
   userName: localStorage.getItem('userName') || '',
-  role: localStorage.getItem('role') || ''
+  roles: JSON.parse(localStorage.getItem('roles')) || []
 };
 
 export const setIsAdmin = currentUser => value => {
@@ -10,11 +10,11 @@ export const setIsAdmin = currentUser => value => {
     isAdmin: value
   });
 };
-export const setRole = currentUser => value => {
+export const setRoles = currentUser => value => {
   currentUser.setState({
-    role: value
+    roles: value
   });
-  localStorage.setItem('role', value);
+  localStorage.setItem('roles', JSON.stringify(value));
 };
 export const setCurrentPersonID = currentUser => value => {
   currentUser.setState({

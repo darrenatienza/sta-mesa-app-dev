@@ -57,7 +57,7 @@ const DashboardLayout = () => {
         onMobileNavOpen={() => setMobileNavOpen(true)}
         onLogout={logout}
       />
-      <AdminNavBar
+      <NavBar
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}
       />
