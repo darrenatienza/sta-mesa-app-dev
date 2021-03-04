@@ -27,15 +27,7 @@ const ProfileDetails = ({
 }) => {
   const classes = useStyles();
   // react hook form manager
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    control,
-    watch,
-    errors
-  } = useForm();
+  const { handleSubmit, setValue, control, errors } = useForm();
 
   useEffect(() => {
     if (medicine) {

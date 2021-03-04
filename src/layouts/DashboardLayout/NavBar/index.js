@@ -119,6 +119,12 @@ const resident = [
 ];
 const admin = [
   {
+    id: 4,
+    href: '/app/residents',
+    icon: UsersIcon,
+    title: 'Residents'
+  },
+  {
     id: 5,
     href: '/app/officials',
     icon: UsersIcon,

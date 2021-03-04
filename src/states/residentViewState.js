@@ -8,7 +8,12 @@ export const initialState = {
   isDeleteSuccess: false,
   isResetPasswordSuccess: false,
   anchorEl: null,
-  criteria: ''
+  criteria: '',
+  currentPersonID: null
+};
+
+export const setCurrentPersonID = residentViewState => value => {
+  residentViewState.setState({ currentPersonID: value });
 };
 export const setDeleteSuccess = residentViewState => value => {
   residentViewState.setState({ isDeleteSuccess: value });

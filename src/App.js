@@ -21,16 +21,17 @@ const App = () => {
 
   configure({ axios, cache });
   // request interceptor to add token to request headers
-  axios.interceptors.request.use(
-    async config => {
-      const cookie = Cookies.get('PHPSESSID');
-      if (!cookie) {
-        navigate('/login');
-      }
-      return config;
-    },
-    error => Promise.reject(error)
-  );
+  // axios.interceptors.request.use(
+  //   async config => {
+  //     const cookie = Cookies.get('PHPSESSID');
+  //     const path = window.location.pathname;
+  //     if (!cookie) {
+  //       if (path !== '/login' && path !== '/register') navigate('/login');
+  //     }
+  //     return config;
+  //   },
+  //   error => Promise.reject(error)
+  // );
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />

@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+
 import clsx from 'clsx';
-import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
-import useAxios from 'axios-hooks';
+
 import {
   Box,
   Button,
   Card,
   CardContent,
   TextField,
-  IndeleteAdornment,
-  SvgIcon,
-  Select,
   MenuItem,
   FormControl,
   InputLabel,
@@ -20,12 +16,6 @@ import {
   Divider,
   Grid
 } from '@material-ui/core';
-import { Search as SearchIcon } from 'react-feather';
-import {
-  useResidentViewState,
-  usePersonEntity,
-  useResidentChangeRoleViewState
-} from '../../../states';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -39,96 +29,13 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   }
 }));
-const ToolBar = ({ className, ...rest }) => {
+const ToolBar = ({ className, roles, onAdd, ...rest }) => {
   const classes = useStyles();
-  const navigate = useNavigate();
-  const [personEntity, { resetPersonEntity }] = usePersonEntity();
-  const [
-    residentChangeRoleViewState,
-    { setRefetchResults }
-  ] = useResidentChangeRoleViewState();
-  const [roleID, setRoleID] = useState('1');
-  const [addButtonClickable, setAddButtonClickable] = useState(false);
-  const [
-    {
-      data: deletePersonRoleData,
-      loading: deletePersonRoleDataLoading,
-      error: deletePersonRoleDataError
-    },
-    executePut
-  ] = useAxios(
-    { url: `/records/persons/${personEntity.personID}`, method: 'PUT' },
-    {
-      manual: true
-    }
-  );
-  const [
-    {
-      data: getRoleListData,
-      loading: getRoleListDataLoading,
-      error: getRoleListDataError
-    },
-    refetchRoleResults
-  ] = useAxios({
-    url: `/records/roles`
-  });
-  const [
-    {
-      data: postPersonRoleData,
-      loading: postPersonRoleLoading,
-      error: postPersonRoleError
-    },
-    executePersonRolePost
-  ] = useAxios(
-    { url: `/records/person_roles`, method: 'POST' },
-    {
-      manual: true
-    }
-  );
-  const [
-    {
-      data: getPersonRoleListData,
-      loading: getPersonRoleListDataLoading,
-      error: getPersonRoleListDataError
-    },
-    refetchRoleListData
-  ] = useAxios(
-    {
-      url: `/records/view_person_roles?filter=person_id,eq,${personEntity.personID}&filter=role_id,eq,${roleID}`
-    },
-    {
-      manual: !personEntity.personID || !roleID
-    }
-  );
-  useEffect(() => {
-    if (residentChangeRoleViewState.refetchRoleResults) {
-      refetchRoleResults();
-    }
-  }, [residentChangeRoleViewState.refetchRoleResults]);
+  const [selectedRoleID, setSelectedRoleID] = useState(0);
+  const onSelectRole = roleID => {
+    setSelectedRoleID(roleID);
+  };
 
-  const handleAdd = async event => {
-    await executePersonRolePost({
-      data: { person_id: personEntity.personID, role_id: roleID }
-    });
-    setRefetchResults(true);
-    setAddButtonClickable(false);
-  };
-  //Disable the add button if role already exists
-  useEffect(() => {
-    if (getPersonRoleListData) {
-      if (getPersonRoleListData.records) {
-        const clickable =
-          getPersonRoleListData.records.length > 0 ? false : true;
-        setAddButtonClickable(clickable);
-      }
-    }
-  }, [getPersonRoleListData]);
-  useEffect(() => {
-    refetchRoleListData();
-  }, [roleID]);
-  const handleChange = event => {
-    setRoleID(event.target.value);
-  };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box>
@@ -146,23 +53,29 @@ const ToolBar = ({ className, ...rest }) => {
                   variant="outlined"
                   className={classes.formControl}
                 >
-                  <InputLabel id="demo-simple-select-outlined-label">
-                    Groups
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={roleID}
-                    onChange={handleChange}
-                    label="Groups"
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    select
+                    name="roles"
+                    label="Roles"
+                    onChange={e => onSelectRole(e.target.value)}
+                    variant="outlined"
+                    SelectProps={{
+                      native: true
+                    }}
                   >
-                    {getRoleListData &&
-                      getRoleListData.records.map(option => (
-                        <MenuItem key={option.role_id} value={option.role_id}>
+                    <option value={0}>Select Role here..</option>
+                    {roles ? (
+                      roles.records.map(option => (
+                        <option key={option.role_id} value={option.role_id}>
                           {option.title}
-                        </MenuItem>
-                      ))}
-                  </Select>
+                        </option>
+                      ))
+                    ) : (
+                      <option></option>
+                    )}
+                  </TextField>
                 </FormControl>
               </Grid>
             </Grid>
@@ -170,11 +83,11 @@ const ToolBar = ({ className, ...rest }) => {
           <Divider />
           <Box display="flex" justifyContent="flex-end" p={2}>
             <Button
+              disabled={selectedRoleID == 0}
               color="primary"
               variant="contained"
-              onClick={handleAdd}
+              onClick={() => onAdd(selectedRoleID)}
               display="flex"
-              disabled={!addButtonClickable}
             >
               Add Group
             </Button>

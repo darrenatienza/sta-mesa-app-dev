@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
-import Menu from './Menus';
+
 import {
-  Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -19,10 +17,9 @@ import {
   Typography,
   CircularProgress,
   IconButton,
-  Button,
   makeStyles
 } from '@material-ui/core';
-import getInitials from 'src/utils/getInitials';
+
 import { useResidentViewState, usePersonEntity } from '../../../states';
 import useAxios from 'axios-hooks';
 import {
@@ -31,9 +28,6 @@ import {
   Menu as MenuIcon,
   Key as KeyIcon
 } from 'react-feather';
-import DeleteDialog from '../../shared/DeleteDialog';
-
-import ResidentDeleteView from '../ResidentDeleteView';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -54,7 +48,8 @@ const Results = ({ className, ...rest }) => {
       setShowResidentDetailView,
       setShowResidentListView,
       setOpenDeleteDialog,
-      setDeleteSuccess
+      setDeleteSuccess,
+      setCurrentPersonID
     }
   ] = useResidentViewState();
 
@@ -131,6 +126,7 @@ const Results = ({ className, ...rest }) => {
     selectedPersonID && executeRefetchPersonData();
   }, [selectedPersonID]);
   const handleEdit = personID => {
+    setCurrentPersonID(personID);
     setSelectedPersonID(personID);
     setShowResidentListView(false);
     setShowResidentDetailView(true);

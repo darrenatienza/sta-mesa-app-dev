@@ -3,7 +3,7 @@ import ResidentListView from './ResidentListView';
 import ResidentDeleteView from './ResidentDeleteView';
 import ResidentResetPasswordView from './ResidentResetPasswordView';
 import ResidentChangeGroupView from './ResidentChangeGroupView';
-import { useResidentViewState, usePersonEntity } from '../../states';
+import { useResidentViewState } from '../../states';
 
 import ResidentFormView from './ResidentFormView';
 import Page from 'src/components/Page';
@@ -25,13 +25,20 @@ const useStyles = makeStyles(theme => ({
 }));
 const ResidentView = () => {
   const classes = useStyles();
+  const [residentViewState] = useResidentViewState();
   return (
     <div>
       <Page className={classes.root} title="Residents">
-        <ResidentFormView />
-        {<ResidentListView />}
-        <ResidentResetPasswordView />
-        <ResidentDeleteView />
+        <Container maxWidth="lg">
+          <Collapse in={residentViewState.showResidentDetailView}>
+            <ResidentFormView />
+          </Collapse>
+          <Collapse in={residentViewState.showResidentListView}>
+            <ResidentListView />
+          </Collapse>
+          <ResidentResetPasswordView />
+          <ResidentDeleteView />
+        </Container>
       </Page>
     </div>
   );

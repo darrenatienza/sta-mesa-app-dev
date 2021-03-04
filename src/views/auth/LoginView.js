@@ -92,7 +92,7 @@ const LoginView = () => {
       setRoles(result.records);
     }
     setUserName(data.userName);
-    navigate('/app/dashboard');
+    navigate('/app/account');
   };
   const handleClose = () => {
     setOpen(false);

@@ -48,7 +48,6 @@ const DashboardLayout = () => {
   );
   const logout = async () => {
     await executeLogout();
-    Cookies.remove('PHPSESSID');
     navigate('/login');
   };
   return (

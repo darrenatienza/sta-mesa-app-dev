@@ -1,28 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useResidentViewState, usePersonEntity } from '../../../states';
+import { useResidentViewState } from '../../../states';
 import useAxios from 'axios-hooks';
-import Page from 'src/components/Page';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
 
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  TextField,
-  CircularProgress,
-  makeStyles
-} from '@material-ui/core';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Checkbox from '@material-ui/core/Checkbox';
+import { Box, makeStyles } from '@material-ui/core';
+
 import Results from './Results';
 import ToolBar from './ToolBar';
 const useStyles = makeStyles(theme => ({
@@ -37,17 +18,85 @@ const useStyles = makeStyles(theme => ({
 
 const ResidentChangeGroupView = ({ className, ...rest }) => {
   const classes = useStyles();
+  const [residentViewState] = useResidentViewState();
+  const [selectedPersonRoleDeleteID, setSelectedPersonRoleDeleteID] = useState(
+    0
+  );
+  const [
+    {
+      data: deletePersonRoleData,
+      loading: deletePersonRoleLoading,
+      error: deletePersonRoleError
+    },
+    executePersonRoleDelete
+  ] = useAxios(
+    {
+      url: `/records/person_roles/${selectedPersonRoleDeleteID}`,
+      method: 'DELETE'
+    },
+    {
+      manual: true
+    }
+  );
+  const [
+    { data: roleListData, loading: roleListLoading, error: roleListError },
+    refetchRoleList
+  ] = useAxios({
+    url: `/records/roles`
+  });
 
+  const [
+    {
+      data: postPersonRoleData,
+      loading: postPersonRoleLoading,
+      error: postPersonRoleError
+    },
+    executePersonRolePost
+  ] = useAxios(
+    { url: `/records/person_roles`, method: 'POST' },
+    {
+      manual: true
+    }
+  );
+  const [
+    {
+      data: personRolesData,
+      loading: personRolesLoading,
+      error: personRolesError
+    },
+    refetchPersonRole
+  ] = useAxios(
+    `/records/view_person_roles?filter=person_id,eq,${residentViewState.currentPersonID}`,
+    {
+      manual: !residentViewState.currentPersonID
+    }
+  );
+
+  useEffect(() => {
+    if (selectedPersonRoleDeleteID > 0) {
+      const performPersonRoleDelete = async () => {
+        await executePersonRoleDelete();
+        await refetchPersonRole();
+      };
+      performPersonRoleDelete();
+    }
+  }, [selectedPersonRoleDeleteID]);
+
+  const onDelete = async personRoleID => {
+    setSelectedPersonRoleDeleteID(personRoleID);
+  };
+  const onAdd = async roleID => {
+    await executePersonRolePost({
+      data: { person_id: residentViewState.currentPersonID, role_id: roleID }
+    });
+    await refetchPersonRole();
+  };
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid item lg={6} md={6} xs={12}>
-          <ToolBar />
-        </Grid>
-        <Grid item lg={6} md={6} xs={12}>
-          <Results />
-        </Grid>
-      </Grid>
+      <Box mb={3} mt={3}>
+        <ToolBar roles={roleListData} onAdd={onAdd} />
+      </Box>
+      <Results personRoles={personRolesData} onDelete={onDelete} />
     </>
   );
 };

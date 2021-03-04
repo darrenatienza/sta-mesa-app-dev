@@ -52,31 +52,28 @@ const Toolbar = ({ className, ...rest }) => {
   return (
     <>
       <div className={clsx(classes.root, className)} {...rest}>
-        <Box display="flex" justifyContent="flex-end">
-          <Button color="primary" variant="contained" onClick={handleAdd}>
-            Add Resident
-          </Button>
-        </Box>
         <Box mt={3}>
           <Card>
             <CardContent>
-              <Box maxWidth={500}>
-                <TextField
-                  value={query}
-                  onChange={e => setQuery(e.target.value)}
-                  fullWidth
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SvgIcon fontSize="small" color="action">
-                          <SearchIcon />
-                        </SvgIcon>
-                      </InputAdornment>
-                    )
-                  }}
-                  placeholder="Search Residents"
-                  variant="outlined"
-                />
+              <Box display="flex" justifyContent="flex-end">
+                <Box minWidth={500}>
+                  <TextField
+                    value={query}
+                    onChange={e => setQuery(e.target.value)}
+                    fullWidth
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SvgIcon fontSize="small" color="action">
+                            <SearchIcon />
+                          </SvgIcon>
+                        </InputAdornment>
+                      )
+                    }}
+                    placeholder="Search Residents"
+                    variant="outlined"
+                  />
+                </Box>
               </Box>
             </CardContent>
           </Card>
