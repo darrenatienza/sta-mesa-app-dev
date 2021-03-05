@@ -37,26 +37,16 @@ const useStyles = makeStyles(theme => ({
   name: {}
 }));
 
-const Results = ({ className, ...rest }) => {
+const Results = ({
+  className,
+  residents,
+  onDelete,
+  onReset,
+  onViewDetail,
+  ...rest
+}) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [selectedPersonID, setSelectedPersonID] = useState(0);
-  const [
-    residentViewState,
-    {
-      setOpenResetPasswordDialog,
-      setShowResidentDetailView,
-      setShowResidentListView,
-      setOpenDeleteDialog,
-      setDeleteSuccess,
-      setCurrentPersonID
-    }
-  ] = useResidentViewState();
-
-  const [
-    personEntity,
-    { setPersonEntity, setPersonID, resetPersonEntity }
-  ] = usePersonEntity();
 
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -69,76 +59,6 @@ const Results = ({ className, ...rest }) => {
     setPage(newPage);
   };
 
-  const [{ data, loading, error }, refetch] = useAxios(
-    `/records/persons?filter=first_name,cs,${residentViewState.criteria}`
-  );
-  useEffect(() => {
-    resetPersonEntity();
-  }, []);
-  const [
-    {
-      data: getPersonData,
-      loading: getPersonDataLoading,
-      error: getPersonDataError
-    },
-    refetchPersonData
-  ] = useAxios(`/records/persons/${selectedPersonID}`, {
-    manual: true
-  });
-
-  //search function
-  useEffect(() => {
-    if (residentViewState.isDeleteSuccess) {
-      refetch();
-      setDeleteSuccess(false);
-    }
-  }, [residentViewState.isDeleteSuccess]);
-
-  useEffect(() => {
-    // this must be use
-
-    if (getPersonData) {
-      setPersonEntity(
-        getPersonData.person_id,
-        getPersonData.first_name,
-        getPersonData.middle_name,
-        getPersonData.last_name,
-        getPersonData.civil_status,
-        getPersonData.phone_number,
-        getPersonData.birthdate,
-        getPersonData.group
-      );
-    }
-  }, [getPersonData]);
-
-  useEffect(() => {
-    residentViewState.showResidentListView && refetch();
-  }, [residentViewState.showResidentListView]);
-
-  const handleResetPassword = personID => {
-    setOpenResetPasswordDialog(true);
-  };
-
-  const executeRefetchPersonData = async () => {
-    await refetchPersonData();
-  };
-  useEffect(() => {
-    selectedPersonID && executeRefetchPersonData();
-  }, [selectedPersonID]);
-  const handleEdit = personID => {
-    setCurrentPersonID(personID);
-    setSelectedPersonID(personID);
-    setShowResidentListView(false);
-    setShowResidentDetailView(true);
-  };
-
-  const handleDelete = personID => {
-    setPersonID(personID);
-    setOpenDeleteDialog(true);
-  };
-  if (loading || getPersonDataLoading)
-    return <CircularProgress className={classes.progress} />;
-  if (error || getPersonDataError) return <p>Error!</p>;
   return (
     <>
       <Card className={clsx(classes.root, className)} {...rest}>
@@ -156,8 +76,8 @@ const Results = ({ className, ...rest }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data &&
-                  data.records.slice(0, limit).map(person => (
+                {residents &&
+                  residents.records.slice(0, limit).map(person => (
                     <TableRow
                       hover
                       key={person.person_id}
@@ -179,15 +99,17 @@ const Results = ({ className, ...rest }) => {
                       <TableCell>{person.phone_number}</TableCell>
                       <TableCell>
                         <IconButton
-                          aria-label="Edit"
-                          onClick={() => handleEdit(person.person_id)}
+                          aria-label="Reset Password"
+                          onClick={() => {
+                            onViewDetail(person.person_id);
+                          }}
                         >
                           <EditIcon />
                         </IconButton>
                         <IconButton
                           aria-label="Reset Password"
                           onClick={() => {
-                            handleResetPassword(person.person_id);
+                            onReset(person.person_id);
                           }}
                         >
                           <KeyIcon />
@@ -197,7 +119,7 @@ const Results = ({ className, ...rest }) => {
                           aria-controls="simple-menu"
                           aria-haspopup="true"
                           aria-label="Menu"
-                          onClick={() => handleDelete(person.person_id)}
+                          onClick={() => onDelete(person.person_id)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -211,7 +133,7 @@ const Results = ({ className, ...rest }) => {
 
         <TablePagination
           component="div"
-          count={data && data.records.length}
+          count={residents ? residents.records.length : 0}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleLimitChange}
           page={page}

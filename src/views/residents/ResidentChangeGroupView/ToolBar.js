@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   }
 }));
-const ToolBar = ({ className, roles, onAdd, ...rest }) => {
+const ToolBar = ({ className, roles, onAdd, loading, ...rest }) => {
   const classes = useStyles();
   const [selectedRoleID, setSelectedRoleID] = useState(0);
   const onSelectRole = roleID => {
@@ -53,29 +53,28 @@ const ToolBar = ({ className, roles, onAdd, ...rest }) => {
                   variant="outlined"
                   className={classes.formControl}
                 >
-                  <TextField
-                    fullWidth
-                    margin="normal"
-                    select
-                    name="roles"
-                    label="Roles"
-                    onChange={e => onSelectRole(e.target.value)}
-                    variant="outlined"
-                    SelectProps={{
-                      native: true
-                    }}
-                  >
-                    <option value={0}>Select Role here..</option>
-                    {roles ? (
-                      roles.records.map(option => (
-                        <option key={option.role_id} value={option.role_id}>
-                          {option.title}
-                        </option>
-                      ))
-                    ) : (
-                      <option></option>
-                    )}
-                  </TextField>
+                  {
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      select
+                      name="roles"
+                      label="Roles"
+                      onChange={e => onSelectRole(e.target.value)}
+                      variant="outlined"
+                      SelectProps={{
+                        native: true
+                      }}
+                    >
+                      <option value={0}>Select Role here..</option>
+                      {!loading &&
+                        roles?.records.map(option => (
+                          <option key={option.role_id} value={option.role_id}>
+                            {option.title}
+                          </option>
+                        ))}
+                    </TextField>
+                  }
                 </FormControl>
               </Grid>
             </Grid>

@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   root: {}
 }));
 
-const Toolbar = ({ className, onSearch, onAdd, ...rest }) => {
+const Toolbar = ({ className, onSearch, onAdd, isBhw, ...rest }) => {
   const classes = useStyles();
   const [query, setQuery] = useState('');
   useEffect(() => {
@@ -32,13 +32,15 @@ const Toolbar = ({ className, onSearch, onAdd, ...rest }) => {
         <Grid item lg={6} md={6} xs={12}>
           <Typography variant="h1">Medicine Records</Typography>
         </Grid>
-        <Grid item lg={6} md={6} xs={12}>
-          <Box display="flex" justifyContent="flex-end">
-            <Button color="primary" variant="contained" onClick={onAdd}>
-              Add new Medicine
-            </Button>
-          </Box>
-        </Grid>
+        {isBhw && (
+          <Grid item lg={6} md={6} xs={12}>
+            <Box display="flex" justifyContent="flex-end">
+              <Button color="primary" variant="contained" onClick={onAdd}>
+                Add new Medicine
+              </Button>
+            </Box>
+          </Grid>
+        )}
       </Grid>
 
       <Box mt={3}>

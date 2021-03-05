@@ -41,9 +41,13 @@ const ResidentChangeGroupView = ({ className, ...rest }) => {
   const [
     { data: roleListData, loading: roleListLoading, error: roleListError },
     refetchRoleList
-  ] = useAxios({
-    url: `/records/roles`
-  });
+  ] = useAxios(
+    {
+      url: `/records/roles`,
+      method: 'GET'
+    },
+    { manual: false }
+  );
 
   const [
     {
@@ -94,7 +98,7 @@ const ResidentChangeGroupView = ({ className, ...rest }) => {
   return (
     <>
       <Box mb={3} mt={3}>
-        <ToolBar roles={roleListData} onAdd={onAdd} />
+        <ToolBar roles={roleListData} onAdd={onAdd} loading={roleListLoading} />
       </Box>
       <Results personRoles={personRolesData} onDelete={onDelete} />
     </>

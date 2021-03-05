@@ -36,7 +36,7 @@ import {
   Key as KeyIcon
 } from 'react-feather';
 
-import ResidentDeleteView from '../ResidentDeleteView';
+import ResidentDeleteView from '../ResidentListView/DeleteDialog';
 import { version } from 'moment';
 const useStyles = makeStyles(theme => ({
   root: {},

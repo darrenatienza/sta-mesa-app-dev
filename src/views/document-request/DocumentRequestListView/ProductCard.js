@@ -14,7 +14,8 @@ import {
 } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import GetAppIcon from '@material-ui/icons/GetApp';
-
+import getInitials from 'src/utils/getInitials';
+import { deepOrange, deepPurple } from '@material-ui/core/colors';
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -26,6 +27,14 @@ const useStyles = makeStyles(theme => ({
   },
   statsIcon: {
     marginRight: theme.spacing(1)
+  },
+  orange: {
+    color: theme.palette.getContrastText(deepOrange[500]),
+    backgroundColor: deepOrange[500]
+  },
+  purple: {
+    color: theme.palette.getContrastText(deepPurple[500]),
+    backgroundColor: deepPurple[500]
   }
 }));
 
@@ -36,7 +45,9 @@ const ProductCard = ({ className, product, ...rest }) => {
     <Card className={clsx(classes.root, className)} {...rest}>
       <CardContent>
         <Box display="flex" justifyContent="center" mb={3}>
-          <Avatar alt="Product" src={product.media} variant="square" />
+          <Avatar alt="Product" className={classes.purple}>
+            {getInitials(product.title)}
+          </Avatar>
         </Box>
         <Typography
           align="center"
@@ -55,24 +66,6 @@ const ProductCard = ({ className, product, ...rest }) => {
           </Button>
         </Box>
       </CardContent>
-      <Box flexGrow={1} />
-      <Divider />
-      <Box p={2}>
-        <Grid container justify="space-between" spacing={2}>
-          <Grid className={classes.statsItem} item>
-            <AccessTimeIcon className={classes.statsIcon} color="action" />
-            <Typography color="textSecondary" display="inline" variant="body2">
-              Updated 2hr ago
-            </Typography>
-          </Grid>
-          <Grid className={classes.statsItem} item>
-            <GetAppIcon className={classes.statsIcon} color="action" />
-            <Typography color="textSecondary" display="inline" variant="body2">
-              {product.totalDownloads} Downloads
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
     </Card>
   );
 };

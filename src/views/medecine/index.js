@@ -3,7 +3,7 @@ import { Box, Container, Collapse, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
-import data from './data';
+import { useCurrentUser } from '../../states';
 import useAxios from 'axios-hooks';
 import Form from './Form';
 import DeleteDialog from '../shared/DeleteDialog';
@@ -22,6 +22,8 @@ const CustomerListView = () => {
   const [selectedID, setSelectedID] = useState(0);
   const [openDelete, setOpenDelete] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [currentUser] = useCurrentUser();
+  const [isBhwRole, setIsBhwRole] = useState(false);
   const [{ data, loading, error }, refetch] = useAxios(
     {
       url: `/records/medicines?filter=name,cs,${criteria}`,
@@ -63,7 +65,16 @@ const CustomerListView = () => {
   useEffect(() => {
     refetch();
   }, [criteria]);
-
+  //check for roles
+  useEffect(() => {
+    if (currentUser.roles.length > 0) {
+      currentUser.roles.map(r => {
+        if (r.title === 'bhw') {
+          setIsBhwRole(true);
+        }
+      });
+    }
+  }, [currentUser.roles]);
   useEffect(() => {
     if (selectedID > 0 && showForm) {
       refetchSingle();
@@ -126,12 +137,13 @@ const CustomerListView = () => {
     <Page className={classes.root} title="Medicines">
       <Container maxWidth={false}>
         <Collapse in={!showForm}>
-          <Toolbar onSearch={onSearch} onAdd={onAdd} />
+          <Toolbar onSearch={onSearch} onAdd={onAdd} isBhw={isBhwRole} />
           <Box mt={3}>
             <Results
               medicines={data ? data.records : []}
               onEdit={onEdit}
               onDelete={onDelete}
+              isBhw={isBhwRole}
             />
           </Box>
           <DeleteDialog open={openDelete} onClose={onCloseDeleteDialog} />

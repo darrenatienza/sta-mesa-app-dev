@@ -19,7 +19,8 @@ const Account = () => {
   const [currentUser] = useCurrentUser();
   const [isSuccess, setIsSuccess] = useState(false);
   const [{ data, loading, error }, refetch] = useAxios(
-    `/records/persons/${currentUser.currentPersonID}`
+    { url: `/records/persons/${currentUser.currentPersonID}`, method: 'GET' },
+    { manual: true }
   );
   const [
     { data: putData, loading: putLoading, error: putError },
@@ -30,7 +31,12 @@ const Account = () => {
       manual: true
     }
   );
-
+  useEffect(() => {
+    const performAccountFetch = async () => {
+      await refetch();
+    };
+    performAccountFetch();
+  }, []);
   useEffect(() => {
     const timeOutId = setTimeout(() => setIsSuccess(false), 3000);
     return () => clearTimeout(timeOutId);

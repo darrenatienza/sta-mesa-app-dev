@@ -24,7 +24,6 @@ const DocumentRequestListView = () => {
 
   return (
     <>
-      <Toolbar />
       <Box mt={3}>
         <Grid container spacing={3}>
           {products.map(product => (
@@ -33,9 +32,6 @@ const DocumentRequestListView = () => {
             </Grid>
           ))}
         </Grid>
-      </Box>
-      <Box mt={3} display="flex" justifyContent="center">
-        <Pagination color="primary" count={3} size="small" />
       </Box>
     </>
   );

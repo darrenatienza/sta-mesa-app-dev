@@ -119,7 +119,7 @@ const Results = ({ className, officials, ...rest }) => {
                           {getInitials(official.first_name)}
                         </Avatar>
                         <Typography color="textPrimary" variant="body1">
-                          {official.first_name}
+                          {`${official.first_name} ${official.last_name} `}
                         </Typography>
                       </Box>
                     </TableCell>

@@ -56,10 +56,7 @@ const ProfileDetails = ({ className, profileDetails, ...rest }) => {
       {...rest}
     >
       <Card>
-        <CardHeader
-          subheader="The information can be edited"
-          title="Resident Profile"
-        />
+        <CardHeader title="Resident Profile" />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>

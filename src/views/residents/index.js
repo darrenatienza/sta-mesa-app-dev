@@ -1,8 +1,6 @@
 import React from 'react';
 import ResidentListView from './ResidentListView';
-import ResidentDeleteView from './ResidentDeleteView';
-import ResidentResetPasswordView from './ResidentResetPasswordView';
-import ResidentChangeGroupView from './ResidentChangeGroupView';
+
 import { useResidentViewState } from '../../states';
 
 import ResidentFormView from './ResidentFormView';
@@ -36,8 +34,6 @@ const ResidentView = () => {
           <Collapse in={residentViewState.showResidentListView}>
             <ResidentListView />
           </Collapse>
-          <ResidentResetPasswordView />
-          <ResidentDeleteView />
         </Container>
       </Page>
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -53,7 +53,7 @@ const LoginView = () => {
     { setUserName, setCurrentPersonID, setRoles }
   ] = useCurrentUser();
   const [open, setOpen] = React.useState(false);
-
+  const [loginSuccess, setLoginSuccess] = useState(false);
   // http request
   const [{ data, loading, error }, executeLogin] = useAxios(
     { url: `/login`, method: 'POST' },
@@ -77,6 +77,20 @@ const LoginView = () => {
     (loading && setOpen(true)) || (error && setOpen(true));
   }, [loading, error]);
 
+  // occurs when login success
+  useEffect(() => {
+    if (loginSuccess) {
+      const performRoleCheck = async () => {
+        const { data: result } = await refetchRole();
+
+        if (result) {
+          setRoles(result.records);
+        }
+        navigate('/app/account');
+      };
+      performRoleCheck();
+    }
+  }, [loginSuccess]);
   const onSubmit = async data => {
     console.log(data);
     const { data: user } = await executeLogin({
@@ -85,14 +99,9 @@ const LoginView = () => {
         password: data.password
       }
     });
-    setCurrentPersonID(user.person_id);
-    const { data: result } = await refetchRole();
-    console.log(result);
-    if (result) {
-      setRoles(result.records);
-    }
     setUserName(data.userName);
-    navigate('/app/account');
+    setCurrentPersonID(user.user_id);
+    user.user_id > 0 && setLoginSuccess(true);
   };
   const handleClose = () => {
     setOpen(false);

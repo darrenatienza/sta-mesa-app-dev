@@ -28,7 +28,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Results = ({ className, medicines, onEdit, onDelete, ...rest }) => {
+const Results = ({
+  className,
+  medicines,
+  onEdit,
+  onDelete,
+  isBhw,
+  ...rest
+}) => {
   const classes = useStyles();
 
   const [limit, setLimit] = useState(10);
@@ -53,7 +60,7 @@ const Results = ({ className, medicines, onEdit, onDelete, ...rest }) => {
                 <TableCell>Medicine Name</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Quantity</TableCell>
-                <TableCell>Actions</TableCell>
+                {isBhw && <TableCell>Actions</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -70,24 +77,27 @@ const Results = ({ className, medicines, onEdit, onDelete, ...rest }) => {
                     </TableCell>
                     <TableCell>{medicine.description}</TableCell>
                     <TableCell>{medicine.quantity}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Menu"
-                        onClick={() => onEdit(medicine.medecine_id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Menu"
-                        onClick={() => onDelete(medicine.medecine_id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+                    {isBhw && (
+                      <TableCell>
+                        <IconButton
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          aria-label="Menu"
+                          onClick={() => onEdit(medicine.medecine_id)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+
+                        <IconButton
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          aria-label="Menu"
+                          onClick={() => onDelete(medicine.medecine_id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
             </TableBody>

@@ -6,6 +6,8 @@ import Toolbar from './Toolbar';
 
 import { useResidentViewState } from '../../../states';
 import useAxios from 'axios-hooks';
+import DeleteDialog from './DeleteDialog';
+import ResetPasswordDialog from './ResetPasswordDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -16,93 +18,147 @@ const useStyles = makeStyles(theme => ({
 
 const ResidentListView = () => {
   const classes = useStyles();
-
-  const [selectedPersonID, setSelectedPersonID] = useState(0);
+  const [criteria, setCriteria] = useState('');
+  const [selectedDeletePersonID, setSelectedDeletePersonID] = useState();
+  const [
+    selectedResetPersonPasswordID,
+    setSelectedResetPersonPasswordID
+  ] = useState();
+  const [
+    selectedResetUserPasswordID,
+    setSelectedResetUserPasswordID
+  ] = useState();
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState(false);
   const [
     residentViewState,
-    {
-      setOpenResetPasswordDialog,
-      setShowResidentDetailView,
-      setShowResidentListView,
-      setOpenDeleteDialog,
-      setDeleteSuccess,
-      setCurrentPersonID
-    }
+    { setShowResidentDetailView, setShowResidentListView, setCurrentPersonID }
   ] = useResidentViewState();
 
+  // http - get list of residents / persons according to criteria
   const [{ data, loading, error }, refetch] = useAxios(
-    `/records/persons?filter=first_name,cs,${residentViewState.criteria}`
+    { url: `/records/persons?filter=first_name,cs,${criteria}`, method: 'GET' },
+    { manual: false }
   );
-  useEffect(() => {
-    resetPersonEntity();
-  }, []);
+  // http - get user by person id
+  const [
+    { data: getUserData, loading: getUserLoading, error: getUserError },
+    refetchUserData
+  ] = useAxios(
+    {
+      url: `/records/users?filter=person_id,eq,${selectedResetPersonPasswordID}`,
+      method: 'GET'
+    },
+    { manual: true }
+  );
+  // http - delete person by id
   const [
     {
-      data: getPersonData,
-      loading: getPersonDataLoading,
-      error: getPersonDataError
+      data: deletePersonData,
+      loading: deletePersonLoading,
+      error: deletePersonError
     },
-    refetchPersonData
-  ] = useAxios(`/records/persons/${selectedPersonID}`, {
-    manual: true
-  });
-
-  //search function
-  useEffect(() => {
-    if (residentViewState.isDeleteSuccess) {
-      refetch();
-      setDeleteSuccess(false);
+    executeDeletePerson
+  ] = useAxios(
+    { url: `/records/persons/${selectedDeletePersonID}`, method: 'DELETE' },
+    {
+      manual: true
     }
-  }, [residentViewState.isDeleteSuccess]);
-
-  useEffect(() => {
-    // this must be use
-
-    if (getPersonData) {
-      setPersonEntity(
-        getPersonData.person_id,
-        getPersonData.first_name,
-        getPersonData.middle_name,
-        getPersonData.last_name,
-        getPersonData.civil_status,
-        getPersonData.phone_number,
-        getPersonData.birthdate,
-        getPersonData.group
-      );
+  );
+  // http - reset the password of user
+  const [
+    {
+      data: resetPasswordData,
+      loading: resetPasswordLoading,
+      error: resetPasswordError
+    },
+    executeResetPassword
+  ] = useAxios(
+    {
+      url: `/records/users/${selectedResetUserPasswordID}`,
+      method: 'PUT'
+    },
+    {
+      manual: true
     }
-  }, [getPersonData]);
-
+  );
+  //effect - occurs when showing  list
   useEffect(() => {
-    residentViewState.showResidentListView && refetch();
+    if (residentViewState.showResidentListView) {
+      const performRefetch = async () => {
+        await refetch();
+      };
+      performRefetch();
+    }
   }, [residentViewState.showResidentListView]);
 
-  const handleResetPassword = personID => {
+  //effect - occurs when selected person id to reset changed
+  useEffect(() => {
+    if (selectedResetPersonPasswordID) {
+      const performUserFetch = async () => {
+        const { data: array } = await refetchUserData();
+        if (array) {
+          const userID = array.records[0].user_id;
+          setSelectedResetUserPasswordID(userID);
+        }
+      };
+      performUserFetch();
+    }
+  }, [selectedResetPersonPasswordID]);
+
+  //callback - occurs when reset click
+  const onResetPassword = async personID => {
+    setSelectedResetPersonPasswordID(personID);
     setOpenResetPasswordDialog(true);
   };
-
-  const executeRefetchPersonData = async () => {
-    await refetchPersonData();
-  };
-  useEffect(() => {
-    selectedPersonID && executeRefetchPersonData();
-  }, [selectedPersonID]);
-  const handleEdit = personID => {
+  //callback - occurs when view detail click
+  const onViewDetail = personID => {
     setCurrentPersonID(personID);
-    setSelectedPersonID(personID);
     setShowResidentListView(false);
     setShowResidentDetailView(true);
   };
-
-  const handleDelete = personID => {
-    setPersonID(personID);
+  //callback - occurs when delete click
+  const onDelete = personID => {
+    setSelectedDeletePersonID(personID);
     setOpenDeleteDialog(true);
+  };
+  //callback - occurs when delete dialog close
+  const onCloseDeleteDialog = async confirm => {
+    if (confirm) {
+      await executeDeletePerson();
+      refetch();
+    }
+    setOpenDeleteDialog(false);
+  };
+  //callback - occurs when reset dialog close
+  const onCloseResetPasswordDialog = async confirm => {
+    if (confirm) {
+      await executeResetPassword({
+        data: {
+          password: 'mavalor'
+        }
+      });
+    }
+    setOpenResetPasswordDialog(false);
   };
   return (
     <div>
-      <Toolbar />
+      <Toolbar criteria={criteria} />
       <Box mt={3}>
-        <Results />
+        {!loading && (
+          <Results
+            residents={data}
+            onDelete={onDelete}
+            onReset={onResetPassword}
+            onViewDetail={onViewDetail}
+          />
+        )}
       </Box>
+      <DeleteDialog open={openDeleteDialog} onClose={onCloseDeleteDialog} />
+      <ResetPasswordDialog
+        open={openResetPasswordDialog}
+        onClose={onCloseResetPasswordDialog}
+      />
     </div>
   );
 };
