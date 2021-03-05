@@ -1,14 +1,17 @@
 export const initialState = {
-  isAdmin: true,
   currentPersonID: localStorage.getItem('currentPersonID') || 0,
   userName: localStorage.getItem('userName') || '',
   roles: JSON.parse(localStorage.getItem('roles')) || []
 };
 
-export const setIsAdmin = currentUser => value => {
-  currentUser.setState({
-    isAdmin: value
+export const isValidRole = currentUser => roleName => {
+  let isAdmin = false;
+  currentUser.initialState.roles.map(r => {
+    if (r.title === roleName) {
+      isAdmin = true;
+    }
   });
+  return isAdmin;
 };
 export const setRoles = currentUser => value => {
   currentUser.setState({

@@ -34,6 +34,7 @@ const useStyles = makeStyles(theme => ({
 
 const Results = ({
   className,
+  isAdmin,
 
   ...rest
 }) => {
@@ -120,6 +121,8 @@ const Results = ({
 
   return (
     <>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error!</p>}
       <Card className={clsx(classes.root, className)} {...rest}>
         <PerfectScrollbar>
           <Box minWidth={1050}>
@@ -132,12 +135,10 @@ const Results = ({
                   <TableCell>Contact Number</TableCell>
                   <TableCell>Reason</TableCell>
                   <TableCell>Document Status</TableCell>
-                  <TableCell>Actions</TableCell>
+                  {isAdmin && <TableCell>Actions</TableCell>}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {loading && <p>Loading...</p>}
-                {error && <p>Error!</p>}
                 {data &&
                   data.records.slice(0, limit).map(record => (
                     <TableRow hover key={record.barangay_clearance_id}>
@@ -149,27 +150,29 @@ const Results = ({
                       <TableCell>{`${record.phone_number}`}</TableCell>
                       <TableCell>{record.reason}</TableCell>
                       <TableCell>{record.doc_status}</TableCell>
-                      <TableCell>
-                        <IconButton
-                          aria-label="Edit"
-                          onClick={() =>
-                            handleEdit(record.barangay_clearance_id)
-                          }
-                        >
-                          <EditIcon />
-                        </IconButton>
+                      {isAdmin && (
+                        <TableCell>
+                          <IconButton
+                            aria-label="Edit"
+                            onClick={() =>
+                              handleEdit(record.barangay_clearance_id)
+                            }
+                          >
+                            <EditIcon />
+                          </IconButton>
 
-                        <IconButton
-                          aria-controls="simple-menu"
-                          aria-haspopup="true"
-                          aria-label="Menu"
-                          onClick={() =>
-                            handleDelete(record.barangay_clearance_id)
-                          }
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
+                          <IconButton
+                            aria-controls="simple-menu"
+                            aria-haspopup="true"
+                            aria-label="Menu"
+                            onClick={() =>
+                              handleDelete(record.barangay_clearance_id)
+                            }
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
               </TableBody>

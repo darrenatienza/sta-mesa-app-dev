@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Page from 'src/components/Page';
 import { Box, Container, Grid, Collapse, makeStyles } from '@material-ui/core';
 import BarangayClearanceListView from './BarangayClearanceListView';
@@ -25,32 +25,22 @@ const BarangayClearanceView = () => {
     barangayClearanceStateView,
     { setShowFormView, setShowListView }
   ] = useBarangayClearanceViewState();
+
   const [currentUser] = useCurrentUser();
+  useEffect(() => {}, [currentUser.roles]);
   return (
     <Page className={classes.root} title="Barangay Clearance">
       <Container maxWidth={false}>
-        {currentUser.isAdmin && (
-          <>
-            <Collapse in={barangayClearanceStateView.showListView}>
-              <AdminListView />
-            </Collapse>
-            <Collapse in={barangayClearanceStateView.showFormView}>
-              <AdminFormView />
-            </Collapse>
-          </>
-        )}
-
         {/** for non admin user render this jsx */}
-        {!currentUser.isAdmin && (
-          <>
-            <Collapse in={barangayClearanceStateView.showListView}>
-              {<ClientListView />}
-            </Collapse>
-            <Collapse in={barangayClearanceStateView.showFormView}>
-              <ClientFormView />
-            </Collapse>
-          </>
-        )}
+
+        <>
+          <Collapse in={barangayClearanceStateView.showListView}>
+            <ClientListView />
+          </Collapse>
+          <Collapse in={barangayClearanceStateView.showFormView}>
+            <ClientFormView />
+          </Collapse>
+        </>
       </Container>
     </Page>
   );

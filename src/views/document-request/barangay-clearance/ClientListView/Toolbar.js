@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
-import { Search as SearchIcon } from 'react-feather';
-import { useBarangayClearanceViewState } from '../../../../states';
+import moment from 'moment';
+import {
+  Box,
+  Button,
+  Grid,
+  makeStyles,
+  Card,
+  CardContent,
+  TextField,
+  InputAdornment,
+  SvgIcon,
+  Typography
+} from '@material-ui/core';
+import { Search as SearchIcon, Calendar as CalendarIcon } from 'react-feather';
+
 const useStyles = makeStyles(theme => ({
   root: {},
   importButton: {
@@ -14,32 +26,67 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ className, onAdd, onSearch, isAdmin, ...rest }) => {
   const classes = useStyles();
-  const [
-    barangayClearanceStateView,
-    { setBarangayClearanceID, setShowFormView, setShowListView }
-  ] = useBarangayClearanceViewState();
-  const handleAddNew = () => {
-    setBarangayClearanceID(0);
-    setShowFormView(true);
-    setShowListView(false);
-  };
+
+  const [criteria, setCriteria] = useState('');
+  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => onSearch(criteria, date), 500);
+    return () => clearTimeout(timeOutId);
+  }, [criteria]);
+
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box>
         <Typography variant="h2" component="h4">
-          Barangay Clearance List
+          Barangay Clearance Request
         </Typography>
       </Box>
-      <Box mt={1} display="flex" justifyContent="flex-end">
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={() => handleAddNew()}
-        >
-          Add New
-        </Button>
+      {!isAdmin && (
+        <Box display="flex" justifyContent="flex-end">
+          <Button variant="contained" color="primary" onClick={() => onAdd()}>
+            Add New Request
+          </Button>
+        </Box>
+      )}
+      <Box mt={3}>
+        <Card>
+          <CardContent>
+            <Grid container spacing={3}>
+              <Grid item lg={8} md={6} xs={12}>
+                <TextField
+                  fullWidth
+                  name="criteria"
+                  value={criteria}
+                  onChange={e => setCriteria(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SvgIcon fontSize="small" color="action">
+                          <SearchIcon />
+                        </SvgIcon>
+                      </InputAdornment>
+                    )
+                  }}
+                  placeholder="Search customer"
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item lg={4} md={6} xs={12}>
+                <TextField
+                  fullWidth
+                  name="date"
+                  value={date}
+                  onChange={e => setDate(e.target.value)}
+                  type="date"
+                  variant="outlined"
+                />
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
       </Box>
     </div>
   );

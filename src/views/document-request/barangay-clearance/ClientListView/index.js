@@ -3,7 +3,14 @@ import { Box, Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
-
+import moment from 'moment';
+import {
+  useCurrentUser,
+  useBarangayClearanceViewState
+} from '../../../../states';
+import { method } from 'lodash';
+import useAxios from 'axios-hooks';
+import { set } from 'js-cookie';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -15,16 +22,104 @@ const useStyles = makeStyles(theme => ({
 
 const ClientListView = () => {
   const classes = useStyles();
+  const [currentUser, { isValidRole }] = useCurrentUser();
+  const [criteria, setCriteria] = useState('');
+  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+  const [
+    barangayClearanceViewState,
+    { setShowFormView, setShowListView, setBarangayClearanceID }
+  ] = useBarangayClearanceViewState();
+  const [
+    selectedDeleteBarangaClearanceID,
+    setSelectedDeleteBarangaClearanceID
+  ] = useState();
+  const [isAdmin] = useState(isValidRole('admin'));
 
+  // http - get barangay clearance list
+  const [{ data, loading, error }, refetch] = useAxios(
+    {
+      url: `/records/view_barangay_clearances?${
+        isAdmin
+          ? `filter1=first_name,cs,${criteria}&filter2=last_name,cs,${criteria}&filter=request_date,cs,${date}`
+          : `filter=person_id,eq,${currentUser.currentPersonID}`
+      }`,
+      method: 'GET'
+    },
+    { manual: true }
+  );
+
+  // http - delete barangay clearance
+  const [
+    { data: deleteData, loading: deleteLoading, error: deleteError },
+    executeDelete
+  ] = useAxios(
+    {
+      url: `/records/barangay_clearances/${selectedDeleteBarangaClearanceID}`,
+      method: 'DELETE'
+    },
+    {
+      manual: true
+    }
+  );
+
+  //perform refetch after showing the list
+  useEffect(() => {
+    barangayClearanceViewState.showListView &&
+      barangayClearanceViewState.barangayClearanceID > 0 &&
+      refetch();
+  }, [barangayClearanceViewState.showListView]);
+
+  //  edit callback
+  const handleEdit = id => {
+    setBarangayClearanceID(id);
+    setShowListView(false);
+    setShowFormView(true);
+  };
+
+  //  dialog close callback
+  // perform delete request if agree
+  const onCloseDeleteDialog = async agree => {
+    if (agree) {
+      const { data: row } = await executeDelete();
+    }
+  };
+
+  useEffect(() => {
+    refetch();
+  }, [criteria, date]);
+  useEffect(() => {
+    setShowFormView(true);
+    setShowListView(false);
+  }, [barangayClearanceViewState.barangayClearanceID]);
+  // callback - add
+  const onAdd = () => {
+    setBarangayClearanceID(-1);
+  };
+  // callback - edit
+  const onEdit = id => {
+    setBarangayClearanceID(id);
+    setShowFormView(true);
+    setShowListView(false);
+  };
+  // callback -delete
+  const onDelete = id => {};
+  const onSearch = (criteria, date) => {
+    console.log(date);
+    setCriteria(criteria);
+    setDate(date);
+  };
   return (
-    <Page className={classes.root} title="Customers">
-      <Container maxWidth={false}>
-        <Toolbar />
-        <Box mt={2}>
-          <Results />
-        </Box>
-      </Container>
-    </Page>
+    <>
+      <Toolbar isAdmin={isAdmin} onAdd={onAdd} onSearch={onSearch} />
+      <Box mt={2}>
+        <Results
+          residents={data}
+          isAdmin={isAdmin}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      </Box>
+    </>
   );
 };
 

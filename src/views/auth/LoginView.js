@@ -82,10 +82,7 @@ const LoginView = () => {
     if (loginSuccess) {
       const performRoleCheck = async () => {
         const { data: result } = await refetchRole();
-
-        if (result) {
-          setRoles(result.records);
-        }
+        setRoles(result.records);
         navigate('/app/account');
       };
       performRoleCheck();
@@ -100,7 +97,7 @@ const LoginView = () => {
       }
     });
     setUserName(data.userName);
-    setCurrentPersonID(user.user_id);
+    setCurrentPersonID(user.person_id);
     user.user_id > 0 && setLoginSuccess(true);
   };
   const handleClose = () => {
