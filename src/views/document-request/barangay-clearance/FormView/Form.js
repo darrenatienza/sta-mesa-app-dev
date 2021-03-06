@@ -45,7 +45,7 @@ const Form = ({
   // react hook form manager
   const {
     register,
-    handleSubmit,
+    handleSubmit: formSubmit,
     reset,
     setValue,
     control,
@@ -55,6 +55,7 @@ const Form = ({
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       setValue('reason', data.reason);
       setValue('resCertNo', data.res_cert_no);
       setValue('dateIssued', moment(data.date_issued).format('YYYY-MM-DD'));
@@ -62,10 +63,24 @@ const Form = ({
       setValue('docStatus', data.doc_status_id);
     }
   }, [data]);
-
+  const handleSubmit = data => {
+    onSubmit(data);
+    resetFields();
+  };
+  const handleClose = () => {
+    onClose();
+    resetFields();
+  };
+  const resetFields = () => {
+    setValue('reason', '');
+    setValue('resCertNo', '');
+    setValue('dateIssued', moment().format('YYYY-MM-DD'));
+    setValue('placeIssued', '');
+    setValue('docStatus', 0);
+  };
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={formSubmit(handleSubmit)}
       autoComplete="off"
       noValidate
       className={clsx(classes.root, className)}
@@ -86,7 +101,7 @@ const Form = ({
                 control={control}
                 rules={{ required: true }}
                 defaultValue=""
-                error={errors.reason}
+                error={errors.reason && true}
               />
             </Grid>
 
@@ -172,7 +187,7 @@ const Form = ({
             color="primary"
             variant="outlined"
             className={classes.cancelButton}
-            onClick={() => onClose()}
+            onClick={() => handleClose()}
           >
             Cancel
           </Button>

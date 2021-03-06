@@ -44,13 +44,12 @@ const Toolbar = ({ className, onAdd, onSearch, isAdmin, ...rest }) => {
           Barangay Clearance Request
         </Typography>
       </Box>
-      {!isAdmin && (
-        <Box display="flex" justifyContent="flex-end">
-          <Button variant="contained" color="primary" onClick={() => onAdd()}>
-            Add New Request
-          </Button>
-        </Box>
-      )}
+      <Box display="flex" justifyContent="flex-end">
+        <Button variant="contained" color="primary" onClick={() => onAdd()}>
+          Add New Request
+        </Button>
+      </Box>
+
       {isAdmin && (
         <Box mt={3}>
           <Card>

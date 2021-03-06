@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Page from 'src/components/Page';
 import { Container, makeStyles } from '@material-ui/core';
-import AdminListView from './AdminListView';
-import ClientListView from './ClientListView';
+import ListView from './ListView';
+
 import { useCurrentUser } from '../../../states';
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,12 +17,11 @@ const useStyles = makeStyles(theme => ({
 }));
 const IndigencyView = () => {
   const classes = useStyles();
-  const [currentUser] = useCurrentUser();
+
   return (
     <Page className={classes.root} title="Indigency">
       <Container maxWidth={false}>
-        {currentUser.isAdmin && <AdminListView />}
-        {!currentUser.isAdmin && <ClientListView />}
+        <ListView />
       </Container>
     </Page>
   );

@@ -85,12 +85,6 @@ const Results = ({
                     <TableCell padding="checkbox"></TableCell>
                     <TableCell>
                       <Box alignItems="center" display="flex">
-                        <Avatar
-                          className={classes.avatar}
-                          src={businessClearance.avatarUrl}
-                        >
-                          {getInitials(businessClearance.name)}
-                        </Avatar>
                         <Typography color="textPrimary" variant="body1">
                           {`${businessClearance.name}`}
                         </Typography>

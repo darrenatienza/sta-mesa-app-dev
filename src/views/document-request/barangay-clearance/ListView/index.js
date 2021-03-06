@@ -21,21 +21,27 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ClientListView = () => {
+const ListView = () => {
   const classes = useStyles();
   const [currentUser, { isValidRole }] = useCurrentUser();
   const [criteria, setCriteria] = useState('');
   const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+
+  // state - global
   const [
     barangayClearanceViewState,
-    { setShowFormView, setShowListView, setBarangayClearanceID }
+    { setShowFormView, setShowListView, setBarangayClearanceID, setRefreshList }
   ] = useBarangayClearanceViewState();
+
+  // state - id of barangay clearance to delete
   const [
     selectedDeleteBarangaClearanceID,
     setSelectedDeleteBarangaClearanceID
   ] = useState();
   const [isAdmin] = useState(isValidRole('admin'));
+  //state - delete dialog
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
   // http - get barangay clearance list
   const [{ data, loading, error }, refetch] = useAxios(
     {
@@ -63,6 +69,7 @@ const ClientListView = () => {
     }
   );
 
+  //occurs when search happens
   useEffect(() => {
     refetch();
   }, [criteria, date]);
@@ -71,6 +78,7 @@ const ClientListView = () => {
   useEffect(() => {
     if (barangayClearanceViewState.refreshList) {
       refetch();
+      setRefreshList(false);
     }
   }, [barangayClearanceViewState.refreshList]);
 
@@ -84,15 +92,14 @@ const ClientListView = () => {
     setOpenDeleteDialog(false);
   };
 
-  useEffect(() => {}, [barangayClearanceViewState.barangayClearanceID]);
   // callback - add
   const onAdd = () => {
-    setBarangayClearanceID(null);
     setShowFormView(true);
     setShowListView(false);
   };
   // callback - edit
   const onEdit = id => {
+    console.log(id);
     setBarangayClearanceID(id);
     setShowFormView(true);
     setShowListView(false);
@@ -122,4 +129,4 @@ const ClientListView = () => {
   );
 };
 
-export default ClientListView;
+export default ListView;

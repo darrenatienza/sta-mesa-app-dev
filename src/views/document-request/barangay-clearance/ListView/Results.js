@@ -31,7 +31,7 @@ import {
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 import useAxios from 'axios-hooks';
-import ClientFormView from '../ClientFormView';
+import ClientFormView from '../FormView';
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
@@ -99,7 +99,7 @@ const Results = ({
                       {isAdmin && (
                         <>
                           <TableCell>{`${record.first_name} ${record.middle_name} ${record.last_name}`}</TableCell>
-                          <TableCell>{`${record.phone_number}`}</TableCell>
+                          <TableCell>{record.phone_number}</TableCell>
                         </>
                       )}
                       <TableCell>{record.reason}</TableCell>

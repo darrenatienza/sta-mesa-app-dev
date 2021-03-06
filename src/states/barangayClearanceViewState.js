@@ -1,6 +1,6 @@
 import moment from 'moment';
 export const initialState = {
-  barangayClearanceID: null,
+  barangayClearanceID: 0,
   showFormView: false,
   showListView: true,
   criteria: '',

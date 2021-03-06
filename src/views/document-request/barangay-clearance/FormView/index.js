@@ -11,24 +11,28 @@ import {
 
 import Form from './Form';
 
-const ClientFormView = ({ className, ...rest }) => {
+const FormView = ({ className, ...rest }) => {
   //global state
   const [
     barangayClearanceStateView,
-    { setShowFormView, setShowListView, setRefreshList }
+    { setShowFormView, setShowListView, setRefreshList, setBarangayClearanceID }
   ] = useBarangayClearanceViewState();
+  // state - global
   const [currentUser, { isValidRole }] = useCurrentUser();
+  // state - admin
   const [isAdmin] = useState(isValidRole('admin'));
-  // http request hooks
+
+  // http - get barangay clearance list
   const [{ data, loading, error }, refetch] = useAxios(
     {
       url: `/records/barangay_clearances/${barangayClearanceStateView.barangayClearanceID}`,
       method: 'GET'
     },
     {
-      manual: !barangayClearanceStateView.barangayClearanceID
+      manual: true
     }
   );
+  // http - get doc status list
   const [
     { data: docStatusData, loading: docStatusLoading, error: docStatusError },
     refetchDocStatus
@@ -41,6 +45,7 @@ const ClientFormView = ({ className, ...rest }) => {
       manual: false
     }
   );
+  // http - post
   const [
     { data: postData, loading: postLoading, error: postError },
     executePost
@@ -50,6 +55,7 @@ const ClientFormView = ({ className, ...rest }) => {
       manual: true
     }
   );
+  // http - put
   const [
     { data: putData, loading: putLoading, error: putError },
     executePut
@@ -62,20 +68,32 @@ const ClientFormView = ({ className, ...rest }) => {
       manual: true
     }
   );
+  // occurs when the id is greater has change
+  useEffect(() => {
+    barangayClearanceStateView.barangayClearanceID > 0 && refetch();
+  }, [barangayClearanceStateView.barangayClearanceID]);
 
-  // submit form callback
+  // callback - submit
   const onSubmit = async data => {
     // submit
     if (barangayClearanceStateView.barangayClearanceID > 0) {
-      await executePut({
-        data: {
-          reason: data.reason,
-          doc_status_id: data.docStatus,
-          res_cert_no: data.resCertNo,
-          date_issued: data.dateIssued,
-          place_issued: data.placeIssued
-        }
-      });
+      if (isAdmin) {
+        await executePut({
+          data: {
+            reason: data.reason,
+            doc_status_id: data.docStatus,
+            res_cert_no: data.resCertNo,
+            date_issued: data.dateIssued,
+            place_issued: data.placeIssued
+          }
+        });
+      } else {
+        await executePut({
+          data: {
+            reason: data.reason
+          }
+        });
+      }
     } else {
       await executePost({
         data: {
@@ -85,16 +103,18 @@ const ClientFormView = ({ className, ...rest }) => {
         }
       });
     }
-    setShowFormView(false);
-    setShowListView(true);
+
     setRefreshList(true);
+    onClose();
   };
 
-  // close form call back
+  //callback - close
   const onClose = () => {
     setShowFormView(false);
     setShowListView(true);
+    setBarangayClearanceID(0);
   };
+
   return (
     <Form
       data={data}
@@ -106,4 +126,4 @@ const ClientFormView = ({ className, ...rest }) => {
   );
 };
 
-export default ClientFormView;
+export default FormView;

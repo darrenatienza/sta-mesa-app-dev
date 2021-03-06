@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react';
 import Page from 'src/components/Page';
 import { Box, Container, Grid, Collapse, makeStyles } from '@material-ui/core';
-import BarangayClearanceListView from './BarangayClearanceListView';
-import BarangayClearanceFormView from './BarangayClearanceFormView';
+
 import { useBarangayClearanceViewState, useCurrentUser } from '../../../states';
-import ClientListView from './ClientListView';
-import ClientFormView from './ClientFormView';
-import AdminListView from './AdminListView';
-import AdminFormView from './AdminFormView';
+import ListView from './ListView';
+import FormView from './FormView';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -35,10 +32,10 @@ const BarangayClearanceView = () => {
 
         <>
           <Collapse in={barangayClearanceStateView.showListView}>
-            <ClientListView />
+            <ListView />
           </Collapse>
           <Collapse in={barangayClearanceStateView.showFormView}>
-            <ClientFormView />
+            <FormView />
           </Collapse>
         </>
       </Container>
