@@ -15,7 +15,7 @@ const ClientFormView = ({ className, ...rest }) => {
   //global state
   const [
     barangayClearanceStateView,
-    { setShowFormView, setShowListView }
+    { setShowFormView, setShowListView, setRefreshList }
   ] = useBarangayClearanceViewState();
   const [currentUser, { isValidRole }] = useCurrentUser();
   const [isAdmin] = useState(isValidRole('admin'));
@@ -87,6 +87,7 @@ const ClientFormView = ({ className, ...rest }) => {
     }
     setShowFormView(false);
     setShowListView(true);
+    setRefreshList(true);
   };
 
   // close form call back

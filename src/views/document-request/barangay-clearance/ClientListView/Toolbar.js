@@ -35,7 +35,7 @@ const Toolbar = ({ className, onAdd, onSearch, isAdmin, ...rest }) => {
   useEffect(() => {
     const timeOutId = setTimeout(() => onSearch(criteria, date), 500);
     return () => clearTimeout(timeOutId);
-  }, [criteria]);
+  }, [criteria, date]);
 
   return (
     <div className={clsx(classes.root, className)} {...rest}>
@@ -51,43 +51,45 @@ const Toolbar = ({ className, onAdd, onSearch, isAdmin, ...rest }) => {
           </Button>
         </Box>
       )}
-      <Box mt={3}>
-        <Card>
-          <CardContent>
-            <Grid container spacing={3}>
-              <Grid item lg={8} md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  name="criteria"
-                  value={criteria}
-                  onChange={e => setCriteria(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SvgIcon fontSize="small" color="action">
-                          <SearchIcon />
-                        </SvgIcon>
-                      </InputAdornment>
-                    )
-                  }}
-                  placeholder="Search customer"
-                  variant="outlined"
-                />
+      {isAdmin && (
+        <Box mt={3}>
+          <Card>
+            <CardContent>
+              <Grid container spacing={3}>
+                <Grid item lg={8} md={6} xs={12}>
+                  <TextField
+                    fullWidth
+                    name="criteria"
+                    value={criteria}
+                    onChange={e => setCriteria(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SvgIcon fontSize="small" color="action">
+                            <SearchIcon />
+                          </SvgIcon>
+                        </InputAdornment>
+                      )
+                    }}
+                    placeholder="Search customer"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item lg={4} md={6} xs={12}>
+                  <TextField
+                    fullWidth
+                    name="date"
+                    value={date}
+                    onChange={e => setDate(e.target.value)}
+                    type="date"
+                    variant="outlined"
+                  />
+                </Grid>
               </Grid>
-              <Grid item lg={4} md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  name="date"
-                  value={date}
-                  onChange={e => setDate(e.target.value)}
-                  type="date"
-                  variant="outlined"
-                />
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-      </Box>
+            </CardContent>
+          </Card>
+        </Box>
+      )}
     </div>
   );
 };

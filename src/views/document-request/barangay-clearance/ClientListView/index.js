@@ -11,6 +11,7 @@ import {
 import { method } from 'lodash';
 import useAxios from 'axios-hooks';
 import { set } from 'js-cookie';
+import DeleteDialog from '../../shared/DeleteDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -34,7 +35,7 @@ const ClientListView = () => {
     setSelectedDeleteBarangaClearanceID
   ] = useState();
   const [isAdmin] = useState(isValidRole('admin'));
-
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   // http - get barangay clearance list
   const [{ data, loading, error }, refetch] = useAxios(
     {
@@ -62,38 +63,33 @@ const ClientListView = () => {
     }
   );
 
+  useEffect(() => {
+    refetch();
+  }, [criteria, date]);
+
   //perform refetch after showing the list
   useEffect(() => {
-    barangayClearanceViewState.showListView &&
-      barangayClearanceViewState.barangayClearanceID > 0 &&
+    if (barangayClearanceViewState.refreshList) {
       refetch();
-  }, [barangayClearanceViewState.showListView]);
-
-  //  edit callback
-  const handleEdit = id => {
-    setBarangayClearanceID(id);
-    setShowListView(false);
-    setShowFormView(true);
-  };
+    }
+  }, [barangayClearanceViewState.refreshList]);
 
   //  dialog close callback
   // perform delete request if agree
   const onCloseDeleteDialog = async agree => {
     if (agree) {
-      const { data: row } = await executeDelete();
+      await executeDelete();
+      await refetch();
     }
+    setOpenDeleteDialog(false);
   };
 
-  useEffect(() => {
-    refetch();
-  }, [criteria, date]);
-  useEffect(() => {
-    setShowFormView(true);
-    setShowListView(false);
-  }, [barangayClearanceViewState.barangayClearanceID]);
+  useEffect(() => {}, [barangayClearanceViewState.barangayClearanceID]);
   // callback - add
   const onAdd = () => {
-    setBarangayClearanceID(-1);
+    setBarangayClearanceID(null);
+    setShowFormView(true);
+    setShowListView(false);
   };
   // callback - edit
   const onEdit = id => {
@@ -102,9 +98,11 @@ const ClientListView = () => {
     setShowListView(false);
   };
   // callback -delete
-  const onDelete = id => {};
+  const onDelete = id => {
+    setSelectedDeleteBarangaClearanceID(id);
+    setOpenDeleteDialog(true);
+  };
   const onSearch = (criteria, date) => {
-    console.log(date);
     setCriteria(criteria);
     setDate(date);
   };
@@ -118,6 +116,7 @@ const ClientListView = () => {
           onEdit={onEdit}
           onDelete={onDelete}
         />
+        <DeleteDialog open={openDeleteDialog} onClose={onCloseDeleteDialog} />
       </Box>
     </>
   );
