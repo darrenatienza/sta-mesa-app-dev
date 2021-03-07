@@ -5,6 +5,7 @@ import { Box, Container, Grid, Collapse, makeStyles } from '@material-ui/core';
 import { useBarangayClearanceViewState, useCurrentUser } from '../../../states';
 import ListView from './ListView';
 import FormView from './FormView';
+import Report from './Report';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -37,6 +38,7 @@ const BarangayClearanceView = () => {
           <Collapse in={barangayClearanceStateView.showFormView}>
             <FormView />
           </Collapse>
+          <Report />
         </>
       </Container>
     </Page>

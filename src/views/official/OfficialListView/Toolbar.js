@@ -18,41 +18,19 @@ const useStyles = makeStyles(theme => ({
   root: {}
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ className, onSearch, onAdd, ...rest }) => {
   const classes = useStyles();
   const [query, setQuery] = useState('');
-  const [
-    officialViewState,
-    {
-      setOfficialID,
-      setShowOfficialListView,
-      setShowOfficialFormView,
-      setCriteria
-    }
-  ] = useOfficialViewState();
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => setCriteria(query), 500);
+    const timeOutId = setTimeout(() => onSearch(query), 500);
     return () => clearTimeout(timeOutId);
   }, [query]);
-  //maintains value of the search box
-  useEffect(() => {
-    setQuery(officialViewState.criteria);
-  }, []);
 
-  const handleAddOfficial = () => {
-    setOfficialID(0);
-    setShowOfficialFormView(true);
-    setShowOfficialListView(false);
-  };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box display="flex" justifyContent="flex-end">
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={() => handleAddOfficial()}
-        >
+        <Button color="primary" variant="contained" onClick={() => onAdd()}>
           Add Official
         </Button>
       </Box>

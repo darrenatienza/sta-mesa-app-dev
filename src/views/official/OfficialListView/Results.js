@@ -61,6 +61,9 @@ const Results = ({ className, onEdit, onDelete, officials, ...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
                 <TableCell>Name</TableCell>
+                <TableCell>Age</TableCell>
+                <TableCell>Birthdate</TableCell>
+                <TableCell>Civil Status</TableCell>
                 <TableCell>Position</TableCell>
                 <TableCell padding="default"></TableCell>
               </TableRow>
@@ -79,7 +82,19 @@ const Results = ({ className, onEdit, onDelete, officials, ...rest }) => {
                         {`${official.first_name} ${official.last_name} `}
                       </Typography>
                     </TableCell>
-
+                    <TableCell>
+                      {moment().diff(official.birthdate, 'year')}
+                    </TableCell>
+                    <TableCell>
+                      {moment(official.birthdate).format('YYYY-MM-DD')}
+                    </TableCell>
+                    <TableCell>
+                      {official.civil_status.charAt(0).toUpperCase() +
+                        official.civil_status.slice(
+                          1,
+                          official.civil_status.length
+                        )}
+                    </TableCell>
                     <TableCell>{official.title}</TableCell>
 
                     <TableCell>

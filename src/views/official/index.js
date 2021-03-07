@@ -30,8 +30,12 @@ const OfficialView = () => {
   return (
     <Page className={classes.root} title="Officials">
       <Container maxWidth={false}>
-        <OfficialListView />
-        <OfficialFormView />
+        <Collapse in={officialViewState.showOfficialListView}>
+          <OfficialListView />
+        </Collapse>
+        <Collapse in={officialViewState.showOfficialFormView}>
+          <OfficialFormView />
+        </Collapse>
       </Container>
     </Page>
   );

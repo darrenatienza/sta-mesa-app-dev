@@ -28,14 +28,100 @@ const OfficialFormView = () => {
   const classes = useStyles();
   const [
     officialViewState,
-    { setOfficialID, setShowOfficialListView, setShowOfficialFormView }
+    {
+      setOfficialID,
+      setShowOfficialListView,
+      setShowOfficialFormView,
+      setRefreshList
+    }
   ] = useOfficialViewState();
+
+  const [
+    { data: personList, loading: personListLoading, error: personListError },
+    refetchPersonList
+  ] = useAxios(`/records/persons`);
+
+  const [
+    {
+      data: positionList,
+      loading: getPositionListLoading,
+      error: getPositionListError
+    },
+    refetchPositionList
+  ] = useAxios(`/records/positions`);
+
+  const [
+    {
+      data: getOfficialData,
+      loading: getOfficialLoading,
+      error: getOfficialError
+    },
+    refetchOfficialData
+  ] = useAxios(
+    {
+      url: `/records/officials/${officialViewState.officialID}`,
+      method: 'GET'
+    },
+    { manual: true }
+  );
+
+  const [
+    { data: postData, loading: postLoading, error: postError },
+    executePost
+  ] = useAxios(
+    { url: `/records/officials`, method: 'POST' },
+    {
+      manual: true
+    }
+  );
+  const [
+    { data: putData, loading: putLoading, error: putError },
+    executePut
+  ] = useAxios(
+    {
+      url: `/records/officials/${officialViewState.officialID}`,
+      method: 'PUT'
+    },
+    {
+      manual: true
+    }
+  );
+  const onSubmit = data => {
+    if (officialViewState.officialID > 0) {
+      executePut({
+        data: { person_id: data.personID, position_id: data.positionID }
+      });
+    } else {
+      executePost({
+        data: { person_id: data.personID, position_id: data.positionID }
+      });
+    }
+    setRefreshList(true);
+    setOfficialID(0);
+    setShowOfficialListView(true);
+    setShowOfficialFormView(false);
+  };
+
+  useEffect(() => {
+    if (officialViewState.officialID > 0) {
+      refetchOfficialData();
+    }
+  }, [officialViewState.officialID]);
+
+  const onClose = () => {
+    setOfficialID(0);
+    setShowOfficialListView(true);
+    setShowOfficialFormView(false);
+  };
+
   return (
-    <Collapse in={officialViewState.showOfficialFormView}>
-      <Container maxWidth="lg">
-        <ProfileDetails />
-      </Container>
-    </Collapse>
+    <ProfileDetails
+      personList={personList ? personList.records : []}
+      positionList={positionList ? positionList.records : []}
+      values={getOfficialData}
+      onClose={onClose}
+      onSubmit={onSubmit}
+    />
   );
 };
 

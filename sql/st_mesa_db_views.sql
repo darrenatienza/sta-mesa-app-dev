@@ -1,18 +1,20 @@
 create
 or replace
-view `view_officials` as select
-    `officials`.`official_id` as `official_id`,
-    `officials`.`person_id` as `person_id`,
-    `persons`.`first_name` as `first_name`,
-    `persons`.`middle_name` as `middle_name`,
-    `persons`.`last_name` as `last_name`,
-    `positions`.`title`
+view view_officials as select
+    officials.official_id,
+    officials.person_id,
+    persons.first_name,
+    persons.middle_name,
+    persons.last_name,
+    persons.birthdate,
+    persons.civil_status,
+    positions.title 
 from
-    (( `officials`
-join `persons` on
-    ( `officials`.`person_id` = `persons`.`person_id` ))
-join `positions` on
-    ( `officials`.`position_id` = `positions`.`position_id` ));
+    officials
+join persons on
+    officials.person_id = persons.person_id
+join positions on
+    officials.position_id = positions.position_id;
     
 create
 or replace

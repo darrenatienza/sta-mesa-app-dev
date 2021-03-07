@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 const OfficialListView = () => {
   const classes = useStyles();
-
+  const [criteria, setCriteria] = useState('');
   const [
     officialViewState,
     {
@@ -42,7 +42,7 @@ const OfficialListView = () => {
     },
     refetch
   ] = useAxios(
-    `/records/view_officials?filter=first_name,cs,${officialViewState.criteria}`
+    `/records/view_officials?filter1=first_name,cs,${criteria}&filter2=last_name,cs,${criteria}`
   );
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [myOfficialID, setMyOfficialID] = useState();
@@ -81,18 +81,32 @@ const OfficialListView = () => {
     await refetch();
     setRefreshList(false);
   };
+  const onCloseDeleteDialog = async confirm => {
+    if (confirm) {
+      await executeDelete();
+      await refetch();
+    }
+    setOpenDeleteDialog(false);
+  };
+  const onSearch = criteria => {
+    setCriteria(criteria);
+  };
+  const onAdd = () => {
+    setShowOfficialListView(false);
+    setShowOfficialFormView(true);
+  };
   return (
-    <Collapse in={officialViewState.showOfficialListView}>
-      <Toolbar />
+    <>
+      <Toolbar onSearch={onSearch} onAdd={onAdd} />
       <Box mt={3}>
         <Results
           officials={getOfficialList ? getOfficialList.records : []}
           onEdit={onEdit}
           onDelete={onDelete}
         />
+        <DeleteDialog open={openDeleteDialog} onClose={onCloseDeleteDialog} />
       </Box>
-      {/* Todo: Delete Dialog */}
-    </Collapse>
+    </>
   );
 };
 

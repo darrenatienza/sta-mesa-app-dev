@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useOfficialViewState } from '../../../states';
 import useAxios from 'axios-hooks';
+import { useForm, Controller } from 'react-hook-form';
 import {
   Box,
   Button,
@@ -18,7 +19,6 @@ import {
   FormControl,
   makeStyles
 } from '@material-ui/core';
-import SaveActionButton from './SaveActionButton';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -27,103 +27,36 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const ProfileDetails = ({ className, ...rest }) => {
-  const [personList, setPersonList] = useState([]);
-  const [positionList, setPositionList] = useState([]);
-
-  const [
-    officialViewState,
-    { setOfficialID, setShowOfficialListView, setShowOfficialFormView }
-  ] = useOfficialViewState();
-  const [
-    {
-      data: getPersonListData,
-      loading: getPersonListLoading,
-      error: getPersonListError
-    },
-    refetchPersonList
-  ] = useAxios(`/records/persons`);
-
-  const [
-    {
-      data: getPositionListData,
-      loading: getPositionListLoading,
-      error: getPositionListError
-    },
-    refetchPositionList
-  ] = useAxios(`/records/positions`);
-
-  const [
-    {
-      data: getOfficialData,
-      loading: getOfficialLoading,
-      error: getOfficialError
-    },
-    refetchOfficialData
-  ] = useAxios(
-    {
-      url: `/records/officials/${officialViewState.officialID}`,
-      method: 'GET'
-    },
-    { manual: true }
-  );
-  const [values, setValues] = useState({
-    officialID: '',
-    personID: '',
-    positionID: ''
-  });
-  // if id found, set values (edit operation)
-  // if not set empty values (add operation)
-  useEffect(() => {}, [officialViewState.officialID]);
-
-  useEffect(() => {
-    if (officialViewState.showOfficialFormView) {
-      if (officialViewState.officialID > 0) {
-        refetchOfficialData();
-      } else {
-        setValues({
-          officialID: '',
-          personID: '',
-          positionID: ''
-        });
-      }
-    }
-  }, [officialViewState.showOfficialFormView]);
-
-  useEffect(() => {
-    getOfficialData &&
-      setValues({
-        ...values,
-        officialID: getOfficialData.official_id,
-        personID: getOfficialData.person_id,
-        positionID: getOfficialData.position_id
-      });
-  }, [getOfficialData]);
-
-  useEffect(() => {
-    getPersonListData && setPersonList(getPersonListData.records);
-  }, [getPersonListData]);
-
-  useEffect(() => {
-    getPositionListData && setPositionList(getPositionListData.records);
-  }, [getPositionListData]);
-
-  const handleChange = event => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
-
-  const handleClose = () => {
-    setOfficialID(0);
-    setShowOfficialListView(true);
-    setShowOfficialFormView(false);
-  };
+const ProfileDetails = ({
+  className,
+  onClose,
+  personList,
+  positionList,
+  onSubmit,
+  values,
+  ...rest
+}) => {
   const classes = useStyles();
-
+  const method = useForm();
+  const { handleSubmit, control, setValue } = method;
+  useEffect(() => {
+    if (values) {
+      console.log(values);
+      setValue('personID', values.person_id);
+      setValue('positionID', values.position_id);
+    }
+  }, [values]);
+  const onCloseForm = () => {
+    onClose();
+    reset();
+  };
+  const reset = () => {
+    setValue('personID', 0);
+    setValue('positionID', 0);
+  };
   return (
     <form
+      onSubmit={handleSubmit(onSubmit)}
       autoComplete="off"
       noValidate
       className={clsx(classes.root, className)}
@@ -138,60 +71,52 @@ const ProfileDetails = ({ className, ...rest }) => {
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
-              <FormControl
+              <Controller
                 fullWidth
+                as={TextField}
+                control={control}
+                select
+                name="personID"
+                id="demo-simple-select-outlined"
+                label="Residents"
                 variant="outlined"
-                className={classes.formControl}
+                defaultValue={0}
+                SelectProps={{
+                  native: true
+                }}
               >
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Residents
-                </InputLabel>
-                <Select
-                  fullWidth
-                  name="personID"
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  value={values.personID}
-                  onChange={handleChange}
-                  label="Residents"
-                  variant="outlined"
-                >
-                  {personList &&
-                    personList?.map(option => (
-                      <MenuItem key={option.person_id} value={option.person_id}>
-                        {option.first_name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
+                <option value={0}>Select here...</option>
+                {personList &&
+                  personList?.map(option => (
+                    <option key={option.person_id} value={option.person_id}>
+                      {`${option.first_name} ${option.last_name}`}
+                    </option>
+                  ))}
+              </Controller>
             </Grid>
             <Grid item md={6} xs={12}>
-              <FormControl
+              <Controller
                 fullWidth
+                as={TextField}
+                select
+                control={control}
                 variant="outlined"
-                className={classes.formControl}
+                name="positionID"
+                id="position-label"
+                label="Position"
+                defaultValue={0}
+                SelectProps={{
+                  native: true
+                }}
               >
-                <InputLabel id="position-label">Position</InputLabel>
-                <Select
-                  fullWidth
-                  name="positionID"
-                  labelId="position-label"
-                  id="position-label"
-                  value={values.positionID}
-                  onChange={handleChange}
-                  label="Position"
-                >
-                  {positionList &&
-                    positionList?.map(option => (
-                      <MenuItem
-                        key={option.position_id}
-                        value={option.position_id}
-                      >
-                        {option.title}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
+                <option value={0}>Select here...</option>
+                {positionList &&
+                  positionList.map(option => (
+                    <option key={option.position_id} value={option.position_id}>
+                      {option.title}
+                    </option>
+                  ))}
+              </Controller>
             </Grid>
           </Grid>
         </CardContent>
@@ -201,11 +126,18 @@ const ProfileDetails = ({ className, ...rest }) => {
             color="primary"
             variant="outlined"
             className={classes.cancelButton}
-            onClick={handleClose}
+            onClick={() => onCloseForm()}
           >
             Cancel
           </Button>
-          <SaveActionButton value={values} />
+          <Button
+            color="primary"
+            variant="contained"
+            className={classes.saveButton}
+            type="submit"
+          >
+            Save
+          </Button>
         </Box>
       </Card>
     </form>
