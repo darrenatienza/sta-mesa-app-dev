@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 import { useForm, Controller } from 'react-hook-form';
 import {
   useBarangayClearanceViewState,
-  useRelationship
+  useRelationship,
+  useCurrentUser
 } from '../../../../states';
 import FormView from './FormView';
 import moment from 'moment';
@@ -39,6 +40,7 @@ const useStyles = makeStyles(() => ({
 const RelationshipFormView = ({ className, ...rest }) => {
   const classes = useStyles();
   const formRef = useRef();
+  const [currentUser] = useCurrentUser();
   const [reset, setReset] = useState(false);
   //global state
   const [
@@ -106,7 +108,7 @@ const RelationshipFormView = ({ className, ...rest }) => {
     } else {
       const { data: row } = await executePost({
         data: {
-          person_id: 1,
+          person_id: currentUser.currentPersonID,
           doc_status_id: 1,
           person_related_with: data.personRelatedWith,
           relationship: data.relationship,
@@ -119,7 +121,6 @@ const RelationshipFormView = ({ className, ...rest }) => {
     setShowFormView(false);
     setShowListView(true);
     setRefreshList(true);
-    setRefreshList(false);
   };
   // close form call back
   const onClose = () => {

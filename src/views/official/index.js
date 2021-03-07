@@ -29,8 +29,10 @@ const OfficialView = () => {
   }, []);
   return (
     <Page className={classes.root} title="Officials">
-      <OfficialListView />
-      <OfficialFormView />
+      <Container maxWidth={false}>
+        <OfficialListView />
+        <OfficialFormView />
+      </Container>
     </Page>
   );
 };

@@ -27,7 +27,7 @@ join `persons` on
     ( `persons`.person_id = `person_roles`.person_id ))
 join `roles` on
     ( `roles`.`role_id` = `person_roles`.`role_id` ));
-/**    
+   
 create
 or replace
 view view_health_workers as select
@@ -35,12 +35,17 @@ view view_health_workers as select
     persons.person_id,
     persons.first_name,
     persons.middle_name,
-    persons.last_name
+    persons.last_name,
+    persons.birthdate,
+    persons.civil_status
+    
 from
    person_roles
    
 join persons on
-   persons.person_id =person_roles.person_id where person_roles.role_id = 2 ; */
+   persons.person_id =person_roles.person_id
+join roles on 
+	person_roles.role_id = roles.role_id where roles.title = 'bhw';
    
 create
 or replace

@@ -90,39 +90,43 @@ const Results = ({
               </TableHead>
               <TableBody>
                 {residents &&
-                  residents.records.slice(0, limit).map(record => (
-                    <TableRow hover key={record.barangay_clearance_id}>
-                      <TableCell padding="checkbox"></TableCell>
-                      <TableCell>
-                        {moment(record.request_date).format('DD/MM/YYYY')}
-                      </TableCell>
-                      {isAdmin && (
-                        <>
-                          <TableCell>{`${record.first_name} ${record.middle_name} ${record.last_name}`}</TableCell>
-                          <TableCell>{record.phone_number}</TableCell>
-                        </>
-                      )}
-                      <TableCell>{record.reason}</TableCell>
-                      <TableCell>{record.doc_status}</TableCell>
-                      <TableCell>
-                        <IconButton
-                          aria-label="Edit"
-                          onClick={() => onEdit(record.barangay_clearance_id)}
-                        >
-                          <EditIcon />
-                        </IconButton>
+                  residents.records
+                    .slice(page * limit, page * limit + limit)
+                    .map(record => (
+                      <TableRow hover key={record.barangay_clearance_id}>
+                        <TableCell padding="checkbox"></TableCell>
+                        <TableCell>
+                          {moment(record.request_date).format('DD/MM/YYYY')}
+                        </TableCell>
+                        {isAdmin && (
+                          <>
+                            <TableCell>{`${record.first_name} ${record.middle_name} ${record.last_name}`}</TableCell>
+                            <TableCell>{record.phone_number}</TableCell>
+                          </>
+                        )}
+                        <TableCell>{record.reason}</TableCell>
+                        <TableCell>{record.doc_status}</TableCell>
+                        <TableCell>
+                          <IconButton
+                            aria-label="Edit"
+                            onClick={() => onEdit(record.barangay_clearance_id)}
+                          >
+                            <EditIcon />
+                          </IconButton>
 
-                        <IconButton
-                          aria-controls="simple-menu"
-                          aria-haspopup="true"
-                          aria-label="Menu"
-                          onClick={() => onDelete(record.barangay_clearance_id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                          <IconButton
+                            aria-controls="simple-menu"
+                            aria-haspopup="true"
+                            aria-label="Menu"
+                            onClick={() =>
+                              onDelete(record.barangay_clearance_id)
+                            }
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </Box>

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
+
 import Results from './Results';
-import AdminResults from './AdminResults';
 import Toolbar from './Toolbar';
 import { useRelationship } from '../../../../states';
 import useAxios from 'axios-hooks';
 import DocumentStatusDialog from '../../../shared/DocumentStatusDialog';
 import moment from 'moment';
 import { useCurrentUser } from '../../../../states';
+import DeleteDialog from '../../shared/DeleteDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -20,8 +21,10 @@ const useStyles = makeStyles(theme => ({
 
 const RelationshipListView = () => {
   const classes = useStyles();
-  const [currentUser] = useCurrentUser();
+  const [currentUser, { isValidRole }] = useCurrentUser();
+  const [isAdmin] = useState(isValidRole('admin'));
   const [selecteIDToDelete, setSelectedIDToDelete] = useState(0);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [
     selecteIDToUpdateDocumentStatus,
     setSelecteIDToUpdateDocumentStatus
@@ -32,12 +35,21 @@ const RelationshipListView = () => {
   const [criteria, setCriteria] = useState('');
   const [
     relationship,
-    { setSelectedRelationshipID, setShowFormView, setShowListView }
+    {
+      setSelectedRelationshipID,
+      setShowFormView,
+      setShowListView,
+      setRefreshList
+    }
   ] = useRelationship();
 
   const [{ data, loading, error }, refetch] = useAxios(
     {
-      url: `/records/view_relationships?filter1=first_name,cs,${criteria}`,
+      url: `/records/view_relationships?${
+        isAdmin
+          ? `filter1=first_name,cs,${criteria}`
+          : `filter=person_id,eq,${currentUser.currentPersonID}`
+      }`,
       method: 'GET'
     },
     { manual: true }
@@ -63,41 +75,43 @@ const RelationshipListView = () => {
     },
     { manual: true }
   );
-  useEffect(() => {
-    if (selecteIDToDelete > 0) {
-      const performDelete = async () => {
-        await executeDelete();
-        await refetch();
-      };
-      performDelete();
-    }
-  }, [selecteIDToDelete]);
+
   useEffect(() => {
     refetch();
   }, [criteria]);
+
   useEffect(() => {
-    relationship.refreshList && refetch();
+    if (relationship.refreshList) {
+      refetch();
+      setRefreshList(false);
+    }
   }, [relationship.refreshList]);
+
   //callback functions
   const onAdd = () => {
     setShowFormView(true);
     setShowListView(false);
     setSelectedRelationshipID(-1);
   };
+
   const onEdit = id => {
     setShowFormView(true);
     setShowListView(false);
     setSelectedRelationshipID(id);
   };
+
   const onDelete = id => {
     setSelectedIDToDelete(id);
+    setOpenDeleteDialog(true);
   };
+
   const onSearch = criteria => {
     setCriteria(criteria);
   };
   const onCloseDocumentStatusDialog = () => {
     setDocumentStatusDialogOpen(false);
   };
+
   const onConfirmDocumentStatusDialog = async id => {
     await executePutDocStatus({
       data: {
@@ -112,6 +126,14 @@ const RelationshipListView = () => {
     setSelecteIDToUpdateDocumentStatus(id);
     setDocumentStatusDialogOpen(true);
   };
+  const onCloseDeleteDialog = async confirm => {
+    if (confirm) {
+      await executeDelete();
+      await refetch();
+    }
+
+    setOpenDeleteDialog(false);
+  };
   //jsx
   return (
     <>
@@ -120,31 +142,21 @@ const RelationshipListView = () => {
         onSearch={onSearch}
         onAdd={onAdd}
       />
-      <Box mt={1}>
-        {!currentUser.isAdmin && (
-          <>
-            <Results
-              onEdit={onEdit}
-              onDelete={onDelete}
-              relationships={data ? data.records : []}
-            />
-          </>
-        )}
-
-        {currentUser.isAdmin && (
-          <AdminResults
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onUpdateDocumentStatus={onUpdateDocumentStatus}
-            relationships={data ? data.records : []}
-          />
-        )}
+      <Box mt={3}>
+        <Results
+          isAdmin={isAdmin}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onUpdateDocumentStatus={onUpdateDocumentStatus}
+          relationships={data ? data.records : []}
+        />
 
         <DocumentStatusDialog
           open={documentStatusDialogOpen}
           onClose={onCloseDocumentStatusDialog}
           onConfirm={onConfirmDocumentStatusDialog}
         />
+        <DeleteDialog open={openDeleteDialog} onClose={onCloseDeleteDialog} />
       </Box>
     </>
   );

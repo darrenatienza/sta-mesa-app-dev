@@ -30,45 +30,42 @@ const Toolbar = ({ className, isAdmin, onSearch, onAdd, ...rest }) => {
     <div className={clsx(classes.root, className)} {...rest}>
       <Grid container justify="space-between">
         <Grid item>
-          {!isAdmin && <Typography variant="h1">Relationship</Typography>}
-          {isAdmin && (
-            <Typography variant="h1">Relationship (Admin)</Typography>
-          )}
+          <Typography variant="h1">Relationship</Typography>
         </Grid>
         <Grid item>
           <Box display="flex" justifyContent="flex-end">
-            {!isAdmin && (
-              <Button color="primary" variant="contained" onClick={onAdd}>
-                Add New Relationship Request
-              </Button>
-            )}
+            <Button color="primary" variant="contained" onClick={onAdd}>
+              Add New Relationship Request
+            </Button>
           </Box>
         </Grid>
       </Grid>
 
-      <Box mt={3}>
-        <Card>
-          <CardContent>
-            <Box maxWidth={500}>
-              <TextField
-                fullWidth
-                onChange={e => setQuery(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon fontSize="small" color="action">
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  )
-                }}
-                placeholder="Search"
-                variant="outlined"
-              />
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
+      {isAdmin && (
+        <Box mt={3}>
+          <Card>
+            <CardContent>
+              <Box maxWidth={500}>
+                <TextField
+                  fullWidth
+                  onChange={e => setQuery(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SvgIcon fontSize="small" color="action">
+                          <SearchIcon />
+                        </SvgIcon>
+                      </InputAdornment>
+                    )
+                  }}
+                  placeholder="Search"
+                  variant="outlined"
+                />
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+      )}
     </div>
   );
 };

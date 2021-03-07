@@ -1,8 +1,6 @@
-
-
-/**changes on 24/01/2021 @ home */
-ALTER TABLE barangay_clearances ADD request_date DATETIME DEFAULT current_timestamp() NOT NULL;
-ALTER TABLE barangay_clearances ADD res_cert_no varchar(100) NOT NULL;
-ALTER TABLE barangay_clearances ADD date_issued DATETIME DEFAULT current_timestamp() NOT NULL;
-ALTER TABLE barangay_clearances ADD doc_status_id INT DEFAULT 1 NOT NULL;
-ALTER TABLE barangay_clearances ADD CONSTRAINT barangay_clearances_doc_statuses_fk FOREIGN KEY (doc_status_id) REFERENCES doc_statuses(doc_status_id) ON DELETE CASCADE;
+/**changes on 07/03/2021 @ home */
+ALTER TABLE indigencies ADD update_timestamp datetime NOT null default current_timestamp() on update current_timestamp() ;
+ALTER TABLE indigencies MODIFY COLUMN parents varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Not needed for inserting value';
+ALTER TABLE indigencies MODIFY COLUMN indigent_reason varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Not needed for inserting value';
+ALTER TABLE indigencies MODIFY COLUMN date_issued datetime NOT NULL default current_timestamp() COMMENT 'the value must be base on update time stamp. for future remove';
+ALTER TABLE indigencies MODIFY COLUMN request_date datetime   NOT NULL  default current_timestamp() COMMENT 'value must be base on create time stamp. for future remove' ;

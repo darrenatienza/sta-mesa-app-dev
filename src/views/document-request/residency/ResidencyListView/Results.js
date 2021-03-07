@@ -33,7 +33,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Results = ({ className, onEdit, onDelete, residencies, ...rest }) => {
+const Results = ({
+  className,
+  onEdit,
+  onDelete,
+  onUpdateDocumentStatus,
+  residencies,
+  isAdmin,
+  ...rest
+}) => {
   const classes = useStyles();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -54,43 +62,63 @@ const Results = ({ className, onEdit, onDelete, residencies, ...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
                 <TableCell>Request Date</TableCell>
+                {isAdmin && (
+                  <>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Age</TableCell>
+                    <TableCell>Civil Status</TableCell>
+                  </>
+                )}
                 <TableCell>Residing Span</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {residencies.slice(0, limit).map(residency => (
-                <TableRow hover key={residency.residency_id}>
-                  <TableCell padding="checkbox"></TableCell>
-                  <TableCell>{residency.create_time_stamp}</TableCell>
-                  <TableCell>{residency.residing_span}</TableCell>
-                  <TableCell>
-                    <Chip
-                      color="primary"
-                      label={residency.doc_status}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="Edit"
-                      onClick={() => onEdit(residency.residency_id)}
-                    >
-                      <EditIcon />
-                    </IconButton>
+              {residencies
+                .slice(page * limit, page * limit + limit)
+                .map(residency => (
+                  <TableRow hover key={residency.residency_id}>
+                    <TableCell padding="checkbox"></TableCell>
+                    <TableCell>{residency.create_time_stamp}</TableCell>
+                    {isAdmin && (
+                      <>
+                        <TableCell>
+                          <Typography color="textPrimary" variant="body1">
+                            {`${residency.first_name} ${residency.middle_name} ${residency.last_name}`}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          {moment().diff(residency.birthdate, 'years')}
+                        </TableCell>
+                        <TableCell>{residency.civil_status}</TableCell>
+                      </>
+                    )}
+                    <TableCell>{residency.residing_span}</TableCell>
 
-                    <IconButton
-                      aria-controls="simple-menu"
-                      aria-haspopup="true"
-                      aria-label="Menu"
-                      onClick={() => onDelete(residency.residency_id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    <TableCell>
+                      <Chip
+                        color="primary"
+                        label={residency.doc_status}
+                        size="small"
+                        onClick={() =>
+                          isAdmin &&
+                          onUpdateDocumentStatus(residency.residency_id)
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        aria-label="Menu"
+                        onClick={() => onDelete(residency.residency_id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Box>

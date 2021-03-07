@@ -40,52 +40,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Results = ({ className, officials, ...rest }) => {
-  const [
-    officialViewState,
-    {
-      setOfficialID,
-      setShowOfficialFormView,
-      setShowOfficialListView,
-      setRefreshList
-    }
-  ] = useOfficialViewState();
-
+const Results = ({ className, onEdit, onDelete, officials, ...rest }) => {
   const classes = useStyles();
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [myOfficialID, setMyOfficialID] = useState();
   const handleLimitChange = event => {
     setLimit(event.target.value);
   };
-  const [
-    { data: deleteData, loading: deleteLoading, error: deleteError },
-    executeDelete
-  ] = useAxios(
-    { url: `/records/officials/${myOfficialID}`, method: 'DELETE' },
-    {
-      manual: true
-    }
-  );
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
-  };
-  const handleEditClick = officialID => {
-    setOfficialID(officialID);
-    setShowOfficialFormView(true);
-    setShowOfficialListView(false);
-  };
-  const handleDelete = id => {
-    console.log(id);
-    setMyOfficialID(id);
-    setOpenDeleteDialog(true);
-  };
-  const handleConfirm = () => {
-    executeDelete();
-    setOpenDeleteDialog(false);
-    setRefreshList(true);
   };
 
   return (
@@ -111,17 +75,9 @@ const Results = ({ className, officials, ...rest }) => {
                   >
                     <TableCell padding="checkbox"></TableCell>
                     <TableCell>
-                      <Box alignItems="center" display="flex">
-                        <Avatar
-                          className={classes.avatar}
-                          src={official.avatarUrl}
-                        >
-                          {getInitials(official.first_name)}
-                        </Avatar>
-                        <Typography color="textPrimary" variant="body1">
-                          {`${official.first_name} ${official.last_name} `}
-                        </Typography>
-                      </Box>
+                      <Typography color="textPrimary" variant="body1">
+                        {`${official.first_name} ${official.last_name} `}
+                      </Typography>
                     </TableCell>
 
                     <TableCell>{official.title}</TableCell>
@@ -129,13 +85,13 @@ const Results = ({ className, officials, ...rest }) => {
                     <TableCell>
                       <IconButton
                         aria-label="Edit"
-                        onClick={() => handleEditClick(official.official_id)}
+                        onClick={() => onEdit(official.official_id)}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
-                        aria-label="Edit"
-                        onClick={() => handleDelete(official.official_id)}
+                        aria-label="Delete"
+                        onClick={() => onDelete(official.official_id)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -148,35 +104,13 @@ const Results = ({ className, officials, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={officials && officials.length}
+        count={officials ? officials.length : 0}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
-      <Dialog
-        fullWidth
-        open={openDeleteDialog}
-        onClose={() => setOpenDeleteDialog(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Delete Record</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Do you want to delete this record
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => handleConfirm()} color="primary" autoFocus>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Card>
   );
 };

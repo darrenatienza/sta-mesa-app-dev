@@ -33,39 +33,39 @@ const Toolbar = ({ className, isAdmin, onSearch, onAdd, ...rest }) => {
           <Typography variant="h1">Residency</Typography>
         </Grid>
         <Grid item>
-          {!isAdmin && (
-            <Box display="flex" justifyContent="flex-end">
-              <Button color="primary" variant="contained" onClick={onAdd}>
-                Add New Relationship Request
-              </Button>
-            </Box>
-          )}
+          <Box display="flex" justifyContent="flex-end">
+            <Button color="primary" variant="contained" onClick={onAdd}>
+              Add New Relationship Request
+            </Button>
+          </Box>
         </Grid>
       </Grid>
 
-      <Box mt={3}>
-        <Card>
-          <CardContent>
-            <Box maxWidth={500}>
-              <TextField
-                fullWidth
-                onChange={e => setQuery(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon fontSize="small" color="action">
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  )
-                }}
-                placeholder="Search"
-                variant="outlined"
-              />
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
+      {isAdmin && (
+        <Box mt={3}>
+          <Card>
+            <CardContent>
+              <Box maxWidth={500}>
+                <TextField
+                  fullWidth
+                  onChange={e => setQuery(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SvgIcon fontSize="small" color="action">
+                          <SearchIcon />
+                        </SvgIcon>
+                      </InputAdornment>
+                    )
+                  }}
+                  placeholder="Search"
+                  variant="outlined"
+                />
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+      )}
     </div>
   );
 };

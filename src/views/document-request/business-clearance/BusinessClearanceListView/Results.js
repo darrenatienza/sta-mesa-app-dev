@@ -80,48 +80,55 @@ const Results = ({
             </TableHead>
             <TableBody>
               {businessClearances &&
-                businessClearances.slice(0, limit).map(businessClearance => (
-                  <TableRow hover key={businessClearance.business_clearance_id}>
-                    <TableCell padding="checkbox"></TableCell>
-                    <TableCell>
-                      <Box alignItems="center" display="flex">
-                        <Typography color="textPrimary" variant="body1">
-                          {`${businessClearance.name}`}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>{businessClearance.address}</TableCell>
-                    <TableCell>{businessClearance.business_nature}</TableCell>
-                    <TableCell>
-                      <Chip
-                        color="primary"
-                        label={businessClearance.doc_status}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-label="Edit"
-                        onClick={() =>
-                          handleEdit(businessClearance.business_clearance_id)
-                        }
-                      >
-                        <EditIcon />
-                      </IconButton>
+                businessClearances
+                  .slice(page * limit, page * limit + limit)
+                  .map(businessClearance => (
+                    <TableRow
+                      hover
+                      key={businessClearance.business_clearance_id}
+                    >
+                      <TableCell padding="checkbox"></TableCell>
+                      <TableCell>
+                        <Box alignItems="center" display="flex">
+                          <Typography color="textPrimary" variant="body1">
+                            {`${businessClearance.name}`}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>{businessClearance.address}</TableCell>
+                      <TableCell>{businessClearance.business_nature}</TableCell>
+                      <TableCell>
+                        <Chip
+                          color="primary"
+                          label={businessClearance.doc_status}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          aria-label="Edit"
+                          onClick={() =>
+                            handleEdit(businessClearance.business_clearance_id)
+                          }
+                        >
+                          <EditIcon />
+                        </IconButton>
 
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Menu"
-                        onClick={() =>
-                          handleDelete(businessClearance.business_clearance_id)
-                        }
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        <IconButton
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          aria-label="Menu"
+                          onClick={() =>
+                            handleDelete(
+                              businessClearance.business_clearance_id
+                            )
+                          }
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </Box>

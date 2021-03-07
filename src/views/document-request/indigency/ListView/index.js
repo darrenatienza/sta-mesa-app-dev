@@ -3,7 +3,7 @@ import { Box, Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
-
+import moment from 'moment';
 import useAxios from 'axios-hooks';
 import { useCurrentUser } from '../../../../states';
 import DeleteDialog from 'src/views/residents/ResidentListView/DeleteDialog';
@@ -35,7 +35,11 @@ const ListView = () => {
   ] = useState(false);
   const [{ data, loading, error }, refetch] = useAxios(
     {
-      url: `/records/view_indigencies?filter1=first_name,cs,${criteria}&filter2=last_name,cs,${criteria}`,
+      url: `/records/view_indigencies?${
+        isAdmin
+          ? `filter1=first_name,cs,${criteria}&filter2=last_name,cs,${criteria}`
+          : `filter=person_id,eq,${currentUser.currentPersonID}`
+      }`,
       method: 'GET'
     },
     {

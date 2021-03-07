@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import _ from 'lodash/fp';
 import PropTypes from 'prop-types';
 import { useForm, Controller } from 'react-hook-form';
-import { useResidency } from '../../../../states';
+import { useResidency, useCurrentUser } from '../../../../states';
 import FormView from './FormView';
 import moment from 'moment';
 import {
@@ -36,6 +36,8 @@ const useStyles = makeStyles(() => ({
 const ResidencyFormView = ({ className, ...rest }) => {
   const classes = useStyles();
   const formRef = useRef();
+  const [currentUser] = useCurrentUser();
+
   const [reset, setReset] = useState(false);
   //global state
   const [
@@ -96,7 +98,7 @@ const ResidencyFormView = ({ className, ...rest }) => {
     } else {
       const { data: row } = await executePost({
         data: {
-          person_id: 1,
+          person_id: currentUser.currentPersonID,
           doc_status_id: 1,
           residing_span: data.residingSpan
         }

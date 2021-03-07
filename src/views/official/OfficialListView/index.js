@@ -11,6 +11,7 @@ import Results from './Results';
 import Toolbar from './Toolbar';
 import { useOfficialViewState } from '../../../states';
 import useAxios from 'axios-hooks';
+import DeleteDialog from 'src/views/shared/DeleteDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 const OfficialListView = () => {
   const classes = useStyles();
-  const [officials, setOfficials] = useState([]);
+
   const [
     officialViewState,
     {
@@ -43,10 +44,33 @@ const OfficialListView = () => {
   ] = useAxios(
     `/records/view_officials?filter=first_name,cs,${officialViewState.criteria}`
   );
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [myOfficialID, setMyOfficialID] = useState();
 
-  useEffect(() => {
-    getOfficialList && setOfficials(getOfficialList.records);
-  }, [getOfficialList]);
+  const [
+    { data: deleteData, loading: deleteLoading, error: deleteError },
+    executeDelete
+  ] = useAxios(
+    { url: `/records/officials/${myOfficialID}`, method: 'DELETE' },
+    {
+      manual: true
+    }
+  );
+
+  const onEdit = officialID => {
+    setOfficialID(officialID);
+    setShowOfficialFormView(true);
+    setShowOfficialListView(false);
+  };
+  const onDelete = id => {
+    setMyOfficialID(id);
+    setOpenDeleteDialog(true);
+  };
+  const handleConfirm = () => {
+    executeDelete();
+    setOpenDeleteDialog(false);
+    setRefreshList(true);
+  };
 
   useEffect(() => {
     refetchAsync();
@@ -59,12 +83,15 @@ const OfficialListView = () => {
   };
   return (
     <Collapse in={officialViewState.showOfficialListView}>
-      <Container maxWidth={false}>
-        <Toolbar />
-        <Box mt={3}>
-          <Results officials={officials} />
-        </Box>
-      </Container>
+      <Toolbar />
+      <Box mt={3}>
+        <Results
+          officials={getOfficialList ? getOfficialList.records : []}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      </Box>
+      {/* Todo: Delete Dialog */}
     </Collapse>
   );
 };

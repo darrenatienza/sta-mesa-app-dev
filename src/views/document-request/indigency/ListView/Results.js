@@ -71,57 +71,60 @@ const Results = ({
             </TableHead>
             <TableBody>
               {indigencies &&
-                indigencies.slice(0, limit).map(indigency => (
-                  <TableRow hover key={indigency.indigency_id}>
-                    <TableCell padding="checkbox"></TableCell>
-                    <TableCell>{indigency.request_date}</TableCell>
-                    {isAdmin && (
-                      <>
-                        <TableCell>
-                          <Box alignItems="center" display="flex">
-                            <Typography color="textPrimary" variant="body1">
-                              {`${indigency.first_name} ${indigency.middle_name} ${indigency.last_name}`}
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          {moment().diff(indigency.birthdate, 'years')}
-                        </TableCell>
-                        <TableCell>{indigency.civil_status}</TableCell>
-                      </>
-                    )}
-                    <TableCell>
-                      <Chip
-                        onClick={() =>
-                          onChangeDocumentStatus(indigency.indigency_id)
-                        }
-                        color="primary"
-                        label={indigency.doc_status}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
+                indigencies
+                  .slice(page * limit, page * limit + limit)
+                  .map(indigency => (
+                    <TableRow hover key={indigency.indigency_id}>
+                      <TableCell padding="checkbox"></TableCell>
+                      <TableCell>{indigency.request_date}</TableCell>
                       {isAdmin && (
+                        <>
+                          <TableCell>
+                            <Box alignItems="center" display="flex">
+                              <Typography color="textPrimary" variant="body1">
+                                {`${indigency.first_name} ${indigency.middle_name} ${indigency.last_name}`}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            {moment().diff(indigency.birthdate, 'years')}
+                          </TableCell>
+                          <TableCell>{indigency.civil_status}</TableCell>
+                        </>
+                      )}
+                      <TableCell>
+                        <Chip
+                          onClick={() =>
+                            isAdmin &&
+                            onChangeDocumentStatus(indigency.indigency_id)
+                          }
+                          color="primary"
+                          label={indigency.doc_status}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {isAdmin && (
+                          <IconButton
+                            aria-controls="simple-menu"
+                            aria-haspopup="true"
+                            aria-label="Menu"
+                            onClick={() => onPrint(indigency.indigency_id)}
+                          >
+                            <PrintIcon />
+                          </IconButton>
+                        )}
                         <IconButton
                           aria-controls="simple-menu"
                           aria-haspopup="true"
                           aria-label="Menu"
-                          onClick={() => onPrint(indigency.indigency_id)}
+                          onClick={() => onDelete(indigency.indigency_id)}
                         >
-                          <PrintIcon />
+                          <DeleteIcon />
                         </IconButton>
-                      )}
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Menu"
-                        onClick={() => onDelete(indigency.indigency_id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </Box>

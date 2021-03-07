@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
+
 import Results from './Results';
-import AdminResults from './AdminResults';
 import Toolbar from './Toolbar';
 import { useCurrentUser, useResidency } from '../../../../states';
 import useAxios from 'axios-hooks';
 import DocumentStatusDialog from '../../../shared/DocumentStatusDialog';
 import moment from 'moment';
+import DeleteDialog from '../../shared/DeleteDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -19,8 +20,10 @@ const useStyles = makeStyles(theme => ({
 
 const ResidencyListView = () => {
   const classes = useStyles();
-  const [currentUser] = useCurrentUser();
+  const [currentUser, { isValidRole }] = useCurrentUser();
+  const [isAdmin] = useState(isValidRole('admin'));
   const [selecteIDToDelete, setSelectedIDToDelete] = useState(0);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [
     selecteIDToUpdateDocumentStatus,
     setSelecteIDToUpdateDocumentStatus
@@ -35,7 +38,11 @@ const ResidencyListView = () => {
   ] = useResidency();
   const [{ data, loading, error }, refetch] = useAxios(
     {
-      url: `/records/view_residencies?filter1=first_name,cs,${criteria}`,
+      url: `/records/view_residencies?${
+        isAdmin
+          ? `filter1=first_name,cs,${criteria}&filter2=last_name,cs,${criteria}`
+          : `filter=person_id,eq,${currentUser.currentPersonID}`
+      }`,
       method: 'GET'
     },
     { manual: true }
@@ -61,15 +68,7 @@ const ResidencyListView = () => {
     },
     { manual: true }
   );
-  useEffect(() => {
-    if (selecteIDToDelete > 0) {
-      const performDelete = async () => {
-        await executeDelete();
-        await refetch();
-      };
-      performDelete();
-    }
-  }, [selecteIDToDelete]);
+
   useEffect(() => {
     refetch();
   }, [criteria]);
@@ -90,6 +89,7 @@ const ResidencyListView = () => {
   };
   const onDelete = id => {
     setSelectedIDToDelete(id);
+    setOpenDeleteDialog(true);
   };
   const onSearch = criteria => {
     setCriteria(criteria);
@@ -111,30 +111,27 @@ const ResidencyListView = () => {
     setSelecteIDToUpdateDocumentStatus(id);
     setDocumentStatusDialogOpen(true);
   };
+  const onCloseDeleteDialog = async confirm => {
+    if (confirm) {
+      await executeDelete();
+      await refetch();
+    }
+
+    setOpenDeleteDialog(false);
+  };
   //jsx
   return (
     <>
-      <Toolbar
-        isAdmin={currentUser.isAdmin}
-        onSearch={onSearch}
-        onAdd={onAdd}
-      />
+      <Toolbar isAdmin={isAdmin} onSearch={onSearch} onAdd={onAdd} />
       <Box mt={3}>
-        {currentUser.isAdmin ? (
-          <AdminResults
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onUpdateDocumentStatus={onUpdateDocumentStatus}
-            residencies={data ? data.records : []}
-          />
-        ) : (
-          <Results
-            onEdit={onEdit}
-            onDelete={onDelete}
-            residencies={data ? data.records : []}
-          />
-        )}
-
+        <Results
+          isAdmin={isAdmin}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onUpdateDocumentStatus={onUpdateDocumentStatus}
+          residencies={data ? data.records : []}
+        />
+        <DeleteDialog open={openDeleteDialog} onClose={onCloseDeleteDialog} />
         <DocumentStatusDialog
           open={documentStatusDialogOpen}
           onClose={onCloseDocumentStatusDialog}
