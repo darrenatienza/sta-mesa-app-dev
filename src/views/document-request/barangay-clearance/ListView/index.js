@@ -30,7 +30,13 @@ const ListView = () => {
   // state - global
   const [
     barangayClearanceViewState,
-    { setShowFormView, setShowListView, setBarangayClearanceID, setRefreshList }
+    {
+      setShowFormView,
+      setShowListView,
+      setBarangayClearanceID,
+      setRefreshList,
+      setShowPrintPreview
+    }
   ] = useBarangayClearanceViewState();
 
   // state - id of barangay clearance to delete
@@ -113,6 +119,9 @@ const ListView = () => {
     setCriteria(criteria);
     setDate(date);
   };
+  const onPrint = () => {
+    setShowPrintPreview(true);
+  };
   return (
     <>
       <Toolbar isAdmin={isAdmin} onAdd={onAdd} onSearch={onSearch} />
@@ -122,6 +131,7 @@ const ListView = () => {
           isAdmin={isAdmin}
           onEdit={onEdit}
           onDelete={onDelete}
+          onPrint={onPrint}
         />
         <DeleteDialog open={openDeleteDialog} onClose={onCloseDeleteDialog} />
       </Box>

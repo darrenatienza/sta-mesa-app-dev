@@ -36,7 +36,8 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Menu as MenuIcon,
-  Key as KeyIcon
+  Key as KeyIcon,
+  Printer as PrintIcon
 } from 'react-feather';
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -51,6 +52,7 @@ const Results = ({
   isAdmin,
   onEdit,
   onDelete,
+  onPrint,
   ...rest
 }) => {
   const classes = useStyles();
@@ -108,12 +110,19 @@ const Results = ({
                         <TableCell>{record.doc_status}</TableCell>
                         <TableCell>
                           <IconButton
+                            aria-label="Print"
+                            onClick={() =>
+                              onPrint(record.barangay_clearance_id)
+                            }
+                          >
+                            <PrintIcon />
+                          </IconButton>
+                          <IconButton
                             aria-label="Edit"
                             onClick={() => onEdit(record.barangay_clearance_id)}
                           >
                             <EditIcon />
                           </IconButton>
-
                           <IconButton
                             aria-controls="simple-menu"
                             aria-haspopup="true"

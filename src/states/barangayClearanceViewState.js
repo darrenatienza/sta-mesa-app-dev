@@ -6,9 +6,16 @@ export const initialState = {
   criteria: '',
   filterCriteria: '',
   filterDate: moment().format('YYYY-MM-DD'),
-  refreshList: false
+  refreshList: false,
+  showPrintPreview: false
 };
-
+export const setShowPrintPreview = barangayClearanceViewState => value => {
+  barangayClearanceViewState.setState({
+    showPrintPreview: value,
+    showFormView: !value,
+    showListView: !value
+  });
+};
 export const setFilterCriteria = barangayClearanceViewState => value => {
   barangayClearanceViewState.setState({
     filterCriteria: value
