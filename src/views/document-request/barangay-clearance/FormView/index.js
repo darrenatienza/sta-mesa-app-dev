@@ -70,7 +70,9 @@ const FormView = ({ className, ...rest }) => {
   );
   // occurs when the id is greater has change
   useEffect(() => {
-    barangayClearanceStateView.barangayClearanceID > 0 && refetch();
+    barangayClearanceStateView.barangayClearanceID > 0 &&
+      barangayClearanceStateView.showFormView &&
+      refetch();
   }, [barangayClearanceStateView.barangayClearanceID]);
 
   // callback - submit

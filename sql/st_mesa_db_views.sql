@@ -57,11 +57,15 @@ view view_barangay_clearances as select
     persons.first_name,
     persons.middle_name,
     persons.phone_number,
+    persons.gender,
     persons.last_name,
     barangay_clearances.reason,
     barangay_clearances.request_date,
     persons.birthdate,
     persons.civil_status,
+    barangay_clearances.res_cert_no,
+    barangay_clearances.place_issued,
+    barangay_clearances.date_issued,
   	doc_statuses.name as doc_status
 from
    barangay_clearances

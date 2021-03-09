@@ -77,7 +77,7 @@ const Results = ({
               </TableHead>
               <TableBody>
                 {residents &&
-                  residents.records.slice(0, limit).map(person => (
+                  (residents.records || []).slice(0, limit).map(person => (
                     <TableRow
                       hover
                       key={person.person_id}
@@ -133,7 +133,7 @@ const Results = ({
 
         <TablePagination
           component="div"
-          count={residents ? residents.records.length : 0}
+          count={residents ? residents.records && residents.records.length : 0}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleLimitChange}
           page={page}

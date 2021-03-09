@@ -4,6 +4,7 @@ import { Box, Container, Grid, makeStyles, Collapse } from '@material-ui/core';
 import BusinessClearanceListView from './BusinessClearanceListView';
 import BusinessClearanceFormView from './BusinessClearanceFormView';
 import { useBusinessClearanceViewState } from '../../../states';
+import { ReportView } from './ReportView';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -29,6 +30,9 @@ const BusinessClearanceView = () => {
         </Collapse>
         <Collapse in={barangayClearanceStateView.showFormView}>
           <BusinessClearanceFormView />
+        </Collapse>
+        <Collapse in={barangayClearanceStateView.showPrintPreview}>
+          <ReportView />
         </Collapse>
       </Container>
     </Page>

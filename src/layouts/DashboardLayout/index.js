@@ -49,8 +49,6 @@ const DashboardLayout = () => {
   const logout = async () => {
     await executeLogout();
     navigate('/login');
-    localStorage.removeItem('currentPersonID');
-    localStorage.removeItem('userName');
   };
   return (
     <div className={classes.root}>

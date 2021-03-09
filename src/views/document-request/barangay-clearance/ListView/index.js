@@ -119,8 +119,10 @@ const ListView = () => {
     setCriteria(criteria);
     setDate(date);
   };
-  const onPrint = () => {
+  const onPrint = id => {
+    setBarangayClearanceID(id);
     setShowPrintPreview(true);
+    setShowListView(false);
   };
   return (
     <>

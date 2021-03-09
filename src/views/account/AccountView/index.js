@@ -50,7 +50,8 @@ const Account = () => {
         last_name: data.lastName,
         civil_status: data.civilStatus,
         phone_number: data.phoneNumber,
-        birthdate: data.birthDate
+        birthdate: data.birthDate,
+        gender: data.gender
       }
     });
     val > 0 && setIsSuccess(true);

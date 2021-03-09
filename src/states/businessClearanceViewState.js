@@ -1,13 +1,19 @@
 export const initialState = {
   selectedBusinessClearanceID: 0,
-  showListView: true,
+  showListView: false,
   showFormView: false,
-  refreshList: false
+  refreshList: false,
+  showPrintPreview: true
 };
 
 export const setSelectedBusinessClearanceID = businessClearanceViewState => value => {
   businessClearanceViewState.setState({
     selectedBusinessClearanceID: value
+  });
+};
+export const setShowPrintPreview = businessClearanceViewState => value => {
+  businessClearanceViewState.setState({
+    showPrintPreview: value
   });
 };
 export const setShowListView = businessClearanceViewState => value => {

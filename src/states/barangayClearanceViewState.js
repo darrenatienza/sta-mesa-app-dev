@@ -11,9 +11,7 @@ export const initialState = {
 };
 export const setShowPrintPreview = barangayClearanceViewState => value => {
   barangayClearanceViewState.setState({
-    showPrintPreview: value,
-    showFormView: !value,
-    showListView: !value
+    showPrintPreview: value
   });
 };
 export const setFilterCriteria = barangayClearanceViewState => value => {

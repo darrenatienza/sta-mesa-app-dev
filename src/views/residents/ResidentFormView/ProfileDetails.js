@@ -36,6 +36,9 @@ const ProfileDetails = ({ className, profileDetails, ...rest }) => {
       const upperCaseCS =
         profileDetails.civil_status.charAt(0).toUpperCase() +
         profileDetails.civil_status.slice(1);
+      const gender =
+        profileDetails.gender.charAt(0).toUpperCase() +
+        profileDetails.gender.slice(1);
       setValue('firstName', profileDetails.first_name);
       setValue('middleName', profileDetails.middle_name);
       setValue('lastName', profileDetails.last_name);
@@ -45,6 +48,7 @@ const ProfileDetails = ({ className, profileDetails, ...rest }) => {
       );
       setValue('civilStatus', upperCaseCS);
       setValue('phoneNumber', profileDetails.phone_number);
+      setValue('gender', gender);
     }
   }, [profileDetails]);
 
@@ -96,7 +100,7 @@ const ProfileDetails = ({ className, profileDetails, ...rest }) => {
                 defaultValue=""
               />
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item md={4} xs={12}>
               <Controller
                 fullWidth
                 disabled
@@ -109,7 +113,19 @@ const ProfileDetails = ({ className, profileDetails, ...rest }) => {
                 defaultValue=""
               />
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item md={4} xs={12}>
+              <Controller
+                fullWidth
+                disabled
+                variant="outlined"
+                label="Gender"
+                as={TextField}
+                name="gender"
+                control={control}
+                defaultValue=""
+              />
+            </Grid>
+            <Grid item md={4} xs={12}>
               <Controller
                 fullWidth
                 disabled

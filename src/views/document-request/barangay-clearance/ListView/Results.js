@@ -109,14 +109,16 @@ const Results = ({
                         <TableCell>{record.reason}</TableCell>
                         <TableCell>{record.doc_status}</TableCell>
                         <TableCell>
-                          <IconButton
-                            aria-label="Print"
-                            onClick={() =>
-                              onPrint(record.barangay_clearance_id)
-                            }
-                          >
-                            <PrintIcon />
-                          </IconButton>
+                          {isAdmin && (
+                            <IconButton
+                              aria-label="Print"
+                              onClick={() =>
+                                onPrint(record.barangay_clearance_id)
+                              }
+                            >
+                              <PrintIcon />
+                            </IconButton>
+                          )}
                           <IconButton
                             aria-label="Edit"
                             onClick={() => onEdit(record.barangay_clearance_id)}

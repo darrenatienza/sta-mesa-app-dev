@@ -59,7 +59,16 @@ const RegisterView = () => {
       label: 'Widowed'
     }
   ];
-
+  const gender = [
+    {
+      value: 'male',
+      label: 'Male'
+    },
+    {
+      value: 'female',
+      label: 'Female'
+    }
+  ];
   const [
     { data: postUserData, loading: postUserLoading, error: postUserError },
     executePostUser
@@ -93,7 +102,8 @@ const RegisterView = () => {
         last_name: data.lastName,
         civil_status: data.civilStatus,
         phone_number: data.phoneNumber,
-        birthdate: data.birthDate
+        birthdate: data.birthDate,
+        gender: data.gender
       }
     });
 
@@ -199,6 +209,37 @@ const RegisterView = () => {
                   fullWidth
                   margin="normal"
                   as={TextField}
+                  type="date"
+                  name="birthDate"
+                  label="Birth Date"
+                  control={control}
+                  defaultValue={moment().format('YYYY-MM-DD')}
+                  variant="outlined"
+                />
+                <Controller
+                  fullWidth
+                  margin="normal"
+                  as={TextField}
+                  select
+                  name="gender"
+                  label="Gender"
+                  control={control}
+                  defaultValue="male"
+                  variant="outlined"
+                  SelectProps={{
+                    native: true
+                  }}
+                >
+                  {gender.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Controller>
+                <Controller
+                  fullWidth
+                  margin="normal"
+                  as={TextField}
                   select
                   name="civilStatus"
                   label="Civil Status"
@@ -226,17 +267,6 @@ const RegisterView = () => {
                   variant="outlined"
                   rules={{ required: true }}
                   error={errors.phoneNumber && true}
-                />
-                <Controller
-                  fullWidth
-                  margin="normal"
-                  as={TextField}
-                  type="date"
-                  name="birthDate"
-                  label="Birth Date"
-                  control={control}
-                  defaultValue={moment().format('YYYY-MM-DD')}
-                  variant="outlined"
                 />
               </Box>
             </CardContent>

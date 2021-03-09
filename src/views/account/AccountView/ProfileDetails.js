@@ -51,6 +51,16 @@ const civilStats = [
     label: 'Widowed'
   }
 ];
+const genders = [
+  {
+    value: 'male',
+    label: 'Male'
+  },
+  {
+    value: 'female',
+    label: 'Female'
+  }
+];
 const ProfileDetails = ({
   className,
   profile,
@@ -71,6 +81,7 @@ const ProfileDetails = ({
       setValue('lastName', profile.last_name);
       setValue('civilStatus', profile.civil_status);
       setValue('phoneNumber', profile.phone_number);
+      setValue('gender', profile.gender);
       setValue('birthDate', moment(profile.birthdate).format('YYYY-MM-DD'));
     }
   }, [profile]);
@@ -151,6 +162,28 @@ const ProfileDetails = ({
                 margin="normal"
                 as={TextField}
                 select
+                name="gender"
+                label="Civil Status"
+                control={control}
+                defaultValue="male"
+                variant="outlined"
+                SelectProps={{
+                  native: true
+                }}
+              >
+                {genders.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Controller>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Controller
+                fullWidth
+                margin="normal"
+                as={TextField}
+                select
                 name="civilStatus"
                 label="Civil Status"
                 control={control}
@@ -167,6 +200,7 @@ const ProfileDetails = ({
                 ))}
               </Controller>
             </Grid>
+
             <Grid item md={6} xs={12}>
               <Controller
                 fullWidth

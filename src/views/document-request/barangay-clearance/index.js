@@ -38,8 +38,8 @@ const BarangayClearanceView = () => {
           <Collapse in={barangayClearanceStateView.showFormView}>
             <FormView />
           </Collapse>
-          <Collapse in={barangayClearanceStateView.printPreview}>
-            <FormView />
+          <Collapse in={barangayClearanceStateView.showPrintPreview}>
+            <Report />
           </Collapse>
         </>
       </Container>
