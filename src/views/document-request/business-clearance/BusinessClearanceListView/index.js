@@ -22,7 +22,12 @@ const BusinessClearanceListView = () => {
   //global state
   const [
     businessClearanceViewState,
-    { setSelectedBusinessClearanceID, setShowListView, setShowFormView }
+    {
+      setSelectedBusinessClearanceID,
+      setShowListView,
+      setShowFormView,
+      setShowPrintPreview
+    }
   ] = useBusinessClearanceViewState();
   const [{ data, loading, error }, refetch] = useAxios(
     { url: `/records/view_business_clearance?filter=name,cs,${criteria}` },
@@ -70,9 +75,13 @@ const BusinessClearanceListView = () => {
     setSelectedID(id);
   };
   const onAdd = () => {
-    console.log('add');
     setSelectedBusinessClearanceID(-1);
     setShowFormView(true);
+    setShowListView(false);
+  };
+  const handlePrint = id => {
+    setSelectedBusinessClearanceID(id);
+    setShowPrintPreview(true);
     setShowListView(false);
   };
   return (
@@ -80,10 +89,11 @@ const BusinessClearanceListView = () => {
       <Toolbar search={search} onAdd={onAdd} />
       <Box mt={3}>
         <Results
-          businessClearances={data ? data.records : []}
+          businessClearances={data ? data.records || [] : []}
           reloadList={reloadList}
           onEdit={onEdit}
           onDelete={onDelete}
+          onPrint={handlePrint}
         />
       </Box>
     </>

@@ -20,7 +20,11 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import { Edit as EditIcon, Delete as DeleteIcon } from 'react-feather';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Printer as PrintIcon
+} from 'react-feather';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -34,6 +38,7 @@ const Results = ({
   reloadList,
   onEdit,
   onDelete,
+  onPrint,
   ...rest
 }) => {
   const classes = useStyles();
@@ -108,12 +113,20 @@ const Results = ({
                         <IconButton
                           aria-label="Edit"
                           onClick={() =>
+                            onPrint(businessClearance.business_clearance_id)
+                          }
+                        >
+                          <PrintIcon />
+                        </IconButton>
+
+                        <IconButton
+                          aria-label="Edit"
+                          onClick={() =>
                             handleEdit(businessClearance.business_clearance_id)
                           }
                         >
                           <EditIcon />
                         </IconButton>
-
                         <IconButton
                           aria-controls="simple-menu"
                           aria-haspopup="true"
