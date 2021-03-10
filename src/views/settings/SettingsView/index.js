@@ -32,7 +32,7 @@ const SettingsView = () => {
     return () => clearTimeout(timeOutId);
   }, [isSuccess]);
   const onUpdate = async data => {
-    const { data: value } = await executePost({
+    await executePost({
       data: {
         username: currentUser.userName,
         password: data.oldPassword,

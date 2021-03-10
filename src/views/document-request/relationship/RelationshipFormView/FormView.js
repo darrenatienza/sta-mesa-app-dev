@@ -72,7 +72,7 @@ const FormView = forwardRef(
           <Card>
             <CardHeader
               subheader="The information can be edited"
-              title="Barangay Clearance Request Detail"
+              title="Relationship Request Detail"
             />
             <Divider />
 

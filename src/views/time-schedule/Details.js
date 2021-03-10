@@ -48,8 +48,8 @@ const Details = ({ className, details, onTimeIn, onTimeOut, ...rest }) => {
   useEffect(() => {
     details &&
       setValues({
-        time_in: moment(details.time_in).format('HH:mm:ss'),
-        time_out: moment(details.time_out).format('HH:mm:ss'),
+        time_in: moment(details.time_in).format('LTS'),
+        time_out: moment(details.time_out).format('LTS'),
         has_time_out: details.has_time_out
       });
   }, [details]);

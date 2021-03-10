@@ -28,40 +28,40 @@ const Toolbar = ({ className, onSearch, onAdd, isBhw, ...rest }) => {
   }, [query]);
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Grid container justify="space-between" alignItems="center">
-        <Grid item lg={6} md={6} xs={12}>
-          <Typography variant="h1">Medicine Records</Typography>
-        </Grid>
-        {isBhw && (
-          <Grid item lg={6} md={6} xs={12}>
+      <Box display="flex">
+        <Typography variant="h1">Medicine Records</Typography>
+        <Box marginLeft="auto">
+          {isBhw && (
             <Box display="flex" justifyContent="flex-end">
               <Button color="primary" variant="contained" onClick={onAdd}>
                 Add new Medicine
               </Button>
             </Box>
-          </Grid>
-        )}
-      </Grid>
+          )}
+        </Box>
+      </Box>
 
       <Box mt={3}>
         <Card>
           <CardContent>
-            <Box maxWidth={500}>
-              <TextField
-                fullWidth
-                onChange={e => setQuery(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon fontSize="small" color="action">
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  )
-                }}
-                placeholder="Search Medicines"
-                variant="outlined"
-              />
+            <Box display="flex">
+              <Box minWidth={500} marginLeft="auto">
+                <TextField
+                  fullWidth
+                  onChange={e => setQuery(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SvgIcon fontSize="small" color="action">
+                          <SearchIcon />
+                        </SvgIcon>
+                      </InputAdornment>
+                    )
+                  }}
+                  placeholder="Search Medicines"
+                  variant="outlined"
+                />
+              </Box>
             </Box>
           </CardContent>
         </Card>

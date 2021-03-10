@@ -6,7 +6,7 @@ import Results from './Results';
 import Toolbar from './Toolbar';
 import { useRelationship } from '../../../../states';
 import useAxios from 'axios-hooks';
-import DocumentStatusDialog from '../../../shared/DocumentStatusDialog';
+import DocumentStatusDialog from '../../shared/DocumentStatusDialog';
 import moment from 'moment';
 import { useCurrentUser } from '../../../../states';
 import DeleteDialog from '../../shared/DeleteDialog';

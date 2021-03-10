@@ -31,15 +31,7 @@ const useStyles = makeStyles(() => ({
     marginTop: '10px'
   }
 }));
-const Form = ({
-  className,
-  data,
-  documentStatusList,
-  onSubmit,
-  onClose,
-  isAdmin,
-  ...rest
-}) => {
+const Form = ({ className, data, onSubmit, onClose, isAdmin, ...rest }) => {
   const classes = useStyles();
 
   // react hook form manager
@@ -60,7 +52,6 @@ const Form = ({
       setValue('resCertNo', data.res_cert_no);
       setValue('dateIssued', moment(data.date_issued).format('YYYY-MM-DD'));
       setValue('placeIssued', data.place_issued);
-      setValue('docStatus', data.doc_status_id);
     }
   }, [data]);
   const handleSubmit = data => {
@@ -76,7 +67,6 @@ const Form = ({
     setValue('resCertNo', '');
     setValue('dateIssued', moment().format('YYYY-MM-DD'));
     setValue('placeIssued', '');
-    setValue('docStatus', 0);
   };
   return (
     <form
@@ -146,35 +136,6 @@ const Form = ({
                     defaultValue=""
                     error={errors.placeIssued && true}
                   />
-                </Grid>
-
-                <Grid item lg={8} md={6} xs={12}>
-                  <Controller
-                    fullWidth
-                    select
-                    variant="outlined"
-                    label="Document Status"
-                    as={TextField}
-                    name="docStatus"
-                    control={control}
-                    rules={{ required: true }}
-                    defaultValue={0}
-                    error={errors.docStatus && true}
-                    SelectProps={{
-                      native: true
-                    }}
-                  >
-                    <option value={0}>Select Document Status...</option>
-                    {documentStatusList &&
-                      documentStatusList.records.map(option => (
-                        <option
-                          key={option.doc_status_id}
-                          value={option.doc_status_id}
-                        >
-                          {option.name}
-                        </option>
-                      ))}
-                  </Controller>
                 </Grid>
               </>
             )}

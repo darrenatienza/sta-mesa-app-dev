@@ -67,8 +67,8 @@ const ToolBar = ({ className, roles, onAdd, loading, ...rest }) => {
                       }}
                     >
                       <option value={0}>Select Role here..</option>
-                      {!loading &&
-                        roles?.records.map(option => (
+                      {roles &&
+                        roles.records.map(option => (
                           <option key={option.role_id} value={option.role_id}>
                             {option.title}
                           </option>

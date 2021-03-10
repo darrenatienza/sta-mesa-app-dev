@@ -12,6 +12,7 @@ import { method } from 'lodash';
 import useAxios from 'axios-hooks';
 import { set } from 'js-cookie';
 import DeleteDialog from '../../shared/DeleteDialog';
+import DocumentStatusDialog from '../../shared/DocumentStatusDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -26,7 +27,14 @@ const ListView = () => {
   const [currentUser, { isValidRole }] = useCurrentUser();
   const [criteria, setCriteria] = useState('');
   const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
-
+  const [
+    selectedChangeDocumentStatusID,
+    setSelectedChangeDocumentStatusID
+  ] = useState(0);
+  const [
+    openChangeDocumentStatusDialog,
+    setOpenChangeDocumentStatusDialog
+  ] = useState(false);
   // state - global
   const [
     barangayClearanceViewState,
@@ -74,7 +82,18 @@ const ListView = () => {
       manual: true
     }
   );
-
+  const [
+    { data: putData, loading: putLoading, error: putError },
+    executePut
+  ] = useAxios(
+    {
+      url: `/records/barangay_clearances/${selectedChangeDocumentStatusID}`,
+      method: 'PUT'
+    },
+    {
+      manual: true
+    }
+  );
   //occurs when search happens
   useEffect(() => {
     refetch();
@@ -124,6 +143,22 @@ const ListView = () => {
     setShowPrintPreview(true);
     setShowListView(false);
   };
+  const handleChangeDocumentStatus = id => {
+    setSelectedChangeDocumentStatusID(id);
+    setOpenChangeDocumentStatusDialog(true);
+  };
+  const handleCloseDocumentStatusDialog = async (id, confirm) => {
+    if (confirm) {
+      await executePut({
+        data: {
+          doc_status_id: id
+        }
+      });
+      await refetch();
+    }
+    setOpenChangeDocumentStatusDialog(false);
+  };
+
   return (
     <>
       <Toolbar isAdmin={isAdmin} onAdd={onAdd} onSearch={onSearch} />
@@ -134,8 +169,13 @@ const ListView = () => {
           onEdit={onEdit}
           onDelete={onDelete}
           onPrint={onPrint}
+          onChangeDocumentStatus={handleChangeDocumentStatus}
         />
         <DeleteDialog open={openDeleteDialog} onClose={onCloseDeleteDialog} />
+        <DocumentStatusDialog
+          open={openChangeDocumentStatusDialog}
+          onClose={handleCloseDocumentStatusDialog}
+        />
       </Box>
     </>
   );

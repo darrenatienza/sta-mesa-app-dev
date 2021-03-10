@@ -18,15 +18,8 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-  Collapse,
+  Chip,
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
@@ -53,6 +46,7 @@ const Results = ({
   onEdit,
   onDelete,
   onPrint,
+  onChangeDocumentStatus,
   ...rest
 }) => {
   const classes = useStyles();
@@ -86,7 +80,7 @@ const Results = ({
                     </>
                   )}
                   <TableCell>Reason</TableCell>
-                  <TableCell>Document Status</TableCell>
+                  <TableCell>Status</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -107,7 +101,19 @@ const Results = ({
                           </>
                         )}
                         <TableCell>{record.reason}</TableCell>
-                        <TableCell>{record.doc_status}</TableCell>
+                        <TableCell>
+                          <Chip
+                            onClick={() =>
+                              isAdmin &&
+                              onChangeDocumentStatus(
+                                record.barangay_clearance_id
+                              )
+                            }
+                            color="primary"
+                            label={record.doc_status}
+                            size="small"
+                          />
+                        </TableCell>
                         <TableCell>
                           {isAdmin && (
                             <IconButton

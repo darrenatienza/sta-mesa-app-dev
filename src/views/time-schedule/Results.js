@@ -49,12 +49,9 @@ const Results = ({ className, list, ...rest }) => {
                 list.map(item => (
                   <TableRow key={item.time_schedule_id}>
                     <TableCell>{item.create_time_stamp}</TableCell>
+                    <TableCell>{moment(item.time_in).format('LTS')}</TableCell>
                     <TableCell>
-                      {moment(item.time_in).format('HH:mm:ss')}
-                    </TableCell>
-                    <TableCell>
-                      {item.has_time_out &&
-                        moment(item.time_out).format('HH:mm:ss')}
+                      {item.has_time_out && moment(item.time_out).format('LTS')}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -9,7 +9,8 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  makeStyles
+  makeStyles,
+  Typography
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 import { useOfficialViewState } from '../../../states';
@@ -29,31 +30,36 @@ const Toolbar = ({ className, onSearch, onAdd, ...rest }) => {
 
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained" onClick={() => onAdd()}>
-          Add Official
-        </Button>
+      <Box display="flex">
+        <Typography variant="h1">Barangay Officials</Typography>
+        <Box marginLeft="auto">
+          <Button color="primary" variant="contained" onClick={() => onAdd()}>
+            Add Official
+          </Button>
+        </Box>
       </Box>
       <Box mt={3}>
         <Card>
           <CardContent>
-            <Box maxWidth={500}>
-              <TextField
-                fullWidth
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon fontSize="small" color="action">
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  )
-                }}
-                placeholder="Search Officials"
-                variant="outlined"
-              />
+            <Box display="flex">
+              <Box minWidth={500} marginLeft="auto">
+                <TextField
+                  fullWidth
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SvgIcon fontSize="small" color="action">
+                          <SearchIcon />
+                        </SvgIcon>
+                      </InputAdornment>
+                    )
+                  }}
+                  placeholder="Search Officials"
+                  variant="outlined"
+                />
+              </Box>
             </Box>
           </CardContent>
         </Card>

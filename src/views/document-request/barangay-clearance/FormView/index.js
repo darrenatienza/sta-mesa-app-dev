@@ -32,19 +32,7 @@ const FormView = ({ className, ...rest }) => {
       manual: true
     }
   );
-  // http - get doc status list
-  const [
-    { data: docStatusData, loading: docStatusLoading, error: docStatusError },
-    refetchDocStatus
-  ] = useAxios(
-    {
-      url: `/records/doc_statuses`,
-      method: 'GET'
-    },
-    {
-      manual: false
-    }
-  );
+
   // http - post
   const [
     { data: postData, loading: postLoading, error: postError },
@@ -83,7 +71,6 @@ const FormView = ({ className, ...rest }) => {
         await executePut({
           data: {
             reason: data.reason,
-            doc_status_id: data.docStatus,
             res_cert_no: data.resCertNo,
             date_issued: data.dateIssued,
             place_issued: data.placeIssued
@@ -97,13 +84,24 @@ const FormView = ({ className, ...rest }) => {
         });
       }
     } else {
-      await executePost({
-        data: {
-          person_id: currentUser.currentPersonID,
-          doc_status_id: 1,
-          reason: data.reason
-        }
-      });
+      if (isAdmin) {
+        await executePost({
+          data: {
+            person_id: currentUser.currentPersonID,
+            reason: data.reason,
+            res_cert_no: data.resCertNo,
+            date_issued: data.dateIssued,
+            place_issued: data.placeIssued
+          }
+        });
+      } else {
+        await executePost({
+          data: {
+            person_id: currentUser.currentPersonID,
+            reason: data.reason
+          }
+        });
+      }
     }
 
     setRefreshList(true);
@@ -118,13 +116,7 @@ const FormView = ({ className, ...rest }) => {
   };
 
   return (
-    <Form
-      data={data}
-      onClose={onClose}
-      onSubmit={onSubmit}
-      isAdmin={isAdmin}
-      documentStatusList={docStatusData}
-    />
+    <Form data={data} onClose={onClose} onSubmit={onSubmit} isAdmin={isAdmin} />
   );
 };
 

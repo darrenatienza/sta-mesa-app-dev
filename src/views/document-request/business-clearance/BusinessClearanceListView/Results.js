@@ -39,6 +39,7 @@ const Results = ({
   onEdit,
   onDelete,
   onPrint,
+  onChangeDocumentStatus,
   ...rest
 }) => {
   const classes = useStyles();
@@ -104,6 +105,11 @@ const Results = ({
                       <TableCell>{businessClearance.business_nature}</TableCell>
                       <TableCell>
                         <Chip
+                          onClick={() =>
+                            onChangeDocumentStatus(
+                              businessClearance.business_clearance_id
+                            )
+                          }
                           color="primary"
                           label={businessClearance.doc_status}
                           size="small"

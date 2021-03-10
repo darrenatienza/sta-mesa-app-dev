@@ -27,7 +27,7 @@ const ResidentView = () => {
   return (
     <div>
       <Page className={classes.root} title="Residents">
-        <Container maxWidth="lg">
+        <Container maxWidth={false}>
           <Collapse in={residentViewState.showResidentDetailView}>
             <ResidentFormView />
           </Collapse>

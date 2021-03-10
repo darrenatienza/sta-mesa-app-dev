@@ -22,6 +22,7 @@ import { useForm, Controller } from 'react-hook-form';
 import useAxios from 'axios-hooks';
 import Page from 'src/components/Page';
 import MuiAlert from '@material-ui/lab/Alert';
+import Logo from 'src/components/Logo';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -31,6 +32,10 @@ const useStyles = makeStyles(theme => ({
   },
   media: {
     height: 140
+  },
+  logo: {
+    width: '150px',
+    height: '150px'
   }
 }));
 function Alert(props) {
@@ -124,14 +129,13 @@ const RegisterView = () => {
     <Page className={classes.root} title="Register">
       <Box display="flex" flexDirection="column" justifyContent="center">
         <Container maxWidth="sm">
+          <Box display="flex" justifyContent="center" mb={3}>
+            <Logo className={classes.logo} />
+          </Box>
+
           <Card>
-            <CardMedia
-              className={classes.media}
-              image="/static/sta_mesa_logo.png"
-              title="Contemplative Reptile"
-            />
             <CardContent>
-              <Box textAlign="center">
+              <Box textAlign="center" mt={3} mb={3}>
                 <Typography color="textPrimary" variant="h2">
                   Register new residents Record
                 </Typography>
@@ -139,7 +143,8 @@ const RegisterView = () => {
                   Please specify correct information here
                 </Typography>
               </Box>
-              <Box>
+              <Divider />
+              <Box mt={3}>
                 <Controller
                   fullWidth
                   margin="normal"

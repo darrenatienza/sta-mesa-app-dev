@@ -17,8 +17,9 @@ const DocumentStatusDialog = ({ open, onConfirm, onClose }) => {
       url: `/records/doc_statuses`,
       method: 'GET'
     },
-    { manual: false }
+    { manual: true }
   );
+
   return (
     <Dialog
       fullWidth
@@ -42,11 +43,12 @@ const DocumentStatusDialog = ({ open, onConfirm, onClose }) => {
           defaultValue=""
           onChange={e => setSelectedDocStatusID(e.target.value)}
         >
-          {(data ? data.records : []).map(option => (
-            <MenuItem key={option.doc_status_id} value={option.doc_status_id}>
-              {option.name}
-            </MenuItem>
-          ))}
+          {data &&
+            data.records.map(option => (
+              <MenuItem key={option.doc_status_id} value={option.doc_status_id}>
+                {option.name}
+              </MenuItem>
+            ))}
         </TextField>
       </DialogContent>
       <DialogActions>

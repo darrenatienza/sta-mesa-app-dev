@@ -6,7 +6,7 @@ import Results from './Results';
 import Toolbar from './Toolbar';
 import { useCurrentUser, useResidency } from '../../../../states';
 import useAxios from 'axios-hooks';
-import DocumentStatusDialog from '../../../shared/DocumentStatusDialog';
+import DocumentStatusDialog from '../../shared/DocumentStatusDialog';
 import moment from 'moment';
 import DeleteDialog from '../../shared/DeleteDialog';
 const useStyles = makeStyles(theme => ({
@@ -140,7 +140,7 @@ const ResidencyListView = () => {
           onDelete={onDelete}
           onPrint={handlePrintPreview}
           onUpdateDocumentStatus={onUpdateDocumentStatus}
-          residencies={data ? data.records : []}
+          residencies={data && data.records}
         />
         <DeleteDialog open={openDeleteDialog} onClose={onCloseDeleteDialog} />
         <DocumentStatusDialog

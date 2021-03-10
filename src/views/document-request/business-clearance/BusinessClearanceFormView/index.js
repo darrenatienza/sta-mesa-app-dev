@@ -92,7 +92,7 @@ const BusinessClearanceFormView = ({ className, ...rest }) => {
       setValue('businessName', '');
       setValue('businessAddress', '');
       setValue('businessEngagement', '');
-      setValue('docStatus', '');
+
       setValue('orNumber', '');
     }
   }, [businessClearanceViewState.selectedBusinessClearanceID]);
@@ -104,7 +104,6 @@ const BusinessClearanceFormView = ({ className, ...rest }) => {
       setValue('businessAddress', data.address);
       setValue('businessEngagement', data.business_nature);
       setValue('orNumber', data.or_number);
-      setValue('docStatus', data.doc_status_id);
     }
   }, [data]);
 
@@ -213,33 +212,6 @@ const BusinessClearanceFormView = ({ className, ...rest }) => {
                 defaultValue=""
                 error={errors.orNumber && true}
               />
-            </Grid>
-            <Grid item lg={12} md={6} xs={12}>
-              <Controller
-                fullWidth
-                select
-                variant="outlined"
-                label="Document Status"
-                as={TextField}
-                name="docStatus"
-                control={control}
-                rules={{ required: true }}
-                defaultValue=""
-                error={errors.docStatus && true}
-              >
-                {docStatsData ? (
-                  docStatsData.records.map(option => (
-                    <MenuItem
-                      key={option.doc_status_id}
-                      value={option.doc_status_id}
-                    >
-                      {option.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem></MenuItem>
-                )}
-              </Controller>
             </Grid>
           </Grid>
         </CardContent>

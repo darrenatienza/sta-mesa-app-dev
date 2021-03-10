@@ -141,7 +141,8 @@ from
    residencies.residing_span,
    doc_statuses.name doc_status,
    residencies.create_time_stamp,
-   residencies.update_time_stamp 
+   residencies.update_time_stamp,
+   persons.gender
    from residencies 
    join persons on persons.person_id = residencies.person_id
    join doc_statuses on

@@ -39,15 +39,17 @@ const Toolbar = ({ className, onAdd, onSearch, isAdmin, ...rest }) => {
 
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Box>
-        <Typography variant="h2" component="h4">
-          Barangay Clearance Request
-        </Typography>
-      </Box>
-      <Box display="flex" justifyContent="flex-end">
-        <Button variant="contained" color="primary" onClick={() => onAdd()}>
-          Add New Request
-        </Button>
+      <Box display="flex">
+        <Box>
+          <Typography variant="h2" component="h4">
+            Barangay Clearance Request
+          </Typography>
+        </Box>
+        <Box marginLeft="auto">
+          <Button variant="contained" color="primary" onClick={() => onAdd()}>
+            Add New Request
+          </Button>
+        </Box>
       </Box>
 
       {isAdmin && (

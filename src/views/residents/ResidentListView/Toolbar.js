@@ -10,7 +10,8 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  makeStyles
+  makeStyles,
+  Typography
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 import { useResidentViewState, usePersonEntity } from '../../../states';
@@ -52,11 +53,14 @@ const Toolbar = ({ className, ...rest }) => {
   return (
     <>
       <div className={clsx(classes.root, className)} {...rest}>
+        <Box>
+          <Typography variant="h1">Residents</Typography>
+        </Box>
         <Box mt={3}>
           <Card>
             <CardContent>
-              <Box display="flex" justifyContent="flex-end">
-                <Box minWidth={500}>
+              <Box display="flex">
+                <Box minWidth={500} marginLeft="auto">
                   <TextField
                     value={query}
                     onChange={e => setQuery(e.target.value)}

@@ -65,7 +65,7 @@ const Password = ({
           )}
           {isError && (
             <Alert severity="error" variant="filled">
-              Error while saving your details.
+              Error while saving your details. Please check your password.
             </Alert>
           )}
           <Controller

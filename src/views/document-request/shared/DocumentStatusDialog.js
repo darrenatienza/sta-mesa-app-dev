@@ -19,6 +19,7 @@ const DocumentStatusDialog = ({ open, onClose }) => {
     },
     { manual: false }
   );
+
   return (
     <Dialog
       fullWidth
@@ -39,14 +40,18 @@ const DocumentStatusDialog = ({ open, onClose }) => {
           label="Document Status"
           as={TextField}
           name="docStatus"
-          defaultValue=""
+          defaultValue={0}
           onChange={e => setSelectedDocStatusID(e.target.value)}
         >
-          {(data ? data.records : []).map(option => (
-            <MenuItem key={option.doc_status_id} value={option.doc_status_id}>
-              {option.name}
-            </MenuItem>
-          ))}
+          <MenuItem key={0} value={0}>
+            Select here...
+          </MenuItem>
+          {data &&
+            data.records.map(option => (
+              <MenuItem key={option.doc_status_id} value={option.doc_status_id}>
+                {option.name}
+              </MenuItem>
+            ))}
         </TextField>
       </DialogContent>
       <DialogActions>
@@ -54,6 +59,7 @@ const DocumentStatusDialog = ({ open, onClose }) => {
           Cancel
         </Button>
         <Button
+          disabled={selectedDocStatusID === 0}
           onClick={() => onClose(selectedDocStatusID, true)}
           color="primary"
           autoFocus

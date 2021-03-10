@@ -129,7 +129,7 @@ class Preview extends Component {
               <p>Certificate of Indigency Form Rev-002</p>
             </Box>
           </Box>
-          <Box border="solid 1px">
+          <Box border="solid 1px" width="100%">
             <Box position="relative" display="flex" textAlign="center">
               <Box position="relative" top="5px" left="10px">
                 <Logo className={classes.logo} />
@@ -187,15 +187,22 @@ class Preview extends Component {
                   } ${data.middle_name && data.middle_name.charAt(0)}. ${
                     data.last_name
                   }`}</span>{' '}
-                  a resident of Barangay Sta. Mesa, Mabini, Batangas. This also
-                  certify that the above named person is{' '}
-                  {data.person_related_with}.
+                  , {moment().diff(data.birthdate, 'years')} years old,{' '}
+                  {data.civil_status}, Filipino citizen, is a PERMANENT RESIDENT
+                  of Barangay Sta. Mesa, Mabini, Batangas.
                 </p>
               </Box>
               <Box className={classes.paragraph}>
                 <p>
-                  This certification is issued upon the request of {gender[3]}.{' '}
-                  {data.last_name} for financial assistance.
+                  Based on records of this office, he has been residing at
+                  Barangay Sta. Mesa, Municipality of Mabini, Batangas since{' '}
+                  {data.residing_span}.
+                </p>
+              </Box>
+              <Box className={classes.paragraph}>
+                <p>
+                  This Certification is hereby issued for whatever legal
+                  purposes this may serve.
                 </p>
               </Box>
               <Box className={classes.paragraph}>

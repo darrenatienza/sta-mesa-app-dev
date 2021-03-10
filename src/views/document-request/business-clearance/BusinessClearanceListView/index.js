@@ -6,6 +6,8 @@ import Toolbar from './Toolbar';
 import data from './data';
 import useAxios from 'axios-hooks';
 import { useBusinessClearanceViewState } from '../../../../states';
+import DocumentStatusDialog from '../../shared/DocumentStatusDialog';
+import DeleteDialog from '../../shared/DeleteDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -19,6 +21,16 @@ const BusinessClearanceListView = () => {
   const classes = useStyles();
   const [criteria, setCriteria] = useState('');
   const [selectedID, setSelectedID] = useState(0);
+  //state - delete dialog
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [
+    selectedChangeDocumentStatusID,
+    setSelectedChangeDocumentStatusID
+  ] = useState(0);
+  const [
+    openChangeDocumentStatusDialog,
+    setOpenChangeDocumentStatusDialog
+  ] = useState(false);
   //global state
   const [
     businessClearanceViewState,
@@ -42,6 +54,18 @@ const BusinessClearanceListView = () => {
       manual: true
     }
   );
+  const [
+    { data: putData, loading: putLoading, error: putError },
+    executePut
+  ] = useAxios(
+    {
+      url: `/records/business_clearances/${selectedChangeDocumentStatusID}`,
+      method: 'PUT'
+    },
+    {
+      manual: true
+    }
+  );
   const reloadList = async () => {
     await refetch();
   };
@@ -52,27 +76,18 @@ const BusinessClearanceListView = () => {
   useEffect(() => {
     businessClearanceViewState.refreshList && reloadList();
   }, [businessClearanceViewState.refreshList]);
-  //performs delete
-  useEffect(() => {
-    if (selectedID > 0) {
-      const performDelete = async () => {
-        const { data: row } = await executeDelete();
-        if (row > 0) {
-          reloadList();
-        }
-      };
-      performDelete();
-    }
-  }, [selectedID]);
+
   const search = query => {
     setCriteria(query);
   };
   const onEdit = id => {
-    console.log(id);
     setSelectedBusinessClearanceID(id);
+    setShowFormView(true);
+    setShowListView(false);
   };
   const onDelete = id => {
     setSelectedID(id);
+    setOpenDeleteDialog(true);
   };
   const onAdd = () => {
     setSelectedBusinessClearanceID(-1);
@@ -84,6 +99,30 @@ const BusinessClearanceListView = () => {
     setShowPrintPreview(true);
     setShowListView(false);
   };
+  const handleChangeDocumentStatus = id => {
+    setSelectedChangeDocumentStatusID(id);
+    setOpenChangeDocumentStatusDialog(true);
+  };
+  const handleCloseDocumentStatusDialog = async (id, confirm) => {
+    if (confirm) {
+      await executePut({
+        data: {
+          doc_status_id: id
+        }
+      });
+      await refetch();
+    }
+    setOpenChangeDocumentStatusDialog(false);
+  };
+  //  dialog close callback
+  // perform delete request if agree
+  const onCloseDeleteDialog = async agree => {
+    if (agree) {
+      await executeDelete();
+      await refetch();
+    }
+    setOpenDeleteDialog(false);
+  };
   return (
     <>
       <Toolbar search={search} onAdd={onAdd} />
@@ -94,7 +133,13 @@ const BusinessClearanceListView = () => {
           onEdit={onEdit}
           onDelete={onDelete}
           onPrint={handlePrint}
+          onChangeDocumentStatus={handleChangeDocumentStatus}
         />
+        <DocumentStatusDialog
+          open={openChangeDocumentStatusDialog}
+          onClose={handleCloseDocumentStatusDialog}
+        />
+        <DeleteDialog open={openDeleteDialog} onClose={onCloseDeleteDialog} />
       </Box>
     </>
   );

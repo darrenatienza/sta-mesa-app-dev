@@ -127,7 +127,7 @@ class Preview extends Component {
               <p>Certificate of Indigency Form Rev-002</p>
             </Box>
           </Box>
-          <Box border="solid 1px">
+          <Box border="solid 1px" width="100%">
             <Box position="relative" display="flex" textAlign="center">
               <Box position="relative" top="5px" left="10px">
                 <Logo className={classes.logo} />

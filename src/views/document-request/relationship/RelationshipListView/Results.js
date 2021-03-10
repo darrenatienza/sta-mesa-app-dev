@@ -77,74 +77,75 @@ const Results = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {relationships
-                .slice(page * limit, page * limit + limit)
-                .map(relationship => (
-                  <TableRow hover key={relationship.relationship_id}>
-                    <TableCell padding="checkbox"></TableCell>
-                    <TableCell>{relationship.request_date}</TableCell>
-                    {isAdmin && (
-                      <>
-                        <TableCell>
-                          <Typography color="textPrimary" variant="body1">
-                            {`${relationship.first_name} ${relationship.middle_name} ${relationship.last_name}`}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          {moment().diff(relationship.birthdate, 'years')}
-                        </TableCell>
-                        <TableCell>{relationship.civil_status}</TableCell>
-                      </>
-                    )}
-                    <TableCell>{relationship.reason}</TableCell>
-                    <TableCell>
-                      <Chip
-                        color="primary"
-                        label={relationship.doc_status}
-                        size="small"
-                        onClick={() => {
-                          isAdmin &&
-                            onUpdateDocumentStatus(
-                              relationship.relationship_id
-                            );
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Print"
-                        onClick={() => onPrint(relationship.relationship_id)}
-                      >
-                        <PrintIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Edit"
-                        onClick={() => onEdit(relationship.relationship_id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Menu"
-                        onClick={() => onDelete(relationship.relationship_id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {relationships &&
+                relationships
+                  .slice(page * limit, page * limit + limit)
+                  .map(relationship => (
+                    <TableRow hover key={relationship.relationship_id}>
+                      <TableCell padding="checkbox"></TableCell>
+                      <TableCell>{relationship.request_date}</TableCell>
+                      {isAdmin && (
+                        <>
+                          <TableCell>
+                            <Typography color="textPrimary" variant="body1">
+                              {`${relationship.first_name} ${relationship.middle_name} ${relationship.last_name}`}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            {moment().diff(relationship.birthdate, 'years')}
+                          </TableCell>
+                          <TableCell>{relationship.civil_status}</TableCell>
+                        </>
+                      )}
+                      <TableCell>{relationship.reason}</TableCell>
+                      <TableCell>
+                        <Chip
+                          color="primary"
+                          label={relationship.doc_status}
+                          size="small"
+                          onClick={() => {
+                            isAdmin &&
+                              onUpdateDocumentStatus(
+                                relationship.relationship_id
+                              );
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          aria-label="Print"
+                          onClick={() => onPrint(relationship.relationship_id)}
+                        >
+                          <PrintIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          aria-label="Edit"
+                          onClick={() => onEdit(relationship.relationship_id)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          aria-label="Menu"
+                          onClick={() => onDelete(relationship.relationship_id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </Box>
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={relationships.length}
+        count={relationships ? relationships.length : 0}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
