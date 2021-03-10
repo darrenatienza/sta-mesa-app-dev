@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Box, Button, Card, makeStyles } from '@material-ui/core';
 import { useReactToPrint } from 'react-to-print';
-import { useBusinessClearanceViewState } from 'src/states';
+import { useIndigencyViewState } from 'src/states';
 import Preview from './Preview';
 import useAxios from 'axios-hooks';
 
@@ -16,9 +16,9 @@ const useStyles = makeStyles(theme => ({
 export const ReportView = () => {
   const classes = useStyles();
   const [
-    businessClearanceViewState,
+    indigencyViewState,
     { setShowListView, setShowPrintPreview }
-  ] = useBusinessClearanceViewState();
+  ] = useIndigencyViewState();
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current
@@ -26,7 +26,7 @@ export const ReportView = () => {
   // http - get barangay clearance list
   const [{ data, loading, error }, refetch] = useAxios(
     {
-      url: `/records/view_business_clearance?filter=business_clearance_id,eq,${businessClearanceViewState.selectedBusinessClearanceID}`,
+      url: `/records/view_indigencies?filter=indigency_id,eq,${indigencyViewState.selectedIndigencyID}`,
       method: 'GET'
     },
     {
@@ -35,12 +35,13 @@ export const ReportView = () => {
   );
   useEffect(() => {
     if (
-      businessClearanceViewState.selectedBusinessClearanceID > 0 &&
-      businessClearanceViewState.showPrintPreview
+      indigencyViewState.selectedIndigencyID > 0 &&
+      indigencyViewState.showPrintPreview
     ) {
+      console.log(indigencyViewState.selectedIndigencyID);
       refetch();
     }
-  }, [businessClearanceViewState.selectedBusinessClearanceID]);
+  }, [indigencyViewState.selectedIndigencyID]);
   const handleClose = () => {
     setShowListView(true);
     setShowPrintPreview(false);
@@ -65,3 +66,4 @@ export const ReportView = () => {
     </div>
   );
 };
+export default ReportView;

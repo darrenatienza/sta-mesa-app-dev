@@ -53,6 +53,20 @@ class Preview extends Component {
       }
     }
     const { classes, data } = this.props;
+    const gender =
+      data.gender === 'male'
+        ? ['He', 'his', 'him', 'Mr']
+        : data.gender === 'female'
+        ? ['She', 'her', 'her', 'Ms']
+        : ['', '', '', ''];
+    const civilStatus =
+      data.civil_status &&
+      `${data.civil_status.charAt(0).toUpperCase()}${data.civil_status.slice(
+        1
+      )}`;
+    const gender1 =
+      data.gender &&
+      `${data.gender.charAt(0).toUpperCase()}${data.gender.slice(1)}`;
     return (
       <div className={classes.root}>
         <Box display="flex" height="950px">
@@ -157,7 +171,7 @@ class Preview extends Component {
                 textAlign="center"
                 fontSize="24px"
               >
-                <strong>BUSINESS CLEARANCE</strong>
+                <strong>CERTIFICATE OF INDIGENCY</strong>
               </Box>
 
               <Box fontWeight="bold" marginTop="32px">
@@ -166,33 +180,31 @@ class Preview extends Component {
               <Box className={classes.paragraph}>
                 <p>
                   This is to certify that{' '}
-                  <span className={classes.field}>{data.name} </span> of{' '}
-                  <span className={classes.field}>{data.address}</span> is
-                  engaged/will be engaged in{' '}
-                  <span className={classes.field}>{data.business_nature} </span>{' '}
-                  business/commercial Activity/ties under the business name of{' '}
-                  <span className={classes.field}>{data.name} </span>.
+                  <span className={classes.field}>{`${
+                    data.first_name
+                  } ${data.middle_name && data.middle_name.charAt(0)}. ${
+                    data.last_name
+                  }`}</span>
+                  , {moment().diff(data.birthdate, 'years')} years old ,{' '}
+                  {gender1}, {civilStatus}, is presently residing at Barangay
+                  Sta Mesa, Mabini, Batangas and personally known to me of good
+                  moral character.
                 </p>
               </Box>
-              <div className={classes.paragraph}>
-                <p>BARANGAY CLEARANCE IS HEREBY GRANTED</p>
-              </div>
-              <div className={classes.paragraph}>
+              <Box className={classes.paragraph}>
                 <p>
-                  To the above mentioned business establishment after having
-                  duly paid appropriate barangay clearance/permit fees in
-                  compliance to all pertinent barangay ordinances,policies,rules
-                  and regulations.
+                  This certifies further that {gender[1]} parent(s) has no
+                  permanent source of income.
                 </p>
-              </div>
-              <div className={classes.paragraph}>
+              </Box>
+              <Box className={classes.paragraph}>
                 <p>
-                  Issued this {ordinal(moment().format('DD'))} day of{' '}
-                  {moment().format('MMMM, YYYY')} at Barangay
-                  Sta.Mesa,Mabini,Batangas upon the request of the herein
-                  grantee.
+                  This certificate is issued on {ordinal(moment().format('DD'))}{' '}
+                  day of {moment().format('MMMM, YYYY')} upon request of{' '}
+                  {gender[3]}. {data.last_name} for whatever legal purposes this
+                  may serve {gender[2]} best.
                 </p>
-              </div>
+              </Box>
               <Box
                 display="flex"
                 justifyContent="flex-end"
@@ -208,18 +220,6 @@ class Preview extends Component {
                   </p>
                   <p>Barangay Captain</p>
                 </Box>
-              </Box>
-              <Box
-                fontFamily={`"Calibri Light", Tahoma, Geneva, Verdana, sans-serif`}
-              >
-                <p>
-                  Paid under O.R no.{' '}
-                  <span className={classes.field}>{data.or_number} </span>
-                </p>
-                <p>At Barangay Sta. Mesa, Mabini, Batangas</p>
-                <p>
-                  <i>{moment().format('MMMM DD, YYYY')}</i>
-                </p>
               </Box>
             </Box>
           </Box>

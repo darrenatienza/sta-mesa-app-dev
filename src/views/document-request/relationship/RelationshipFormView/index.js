@@ -134,7 +134,14 @@ const RelationshipFormView = ({ className, ...rest }) => {
   };
 
   return (
-    <FormView data={data} onSubmit={onSubmit} onClose={onClose} ref={formRef} />
+    <Box>
+      <FormView
+        data={data}
+        onSubmit={onSubmit}
+        onClose={onClose}
+        ref={formRef}
+      />
+    </Box>
   );
 };
 

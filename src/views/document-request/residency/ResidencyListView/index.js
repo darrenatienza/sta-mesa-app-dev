@@ -34,7 +34,12 @@ const ResidencyListView = () => {
   const [criteria, setCriteria] = useState('');
   const [
     residency,
-    { setSelectedResidencyID, setShowFormView, setShowListView }
+    {
+      setSelectedResidencyID,
+      setShowFormView,
+      setShowListView,
+      setShowPrintPreview
+    }
   ] = useResidency();
   const [{ data, loading, error }, refetch] = useAxios(
     {
@@ -119,6 +124,11 @@ const ResidencyListView = () => {
 
     setOpenDeleteDialog(false);
   };
+  const handlePrintPreview = id => {
+    setSelectedResidencyID(id);
+    setShowListView(false);
+    setShowPrintPreview(true);
+  };
   //jsx
   return (
     <>
@@ -128,6 +138,7 @@ const ResidencyListView = () => {
           isAdmin={isAdmin}
           onEdit={onEdit}
           onDelete={onDelete}
+          onPrint={handlePrintPreview}
           onUpdateDocumentStatus={onUpdateDocumentStatus}
           residencies={data ? data.records : []}
         />

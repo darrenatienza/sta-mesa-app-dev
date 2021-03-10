@@ -5,7 +5,7 @@ import Results from './Results';
 import Toolbar from './Toolbar';
 import moment from 'moment';
 import useAxios from 'axios-hooks';
-import { useCurrentUser } from '../../../../states';
+import { useCurrentUser, useIndigencyViewState } from '../../../../states';
 import DeleteDialog from 'src/views/residents/ResidentListView/DeleteDialog';
 import DocumentStatusDialog from '../../shared/DocumentStatusDialog';
 const useStyles = makeStyles(theme => ({
@@ -19,12 +19,16 @@ const useStyles = makeStyles(theme => ({
 
 const ListView = () => {
   const classes = useStyles();
+  const [
+    indigencyViewState,
+    { setShowListView, setShowPrintPreview, setSelectedIndigencyID }
+  ] = useIndigencyViewState();
   const [selectedDeleteID, setSelectedDeleteID] = useState(0);
   const [
     selectedChangeDocumentStatusID,
     setSelectedChangeDocumentStatusID
   ] = useState(0);
-  const [selectedPrintID, setSelectedPrintID] = useState(0);
+
   const [criteria, setCriteria] = useState('');
   const [currentUser, { isValidRole }] = useCurrentUser();
   const [isAdmin] = useState(isValidRole('admin'));
@@ -101,7 +105,9 @@ const ListView = () => {
     await refetch();
   };
   const onPrint = id => {
-    setSelectedPrintID(id);
+    setSelectedIndigencyID(id);
+    setShowListView(false);
+    setShowPrintPreview(true);
   };
   const onDelete = id => {
     setSelectedDeleteID(id);

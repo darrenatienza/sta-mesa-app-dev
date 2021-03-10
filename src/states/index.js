@@ -13,6 +13,7 @@ import * as currentUser from './currentUser';
 import * as businessClearanceViewState from './businessClearanceViewState';
 import * as relationship from './relationship';
 import * as residency from './residency';
+import * as indigencyViewState from './indigencyViewState';
 
 export const useResidency = makeEntity(residency);
 export const useRelationship = makeEntity(relationship);
@@ -35,3 +36,4 @@ export const useCurrentUser = makeEntity(currentUser);
 export const useBusinessClearanceViewState = makeEntity(
   businessClearanceViewState
 );
+export const useIndigencyViewState = makeEntity(indigencyViewState);

@@ -39,7 +39,8 @@ const RelationshipListView = () => {
       setSelectedRelationshipID,
       setShowFormView,
       setShowListView,
-      setRefreshList
+      setRefreshList,
+      setShowPrintPreview
     }
   ] = useRelationship();
 
@@ -134,6 +135,11 @@ const RelationshipListView = () => {
 
     setOpenDeleteDialog(false);
   };
+  const handlePrint = id => {
+    setSelectedRelationshipID(id);
+    setShowPrintPreview(true);
+    setShowListView(false);
+  };
   //jsx
   return (
     <>
@@ -147,6 +153,7 @@ const RelationshipListView = () => {
           isAdmin={isAdmin}
           onEdit={onEdit}
           onDelete={onDelete}
+          onPrint={handlePrint}
           onUpdateDocumentStatus={onUpdateDocumentStatus}
           relationships={data ? data.records : []}
         />

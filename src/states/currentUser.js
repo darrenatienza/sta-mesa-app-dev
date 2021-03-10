@@ -6,7 +6,7 @@ export const initialState = {
 
 export const isValidRole = currentUser => roleName => {
   let isAdmin = false;
-  currentUser.initialState.roles.map(r => {
+  currentUser.initialState.roles.forEach(r => {
     if (r.title === roleName) {
       isAdmin = true;
     }

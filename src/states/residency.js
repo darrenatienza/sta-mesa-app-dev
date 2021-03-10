@@ -2,7 +2,8 @@ export const initialState = {
   selectedResidencyID: 0,
   showFormView: false,
   showListView: true,
-  refreshList: false
+  refreshList: false,
+  showPrintPreview: false
 };
 export const setSelectedResidencyID = residency => id => {
   residency.setState({ selectedResidencyID: id });
@@ -15,4 +16,7 @@ export const setShowListView = residency => value => {
 };
 export const setRefreshList = residency => value => {
   residency.setState({ refreshList: value });
+};
+export const setShowPrintPreview = residency => value => {
+  residency.setState({ showPrintPreview: value });
 };

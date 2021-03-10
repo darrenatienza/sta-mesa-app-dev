@@ -102,7 +102,8 @@ from
    indigencies.indigent_reason,
    indigencies.date_issued,
    doc_statuses.name doc_status,
-   indigencies.request_date
+   indigencies.request_date,
+   persons.gender
    from indigencies
    join persons on persons.person_id = indigencies.person_id
    join doc_statuses on
@@ -122,7 +123,8 @@ from
    relationships.reason,
    doc_statuses.name doc_status,
    relationships.request_date,
-   relationships.date_issued
+   relationships.date_issued,
+   persons.gender
    from relationships
    join persons on persons.person_id = relationships.person_id
    join doc_statuses on

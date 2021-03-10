@@ -1,7 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { Box, Button, Card, makeStyles } from '@material-ui/core';
 import { useReactToPrint } from 'react-to-print';
-import { useBusinessClearanceViewState } from 'src/states';
+import {
+  useIndigencyViewState,
+  useRelationship,
+  useResidency
+} from 'src/states';
 import Preview from './Preview';
 import useAxios from 'axios-hooks';
 
@@ -16,9 +20,9 @@ const useStyles = makeStyles(theme => ({
 export const ReportView = () => {
   const classes = useStyles();
   const [
-    businessClearanceViewState,
+    residencyViewState,
     { setShowListView, setShowPrintPreview }
-  ] = useBusinessClearanceViewState();
+  ] = useResidency();
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current
@@ -26,7 +30,7 @@ export const ReportView = () => {
   // http - get barangay clearance list
   const [{ data, loading, error }, refetch] = useAxios(
     {
-      url: `/records/view_business_clearance?filter=business_clearance_id,eq,${businessClearanceViewState.selectedBusinessClearanceID}`,
+      url: `/records/view_residencies?filter=residency_id,eq,${residencyViewState.selectedResidencyID}`,
       method: 'GET'
     },
     {
@@ -35,16 +39,18 @@ export const ReportView = () => {
   );
   useEffect(() => {
     if (
-      businessClearanceViewState.selectedBusinessClearanceID > 0 &&
-      businessClearanceViewState.showPrintPreview
+      residencyViewState.selectedResidencyID > 0 &&
+      residencyViewState.showPrintPreview
     ) {
+      console.log(residencyViewState.selectedResidencyID);
       refetch();
     }
-  }, [businessClearanceViewState.selectedBusinessClearanceID]);
+  }, [residencyViewState.selectedResidencyID]);
   const handleClose = () => {
     setShowListView(true);
     setShowPrintPreview(false);
   };
+
   return (
     <div className={classes.root}>
       <Box display="flex">
@@ -59,9 +65,13 @@ export const ReportView = () => {
 
       <Box mt={3} className={classes.cardContainer}>
         <Card>
-          <Preview ref={componentRef} data={data ? data.records[0] : {}} />
+          <Preview
+            ref={componentRef}
+            data={data ? data.records && data.records[0] : {}}
+          />
         </Card>
       </Box>
     </div>
   );
 };
+export default ReportView;

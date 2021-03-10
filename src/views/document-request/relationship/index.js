@@ -4,6 +4,7 @@ import { Box, Collapse, Container, Grid, makeStyles } from '@material-ui/core';
 import RelationshipListView from './RelationshipListView';
 import RelationshipFormView from './RelationshipFormView';
 import { useRelationship } from '../../../states';
+import ReportView from './ReportView';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -29,6 +30,9 @@ const RelationshipView = () => {
         </Collapse>
         <Collapse in={relationship.showFormView}>
           <RelationshipFormView />
+        </Collapse>
+        <Collapse in={relationship.showPrintPreview}>
+          <ReportView />
         </Collapse>
       </Container>
     </Page>

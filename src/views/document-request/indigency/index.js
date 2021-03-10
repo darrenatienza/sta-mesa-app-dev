@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Page from 'src/components/Page';
-import { Container, makeStyles } from '@material-ui/core';
+import { Container, Collapse, makeStyles } from '@material-ui/core';
 import ListView from './ListView';
-
-import { useCurrentUser } from '../../../states';
+import ReportView from './ReportView';
+import { useCurrentUser, useIndigencyViewState } from '../../../states';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -17,11 +17,16 @@ const useStyles = makeStyles(theme => ({
 }));
 const IndigencyView = () => {
   const classes = useStyles();
-
+  const [indigencyViewState] = useIndigencyViewState();
   return (
     <Page className={classes.root} title="Indigency">
       <Container maxWidth={false}>
-        <ListView />
+        <Collapse in={indigencyViewState.showPrintPreview}>
+          <ReportView />
+        </Collapse>
+        <Collapse in={indigencyViewState.showListView}>
+          <ListView />
+        </Collapse>
       </Container>
     </Page>
   );
