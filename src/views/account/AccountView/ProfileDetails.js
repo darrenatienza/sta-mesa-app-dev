@@ -163,7 +163,7 @@ const ProfileDetails = ({
                 as={TextField}
                 select
                 name="gender"
-                label="Civil Status"
+                label="Gender Status"
                 control={control}
                 defaultValue="male"
                 variant="outlined"
@@ -171,6 +171,7 @@ const ProfileDetails = ({
                   native: true
                 }}
               >
+                <option value="">Select Gender here</option>
                 {genders.map(option => (
                   <option key={option.value} value={option.value}>
                     {option.label}

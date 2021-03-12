@@ -135,7 +135,7 @@ const ResidentListView = () => {
     if (confirm) {
       await executeResetPassword({
         data: {
-          password: 'mavalor'
+          password: 'stamesa'
         }
       });
     }
