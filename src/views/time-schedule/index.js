@@ -6,6 +6,7 @@ import Page from 'src/components/Page';
 import Details from './Details';
 import Results from './Results';
 import moment from 'moment';
+import { useCurrentUser } from 'src/states';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -16,7 +17,9 @@ const useStyles = makeStyles(theme => ({
 }));
 const TimeScheduleView = () => {
   const classes = useStyles();
+  // retrieved the current id of time schedules of current person login
   const [currentID, setCurrentID] = useState(0);
+  const [currentUser] = useCurrentUser();
   const sqlDateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
   const sqlDateFormat = 'YYYY-MM-DD';
   const [dateSearch, setDateSearch] = useState({
@@ -29,9 +32,7 @@ const TimeScheduleView = () => {
     refetchList
   ] = useAxios(
     {
-      url: `/records/time_schedules?filter=person_id,eq,${1}&filter=log_date,ge,${
-        dateSearch.dateFrom
-      }&filter=log_date,le,${dateSearch.dateTo}`,
+      url: `/records/time_schedules?filter=person_id,eq,${currentUser.currentPersonID}&filter=log_date,ge,${dateSearch.dateFrom}&filter=log_date,le,${dateSearch.dateTo}`,
       method: 'GET'
     },
     {
@@ -40,9 +41,9 @@ const TimeScheduleView = () => {
   );
   const [{ data: data, loading: loading, error: error }, refetch] = useAxios(
     {
-      url: `/records/time_schedules?filter=person_id,eq,${1}&filter=log_date,eq,${moment().format(
-        'YYYY-MM-DD'
-      )}`,
+      url: `/records/time_schedules?filter=person_id,eq,${
+        currentUser.currentPersonID
+      }&filter=log_date,eq,${moment().format('YYYY-MM-DD')}`,
       method: 'GET'
     },
     {
@@ -94,11 +95,12 @@ const TimeScheduleView = () => {
     });
   };
   const onTimeIn = async () => {
+    console.log('timein');
     await executePost({
       data: {
         // time in not required to provide json value because it is auto generated once
         // the record created
-        person_id: 1
+        person_id: currentUser.currentPersonID
       }
     });
     await refetchList();

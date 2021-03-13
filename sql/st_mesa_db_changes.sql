@@ -10,5 +10,7 @@ ALTER TABLE relationships MODIFY COLUMN relationship varchar(100) CHARACTER SET 
 ALTER TABLE barangay_clearances MODIFY COLUMN doc_status_id int(11) DEFAULT 1 NOT NULL;
 ALTER TABLE business_clearances MODIFY COLUMN doc_status_id int(11) DEFAULT 1 NOT NULL;
 ALTER TABLE persons ADD gender varchar(100) DEFAULT '' NULL;
+/**changes on 13/03/2021**/
+ALTER TABLE relationships MODIFY COLUMN relationship varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NOT NULL COMMENT 'Not needed. the value must included on person related with field';
 
 

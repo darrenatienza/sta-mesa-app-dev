@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { NavLink as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import {
   Avatar,
@@ -61,7 +62,12 @@ const ProductCard = ({ className, product, ...rest }) => {
           {product.description}
         </Typography>
         <Box display="flex" justifyContent="center" mb={1} mt={3}>
-          <Button variant="outlined" color="primary" href={product.url}>
+          <Button
+            variant="outlined"
+            color="primary"
+            component={RouterLink}
+            to={product.url}
+          >
             Open
           </Button>
         </Box>

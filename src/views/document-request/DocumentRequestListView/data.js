@@ -8,7 +8,7 @@ export default [
     media: '/static/images/products/product_1.png',
     title: 'Barangay Clearance',
     totalDownloads: '594',
-    url: '/app/document-requests/barangay-clearance'
+    url: '/app/barangay-clearance'
   },
   {
     id: uuid(),
@@ -17,7 +17,7 @@ export default [
     media: '/static/images/products/product_2.png',
     title: 'Business Clearance',
     totalDownloads: '625',
-    url: '/app/document-requests/business-clearance'
+    url: '/app/business-clearance'
   },
 
   {
@@ -27,7 +27,7 @@ export default [
     media: '/static/images/products/product_4.png',
     title: 'Indigency',
     totalDownloads: '406',
-    url: '/app/document-requests/indigency'
+    url: '/app/indigency'
   },
   {
     id: uuid(),
@@ -36,7 +36,7 @@ export default [
     media: '/static/images/products/product_5.png',
     title: 'Relationship',
     totalDownloads: '835',
-    url: '/app/document-requests/relationship'
+    url: '/app/relationship'
   },
   {
     id: uuid(),
@@ -45,6 +45,6 @@ export default [
     media: '/static/images/products/product_6.png',
     title: 'Residency',
     totalDownloads: '835',
-    url: '/app/document-requests/residency'
+    url: '/app/residency'
   }
 ];

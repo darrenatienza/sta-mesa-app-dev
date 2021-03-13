@@ -86,13 +86,13 @@ const OfficialFormView = () => {
       manual: true
     }
   );
-  const onSubmit = data => {
+  const onSubmit = async data => {
     if (officialViewState.officialID > 0) {
-      executePut({
+      await executePut({
         data: { person_id: data.personID, position_id: data.positionID }
       });
     } else {
-      executePost({
+      await executePost({
         data: { person_id: data.personID, position_id: data.positionID }
       });
     }
@@ -116,8 +116,8 @@ const OfficialFormView = () => {
 
   return (
     <ProfileDetails
-      personList={personList ? personList.records : []}
-      positionList={positionList ? positionList.records : []}
+      personList={(personList && personList.records) || []}
+      positionList={(positionList && positionList.records) || []}
       values={getOfficialData}
       onClose={onClose}
       onSubmit={onSubmit}

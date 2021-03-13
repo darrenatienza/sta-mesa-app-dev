@@ -24,7 +24,7 @@ const ResetPasswordDialog = ({ open, onClose }) => {
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           <p>Do you want to Reset user password for this record? The default</p>
-          <p>password will be "mavalor"</p>
+          <p>password will be "stamesa"</p>
         </DialogContentText>
       </DialogContent>
       <DialogActions>

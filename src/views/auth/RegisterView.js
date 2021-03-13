@@ -159,6 +159,7 @@ const RegisterView = () => {
                 />
                 <Controller
                   fullWidth
+                  type="password"
                   margin="normal"
                   as={TextField}
                   name="password"

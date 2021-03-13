@@ -89,11 +89,12 @@ const Results = ({ className, onEdit, onDelete, officials, ...rest }) => {
                       {moment(official.birthdate).format('YYYY-MM-DD')}
                     </TableCell>
                     <TableCell>
-                      {official.civil_status.charAt(0).toUpperCase() +
-                        official.civil_status.slice(
-                          1,
-                          official.civil_status.length
-                        )}
+                      {official.civil_status &&
+                        official.civil_status.charAt(0).toUpperCase() +
+                          official.civil_status.slice(
+                            1,
+                            official.civil_status.length
+                          )}
                     </TableCell>
                     <TableCell>{official.title}</TableCell>
 

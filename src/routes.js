@@ -47,34 +47,33 @@ const routes = [
         element: <DocumentRequestView />
       },
       {
-        path: 'document-requests/barangay-clearance',
+        path: 'barangay-clearance',
         element: <BarangayClearanceView />
       },
 
       {
-        path: 'document-requests/business-clearance',
+        path: 'business-clearance',
         element: <BusinessClearanceView />
       },
       {
-        path: 'document-requests/blotter',
+        path: 'blotter',
         element: <BlotterView />
       },
       {
-        path: 'document-requests/indigency',
+        path: 'residency',
+        element: <ResidencyView />
+      },
+      {
+        path: 'indigency',
         element: <IndigencyView />
       },
       {
-        path: 'document-requests/relationship',
+        path: 'relationship',
         element: <RelationshipView />
       },
       { path: 'settings', element: <SettingsView /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
-  },
-  {
-    path: 'app/document-requests',
-    element: <DashboardLayout />,
-    children: [{ path: 'residency', element: <ResidencyView /> }]
   },
   {
     path: '/',

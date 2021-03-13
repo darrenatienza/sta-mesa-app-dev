@@ -72,7 +72,7 @@ const Toolbar = ({ className, onAdd, onSearch, isAdmin, ...rest }) => {
                         </InputAdornment>
                       )
                     }}
-                    placeholder="Search customer"
+                    placeholder="Search Resident..."
                     variant="outlined"
                   />
                 </Grid>
