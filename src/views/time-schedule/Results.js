@@ -21,11 +21,7 @@ import {
   TableBody
 } from '@material-ui/core';
 const useStyles = makeStyles(theme => ({
-  root: {
-    paddingTop: theme.spacing(3),
-    paddingRight: theme.spacing(3),
-    paddingLeft: theme.spacing(3)
-  }
+  root: { marginTop: theme.spacing(3) }
 }));
 const Results = ({ className, list, ...rest }) => {
   const classes = useStyles();

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import useAxios from 'axios-hooks';
-import { makeStyles } from '@material-ui/core';
+import { Collapse, Container, makeStyles } from '@material-ui/core';
 import Toolbar from './Toolbar';
 import Page from 'src/components/Page';
 import Details from './Details';
 import Results from './Results';
 import moment from 'moment';
 import { useCurrentUser } from 'src/states';
+import PrintPreview from './Print/PrintPreview';
+import Print from './Print';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -118,13 +120,16 @@ const TimeScheduleView = () => {
   };
   return (
     <Page className={classes.root} title="Time Schedules">
-      <Details
-        details={data && data.records[0]}
-        onTimeIn={onTimeIn}
-        onTimeOut={onTimeOut}
-      />
-      <Toolbar onSearch={onSearch} />
-      <Results list={listData ? listData.records : []} />
+      <Container maxWidth={false}>
+        <Details
+          details={data && data.records[0]}
+          onTimeIn={onTimeIn}
+          onTimeOut={onTimeOut}
+        />
+        <Toolbar onSearch={onSearch} />
+        <Results list={listData ? listData.records : []} />
+        <Print />
+      </Container>
     </Page>
   );
 };

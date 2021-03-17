@@ -18,11 +18,7 @@ import {
 import { Search as SearchIcon } from 'react-feather';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    paddingTop: theme.spacing(3),
-    paddingRight: theme.spacing(3),
-    paddingLeft: theme.spacing(3)
-  },
+  root: {},
   timeInValue: {
     marginBottom: theme.spacing(2)
   },
