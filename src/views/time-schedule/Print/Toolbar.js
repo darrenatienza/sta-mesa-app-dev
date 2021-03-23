@@ -36,14 +36,7 @@ const Toolbar = ({ className, onSearch, ...rest }) => {
     const timeOutId = setTimeout(() => onSearch(month, duration, year), 500);
     return () => clearTimeout(timeOutId);
   }, [month]);
-  useEffect(() => {
-    const timeOutId = setTimeout(() => onSearch(month, duration, year), 500);
-    return () => clearTimeout(timeOutId);
-  }, [year]);
-  useEffect(() => {
-    const timeOutId = setTimeout(() => onSearch(month, duration, year), 500);
-    return () => clearTimeout(timeOutId);
-  }, [duration]);
+
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Grid container spacing={3}>
