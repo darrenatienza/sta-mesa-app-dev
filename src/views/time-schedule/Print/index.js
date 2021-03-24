@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
 const Print = () => {
   const classes = useStyles();
   const [currentUser] = useCurrentUser();
+  const [logRecords, setLogRecords] = useState([]);
   const [
     { data: listData, loading: listLoading, error: listError },
     refetchList
@@ -32,42 +33,77 @@ const Print = () => {
     }
   );
 
-  //Search base on the search query
+  const getDaysOfMonth = (month, year, lastDay, firstDay) => {
+    let arrDays = [];
+    while (firstDay <= lastDay) {
+      const current = moment()
+        .date(firstDay)
+        .month(month)
+        .year(year);
+      arrDays.push(current.format('YYYY-MM-DD'));
+      firstDay++;
+    }
 
-  const handleSearch = async (month, duration, year) => {
-    //splits the duration in two between hypen
-    const durationArr = duration.split('-');
-    // get value from first and last array
-    const firstDay = durationArr[0];
-    const lastDay = durationArr[1];
-    // get the integer month value of selected month
-    const MM = moment()
-      .month(month)
-      .format('MM');
-    // format to correct date format
-    const from = `${year}/${MM}/${firstDay}`;
-    const to = `${year}/${MM}/${lastDay}`;
-    console.log(from);
-    console.log(to);
-    //fetch data
-    const { data } = await refetchList({
-      params: {
-        filter: `person_id,eq,${currentUser.currentPersonID}`,
-        filter1: `log_date,ge,${from}`,
-        filter2: `log_date,le,${to}`
-      },
-      paramsSerializer: params => {
-        return qs.stringify(params, { arrayFormat: 'repeat' });
-      }
-    });
-    console.log(data && data.records);
+    return arrDays.sort((a, b) => b - a);
   };
-  useEffect(() => {}, []);
+
+  //Search base on the search query
+  const handleSearch = async (month, duration, year) => {
+    if (month && year && duration) {
+      console.log('val ' + duration);
+      //splits the duration in two between hypen
+      const durationArr = duration.split('-');
+      // get value from first and last array
+      const firstDay = durationArr[0];
+      const lastDay = durationArr[1];
+      // get the integer month value of selected month
+      const MM = moment()
+        .month(month)
+        .format('MM');
+      // format to correct date format
+      const from = `${year}/${MM}/${firstDay}`;
+      const to = `${year}/${MM}/${lastDay}`;
+      //fetch data
+      const { data } = await refetchList({
+        url: `/records/time_schedules?filter=${currentUser.currentPersonID}&filter=log_date,ge,${from}&filter=log_date,le,${to}`
+      });
+
+      // loop through last day of selected duration
+      const dateList = getDaysOfMonth(month, year, lastDay, firstDay);
+      setLogRecords([]);
+      dateList.forEach(date => {
+        const logs = data.records.filter(x => x.log_date.includes(date));
+
+        if (logs.length > 0) {
+          const logDate = date;
+          const timeIn = logs[0].time_in;
+          const timeOut = logs[0].time_out;
+          setLogRecords(logRecords => [
+            ...logRecords,
+            {
+              logDate: logDate,
+              timeIn: moment(timeIn).format('hh:mm'),
+              timeOut: moment(timeOut).format('hh:mm')
+            }
+          ]);
+        } else {
+          setLogRecords(logRecords => [
+            ...logRecords,
+            {
+              logDate: date,
+              timeIn: '',
+              timeOut: ''
+            }
+          ]);
+        }
+      });
+    }
+  };
 
   return (
     <div className={classes.root}>
       <Toolbar onSearch={handleSearch} />
-      <PrintPreview />
+      <PrintPreview logRecords={logRecords} />
     </div>
   );
 };

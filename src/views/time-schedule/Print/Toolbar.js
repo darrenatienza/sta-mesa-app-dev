@@ -20,31 +20,49 @@ const useStyles = makeStyles(theme => ({
   root: {}
 }));
 const years = ['2021', '2022', '2023', '2024', '2025'];
-const durations = [
-  '01-15',
-  `16-${moment().daysInMonth()}`,
-  `01-${moment().daysInMonth()}`
-];
+
 const months = moment.months();
 const Toolbar = ({ className, onSearch, ...rest }) => {
   const classes = useStyles();
-
+  const [durations, setDurations] = useState([
+    '01-15',
+    `16-${moment().daysInMonth()}`,
+    `01-${moment().daysInMonth()}`
+  ]);
   const [month, setMonth] = useState(moment().format('MMMM'));
   const [year, setYear] = useState(moment().format('YYYY'));
-  const [duration, setDuration] = useState(moment().format('01-15'));
+  const [duration, setDuration] = useState();
   useEffect(() => {
     const timeOutId = setTimeout(() => onSearch(month, duration, year), 500);
     return () => clearTimeout(timeOutId);
-  }, [month]);
+  }, [month, year, duration]);
+  const handleMonthChange = value => {
+    const newDurations = [
+      '01-15',
+      `16-${moment()
+        .month(month)
+        .year(year)
+        .daysInMonth()}`,
+      `1-${moment()
+        .month(month)
+        .year(year)
+        .daysInMonth()}`
+    ];
+    newDurations.forEach(duration => {
+      setDuration([]);
+      setDurations(durations => [...durations, duration]);
+    });
 
+    setMonth(value);
+  };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Grid container spacing={3}>
-        <Grid item lg={3} xs={12}>
+        <Grid item lg={4} xs={12}>
           <TextField
             fullWidth
             select
-            onChange={e => setMonth(e.target.value)}
+            onChange={e => handleMonthChange(e.target.value)}
             variant="outlined"
             color="primary"
             defaultValue={moment().format('MMMM')}
@@ -63,14 +81,14 @@ const Toolbar = ({ className, onSearch, ...rest }) => {
           </TextField>
         </Grid>
 
-        <Grid item lg={3} xs={12}>
+        <Grid item lg={4} xs={12}>
           <TextField
             fullWidth
             select
             onChange={e => setDuration(e.target.value)}
             variant="outlined"
             color="primary"
-            defaultValue={`1-${moment().daysInMonth()}`}
+            defaultValue=""
             SelectProps={{
               native: true
             }}
@@ -85,7 +103,7 @@ const Toolbar = ({ className, onSearch, ...rest }) => {
             ))}
           </TextField>
         </Grid>
-        <Grid item lg={3} xs={12}>
+        <Grid item lg={4} xs={12}>
           <TextField
             fullWidth
             select
@@ -106,13 +124,6 @@ const Toolbar = ({ className, onSearch, ...rest }) => {
               </option>
             ))}
           </TextField>
-        </Grid>
-        <Grid item lg={3} xs={12}>
-          <Box position="relative" top="50%" bottom="50%">
-            <Button fullWidth variant="contained" color="primary">
-              Search
-            </Button>
-          </Box>
         </Grid>
       </Grid>
     </div>

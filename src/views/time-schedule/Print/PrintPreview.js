@@ -49,7 +49,7 @@ const useStyles = theme => ({
 
 class PrintPreview extends Component {
   render() {
-    const { classes, data } = this.props;
+    const { classes, logRecords } = this.props;
     return (
       <div className={classes.root}>
         <Card>
@@ -82,21 +82,13 @@ class PrintPreview extends Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow>
-                      <TableCell>03/03/2021</TableCell>
-                      <TableCell>01:21 AM</TableCell>
-                      <TableCell>05:21 PM</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>03/03/2021</TableCell>
-                      <TableCell>01:21 AM</TableCell>
-                      <TableCell>05:21 PM</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>03/03/2021</TableCell>
-                      <TableCell>01:21 AM</TableCell>
-                      <TableCell>05:21 PM</TableCell>
-                    </TableRow>
+                    {logRecords.map(logRecord => (
+                      <TableRow key={logRecord.logDate}>
+                        <TableCell>{logRecord.logDate}</TableCell>
+                        <TableCell>{logRecord.timeIn}</TableCell>
+                        <TableCell>{logRecord.timeOut}</TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </Box>
