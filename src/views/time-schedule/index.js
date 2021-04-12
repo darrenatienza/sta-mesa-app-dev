@@ -6,7 +6,7 @@ import Page from 'src/components/Page';
 import Details from './Details';
 import Results from './Results';
 import moment from 'moment';
-import { useCurrentUser } from 'src/states';
+import { useCurrentUser, useTimeScheduleViewState } from 'src/states';
 import PrintPreview from './Print/PrintPreview';
 import Print from './Print';
 const useStyles = makeStyles(theme => ({
@@ -22,6 +22,10 @@ const TimeScheduleView = () => {
   // retrieved the current id of time schedules of current person login
   const [currentID, setCurrentID] = useState(0);
   const [currentUser] = useCurrentUser();
+  const [
+    timeScheduleViewState,
+    { setShowPrintPreview, setShowMainView }
+  ] = useTimeScheduleViewState();
   const sqlDateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
   const sqlDateFormat = 'YYYY-MM-DD';
   const [dateSearch, setDateSearch] = useState({
@@ -118,17 +122,28 @@ const TimeScheduleView = () => {
     await refetchList();
     await refetch();
   };
+  const handlePrintPreview = () => {
+    setShowPrintPreview(true);
+    setShowMainView(false);
+  };
   return (
     <Page className={classes.root} title="Time Schedules">
       <Container maxWidth={false}>
-        <Details
-          details={data && data.records[0]}
-          onTimeIn={onTimeIn}
-          onTimeOut={onTimeOut}
-        />
-        <Toolbar onSearch={onSearch} />
-        <Results list={listData ? listData.records : []} />
-        <Print />
+        <Collapse in={timeScheduleViewState.showMainView}>
+          <Details
+            details={data && data.records[0]}
+            onTimeIn={onTimeIn}
+            onTimeOut={onTimeOut}
+          />
+          <Toolbar onSearch={onSearch} />
+          <Results
+            list={listData ? listData.records : []}
+            onPrintPreview={handlePrintPreview}
+          />
+        </Collapse>
+        <Collapse in={timeScheduleViewState.showPrintPreview}>
+          <Print />
+        </Collapse>
       </Container>
     </Page>
   );

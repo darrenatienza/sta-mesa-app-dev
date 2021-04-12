@@ -55,7 +55,7 @@ class PrintPreview extends Component {
         <Card>
           <CardContent>
             <Box border="1px solid">
-              <Box display="flex" justifyContent="center">
+              <Box display="flex" justifyContent="center" m={3}>
                 <Box position="relative" width="100%">
                   <Box position="absolute" left="10%">
                     <Logo className={classes.logo} />
@@ -76,7 +76,7 @@ class PrintPreview extends Component {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Date / Time</TableCell>
+                      <TableCell>Date</TableCell>
                       <TableCell>Time In</TableCell>
                       <TableCell>Time Out</TableCell>
                     </TableRow>
@@ -84,9 +84,18 @@ class PrintPreview extends Component {
                   <TableBody>
                     {logRecords.map(logRecord => (
                       <TableRow key={logRecord.logDate}>
-                        <TableCell>{logRecord.logDate}</TableCell>
-                        <TableCell>{logRecord.timeIn}</TableCell>
-                        <TableCell>{logRecord.timeOut}</TableCell>
+                        <TableCell>
+                          {moment(logRecord.logDate).format('MM/DD/YYYY')}
+                        </TableCell>
+                        <TableCell>
+                          {logRecord.timeIn &&
+                            moment(logRecord.timeIn).format('LTS')}
+                        </TableCell>
+                        <TableCell>
+                          {logRecord.timeOut &&
+                            logRecord.has_time_out &&
+                            moment(logRecord.timeOut).format('LTS')}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

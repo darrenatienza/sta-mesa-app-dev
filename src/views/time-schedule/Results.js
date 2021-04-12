@@ -23,7 +23,7 @@ import {
 const useStyles = makeStyles(theme => ({
   root: { marginTop: theme.spacing(3) }
 }));
-const Results = ({ className, list, ...rest }) => {
+const Results = ({ className, list, onPrintPreview, ...rest }) => {
   const classes = useStyles();
 
   return (
@@ -57,7 +57,7 @@ const Results = ({ className, list, ...rest }) => {
         <Divider />
 
         <Box display="flex" justifyContent="flex-end" p={1}>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={onPrintPreview}>
             Print Preview
           </Button>
         </Box>

@@ -14,7 +14,9 @@ import * as businessClearanceViewState from './businessClearanceViewState';
 import * as relationship from './relationship';
 import * as residency from './residency';
 import * as indigencyViewState from './indigencyViewState';
+import * as timeScheduleViewState from './timeScheduleViewState';
 
+export const useTimeScheduleViewState = makeEntity(timeScheduleViewState);
 export const useResidency = makeEntity(residency);
 export const useRelationship = makeEntity(relationship);
 export const usePersonView = makeEntity(personView);

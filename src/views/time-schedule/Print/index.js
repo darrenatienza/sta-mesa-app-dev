@@ -35,13 +35,14 @@ const Print = () => {
 
   const getDaysOfMonth = (month, year, lastDay, firstDay) => {
     let arrDays = [];
-    while (firstDay <= lastDay) {
+
+    for (let index = firstDay; index <= lastDay; index++) {
       const current = moment()
-        .date(firstDay)
         .month(month)
-        .year(year);
+        .year(year)
+        .date(index);
+
       arrDays.push(current.format('YYYY-MM-DD'));
-      firstDay++;
     }
 
     return arrDays.sort((a, b) => b - a);
@@ -56,6 +57,7 @@ const Print = () => {
       // get value from first and last array
       const firstDay = durationArr[0];
       const lastDay = durationArr[1];
+      console.log(lastDay);
       // get the integer month value of selected month
       const MM = moment()
         .month(month)
@@ -78,12 +80,15 @@ const Print = () => {
           const logDate = date;
           const timeIn = logs[0].time_in;
           const timeOut = logs[0].time_out;
+          const has_time_out = logs[0].has_time_out;
+          console.log(has_time_out);
           setLogRecords(logRecords => [
             ...logRecords,
             {
               logDate: logDate,
-              timeIn: moment(timeIn).format('hh:mm'),
-              timeOut: moment(timeOut).format('hh:mm')
+              timeIn: timeIn,
+              timeOut: timeOut,
+              has_time_out: has_time_out
             }
           ]);
         } else {
