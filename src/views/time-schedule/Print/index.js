@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import useAxios from 'axios-hooks';
-import { Card, Collapse, Container, makeStyles } from '@material-ui/core';
-
+import { Box, Card, Collapse, Container, makeStyles } from '@material-ui/core';
+import { useReactToPrint } from 'react-to-print';
 import moment from 'moment';
-import { useCurrentUser } from 'src/states';
+import { useCurrentUser, useTimeScheduleViewState } from 'src/states';
 import PrintPreview from './PrintPreview';
 import Toolbar from './Toolbar';
 import qs from 'qs';
@@ -20,6 +20,14 @@ const Print = () => {
   const classes = useStyles();
   const [currentUser] = useCurrentUser();
   const [logRecords, setLogRecords] = useState([]);
+  const [
+    timeScheduleViewState,
+    { setShowPrintPreview, setShowMainView }
+  ] = useTimeScheduleViewState();
+  const componentRef = useRef();
+  const handleOnPrint = useReactToPrint({
+    content: () => componentRef.current
+  });
   const [
     { data: listData, loading: listLoading, error: listError },
     refetchList
@@ -104,11 +112,21 @@ const Print = () => {
       });
     }
   };
+  const handleOnBack = () => {
+    setShowPrintPreview(false);
+    setShowMainView(true);
+  };
 
   return (
     <div className={classes.root}>
-      <Toolbar onSearch={handleSearch} />
-      <PrintPreview logRecords={logRecords} />
+      <Toolbar
+        onSearch={handleSearch}
+        onBack={handleOnBack}
+        onPrint={handleOnPrint}
+      />
+      <Box mt={3}>
+        <PrintPreview ref={componentRef} logRecords={logRecords} />
+      </Box>
     </div>
   );
 };

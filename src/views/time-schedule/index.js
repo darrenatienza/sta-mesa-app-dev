@@ -126,6 +126,10 @@ const TimeScheduleView = () => {
     setShowPrintPreview(true);
     setShowMainView(false);
   };
+  const handleOnBack = () => {
+    setShowPrintPreview(false);
+    setShowMainView(false);
+  };
   return (
     <Page className={classes.root} title="Time Schedules">
       <Container maxWidth={false}>
@@ -135,7 +139,7 @@ const TimeScheduleView = () => {
             onTimeIn={onTimeIn}
             onTimeOut={onTimeOut}
           />
-          <Toolbar onSearch={onSearch} />
+          <Toolbar onSearch={onSearch} onBack={handleOnBack} />
           <Results
             list={listData ? listData.records : []}
             onPrintPreview={handlePrintPreview}

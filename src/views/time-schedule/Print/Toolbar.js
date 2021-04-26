@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 const years = ['2021', '2022', '2023', '2024', '2025'];
 
 const months = moment.months();
-const Toolbar = ({ className, onSearch, ...rest }) => {
+const Toolbar = ({ className, onSearch, onBack, onPrint, ...rest }) => {
   const classes = useStyles();
   const [durations, setDurations] = useState([
     '01-15',
@@ -51,12 +51,8 @@ const Toolbar = ({ className, onSearch, ...rest }) => {
   };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Box>
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={() => onSearch(month, duration, year)}
-        >
+      <Box display="flex" marginLeft="auto">
+        <Button color="primary" variant="contained" onClick={onBack}>
           Back
         </Button>
       </Box>
@@ -133,6 +129,9 @@ const Toolbar = ({ className, onSearch, ...rest }) => {
       </Box>
 
       <Box display="flex" mt={2}>
+        <Button color="primary" variant="outlined" onClick={onPrint}>
+          Print
+        </Button>
         <Box marginLeft="auto">
           <Button
             color="primary"

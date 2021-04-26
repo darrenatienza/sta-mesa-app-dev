@@ -15,7 +15,7 @@ import { PureComponent } from 'react';
 import Logo from 'src/components/Logo';
 import moment from 'moment';
 const useStyles = theme => ({
-  root: { marginTop: theme.spacing(3), width: '50%' },
+  root: {},
   avatar: {
     marginRight: theme.spacing(2)
   },
