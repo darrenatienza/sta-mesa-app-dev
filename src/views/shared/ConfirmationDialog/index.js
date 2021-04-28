@@ -9,21 +9,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDeleteDialog } from '../../../states';
 import useAxios from 'axios-hooks';
 
-const ConfirmationDialog = ({ title, message, open, setOpen, setResult }) => {
-  const handleClose = () => {
-    setResult(false);
-    setOpen(false);
-  };
-
-  const handleOk = () => {
-    setResult(true);
-    setOpen(false);
-  };
+const ConfirmationDialog = ({ title, message, open, onClose }) => {
   return (
     <Dialog
       fullWidth
       open={open}
-      onClose={handleClose}
+      onClose={() => onClose(false)}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
@@ -34,10 +25,10 @@ const ConfirmationDialog = ({ title, message, open, setOpen, setResult }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={() => onClose(false)} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleOk} color="primary" autoFocus>
+        <Button onClick={() => onClose(true)} color="primary" autoFocus>
           Ok
         </Button>
       </DialogActions>

@@ -1,3 +1,7 @@
+/**changes on 04-28-2021*/
+ALTER TABLE persons ADD profile_pic BLOB NULL;
+
+
 /**changes on 07/03/2021 @ home */
 ALTER TABLE indigencies ADD update_timestamp datetime NOT null default current_timestamp() on update current_timestamp() ;
 ALTER TABLE indigencies MODIFY COLUMN parents varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'Not needed for inserting value';

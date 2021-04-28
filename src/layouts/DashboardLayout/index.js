@@ -7,6 +7,7 @@ import TopBar from './TopBar';
 import AdminNavBar from './NavBar/AdminNavBar';
 import useAxios from 'axios-hooks';
 import Cookies from 'js-cookie';
+import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -38,6 +39,7 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardLayout = () => {
   const classes = useStyles();
+  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const navigate = useNavigate();
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
   const [{ data, loading, error, response }, executeLogout] = useAxios(
@@ -47,8 +49,14 @@ const DashboardLayout = () => {
     }
   );
   const logout = async () => {
-    await executeLogout();
-    navigate('/login');
+    setOpenLogoutDialog(true);
+  };
+  const handleOnCloseLogoutDialog = async confirm => {
+    if (confirm) {
+      await executeLogout();
+      navigate('/login');
+    }
+    setOpenLogoutDialog(false);
   };
   return (
     <div className={classes.root}>
@@ -64,6 +72,12 @@ const DashboardLayout = () => {
         <div className={classes.contentContainer}>
           <div className={classes.content}>
             <Outlet />
+            <ConfirmationDialog
+              message="Do you want to logout"
+              title="Logout"
+              open={openLogoutDialog}
+              onClose={handleOnCloseLogoutDialog}
+            />
           </div>
         </div>
       </div>

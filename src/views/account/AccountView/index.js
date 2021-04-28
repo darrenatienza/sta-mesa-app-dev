@@ -5,6 +5,7 @@ import Profile from './Profile';
 import ProfileDetails from './ProfileDetails';
 import { useCurrentUser } from '../../../states';
 import useAxios from 'axios-hooks';
+import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -16,6 +17,10 @@ const useStyles = makeStyles(theme => ({
 
 const Account = () => {
   const classes = useStyles();
+  const [openSaveDialog, setOpenSaveDialog] = useState(false);
+  const [accountDetail, setAccountDetail] = useState();
+  const [imagePreview, setImagePreview] = useState();
+  const [currentFile, setCurrentFile] = useState();
   const [currentUser] = useCurrentUser();
   const [isSuccess, setIsSuccess] = useState(false);
   const [{ data, loading, error }, refetch] = useAxios(
@@ -43,28 +48,64 @@ const Account = () => {
   }, [isSuccess]);
 
   const onSave = async data => {
-    const { data: val } = await executePut({
-      data: {
-        first_name: data.firstName,
-        middle_name: data.middleName,
-        last_name: data.lastName,
-        civil_status: data.civilStatus,
-        phone_number: data.phoneNumber,
-        birthdate: data.birthDate,
-        gender: data.gender
-      }
-    });
-    val > 0 && setIsSuccess(true);
+    setAccountDetail(data);
+    setOpenSaveDialog(true);
+  };
+  const handleOnCloseSaveDialog = async confirm => {
+    if (confirm) {
+      console.log(currentFile);
+      const { data: val } = await executePut({
+        data: {
+          first_name: accountDetail.firstName,
+          middle_name: accountDetail.middleName,
+          last_name: accountDetail.lastName,
+          civil_status: accountDetail.civilStatus,
+          phone_number: accountDetail.phoneNumber,
+          birthdate: accountDetail.birthDate,
+          gender: accountDetail.gender,
+          profile_pic: currentFile
+        }
+      });
+      val > 0 && setIsSuccess(true);
+    }
+    setOpenSaveDialog(false);
+  };
+  const handleOnChangeImage = event => {
+    let file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      setCurrentFile(reader.readAsBinaryString(file));
+
+      setImagePreview(URL.createObjectURL(event.target.files[0]));
+    }
   };
   return (
     <Page className={classes.root} title="Account">
       <Container maxWidth="lg">
-        <ProfileDetails
-          profile={data}
-          onSave={onSave}
-          isLoading={putLoading}
-          isError={putError}
-          isSuccess={isSuccess}
+        <Grid container spacing={3}>
+          <Grid item lg={3} xs={12}>
+            <Profile
+              profile={data ?? {}}
+              onChangeImage={handleOnChangeImage}
+              imagePreview={imagePreview}
+            />
+          </Grid>
+          <Grid item lg={9} xs={12}>
+            <ProfileDetails
+              profile={data}
+              onSave={onSave}
+              isLoading={putLoading}
+              isError={putError}
+              isSuccess={isSuccess}
+            />
+          </Grid>
+        </Grid>
+
+        <ConfirmationDialog
+          message="Do you want to save changes"
+          title="Save Details"
+          open={openSaveDialog}
+          onClose={handleOnCloseSaveDialog}
         />
       </Container>
     </Page>

@@ -28,58 +28,57 @@ const useStyles = makeStyles(() => ({
   avatar: {
     height: 100,
     width: 100
+  },
+  input: {
+    display: 'none'
   }
 }));
 
-const Profile = ({ className, ...rest }) => {
+const Profile = ({
+  className,
+  profile,
+  onChangeImage,
+  imagePreview,
+  ...rest
+}) => {
   const classes = useStyles();
 
   return (
-    <Card
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
+    <Card className={clsx(classes.root, className)} {...rest}>
       <CardContent>
-        <Box
-          alignItems="center"
-          display="flex"
-          flexDirection="column"
-        >
-          <Avatar
-            className={classes.avatar}
-            src={user.avatar}
-          />
-          <Typography
-            color="textPrimary"
-            gutterBottom
-            variant="h3"
-          >
-            {user.name}
+        <Box alignItems="center" display="flex" flexDirection="column">
+          <Avatar className={classes.avatar} src={imagePreview} />
+          <Typography color="textPrimary" gutterBottom variant="h3">
+            {`${profile.first_name} ${profile.last_name}`}
           </Typography>
-          <Typography
-            color="textSecondary"
-            variant="body1"
-          >
-            {`${user.city} ${user.country}`}
+          <Typography color="textSecondary" variant="body1">
+            {`${profile.phone_number}`}
           </Typography>
           <Typography
             className={classes.dateText}
             color="textSecondary"
             variant="body1"
           >
-            {`${moment().format('hh:mm A')} ${user.timezone}`}
+            {`${moment(profile.birth_date).format('MM/DD/YYYY')}`}
           </Typography>
         </Box>
       </CardContent>
       <Divider />
       <CardActions>
-        <Button
-          color="primary"
-          fullWidth
-          variant="text"
-        >
-          Upload picture
-        </Button>
+        <input
+          accept="image/*"
+          className={classes.input}
+          id="contained-button-file"
+          multiple
+          type="file"
+          onChange={onChangeImage}
+        />
+
+        <label htmlFor="contained-button-file">
+          <Button color="primary" variant="text" component="span">
+            Upload picture
+          </Button>
+        </label>
       </CardActions>
     </Card>
   );
