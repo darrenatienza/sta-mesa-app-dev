@@ -6,6 +6,7 @@ import ProfileDetails from './ProfileDetails';
 import { useCurrentUser } from '../../../states';
 import useAxios from 'axios-hooks';
 import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
+import Resizer from 'react-image-file-resizer';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -32,6 +33,19 @@ const Account = () => {
     executePut
   ] = useAxios(
     { url: `/records/persons/${currentUser.currentPersonID}`, method: 'PUT' },
+    {
+      manual: true
+    }
+  );
+  const [
+    {
+      data: postProfilePicData,
+      loading: postProfilePicLoading,
+      error: postProfilePicError
+    },
+    executePostProfilePic
+  ] = useAxios(
+    { url: `/records/profile_pics`, method: 'POST' },
     {
       manual: true
     }
@@ -66,18 +80,52 @@ const Account = () => {
           profile_pic: currentFile
         }
       });
+      // const { data: val2 } = await executePostProfilePic({
+      //   data: {
+      //     person_id: currentUser.currentPersonID,
+      //     data: currentFile
+      //   }
+      // });
       val > 0 && setIsSuccess(true);
     }
     setOpenSaveDialog(false);
   };
-  const handleOnChangeImage = event => {
+  const handleOnChangeImage = async event => {
     let file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      setCurrentFile(reader.readAsBinaryString(file));
+      const image = await resizeFile(file);
+      console.log(image.split(';')[1].split(',')[1]);
+      setCurrentFile(image.split(';')[1].split(',')[1]);
 
-      setImagePreview(URL.createObjectURL(event.target.files[0]));
+      setImagePreview(URL.createObjectURL(file));
     }
+  };
+  const resizeFile = file =>
+    new Promise(resolve => {
+      Resizer.imageFileResizer(
+        file,
+        300,
+        300,
+        'JPEG',
+        100,
+        0,
+        uri => {
+          resolve(uri);
+        },
+        'base64'
+      );
+    });
+  const convertBase64 = file => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result.split(';')[1].split(',')[1]);
+      };
+      fileReader.onerror = () => {
+        reject(error);
+      };
+    });
   };
   return (
     <Page className={classes.root} title="Account">
