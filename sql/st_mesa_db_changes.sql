@@ -1,6 +1,6 @@
 /**changes on 04-28-2021*/
 ALTER TABLE persons ADD profile_pic BLOB NULL;
-
+/** not needed
 CREATE TABLE profile_pics (
 	profile_pic_id INT NOT NULL AUTO_INCREMENT,
 	`data` BLOB NOT NULL,
@@ -13,7 +13,7 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci;
 
-ALTER TABLE sta_mesa_db_2.persons MODIFY COLUMN profile_pic LONGBLOB DEFAULT NULL NULL;
+ALTER TABLE sta_mesa_db_2.persons MODIFY COLUMN profile_pic LONGBLOB DEFAULT NULL NULL; */
 
 
 /**changes on 07/03/2021 @ home */

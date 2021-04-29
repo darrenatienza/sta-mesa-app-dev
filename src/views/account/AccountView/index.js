@@ -37,19 +37,7 @@ const Account = () => {
       manual: true
     }
   );
-  const [
-    {
-      data: postProfilePicData,
-      loading: postProfilePicLoading,
-      error: postProfilePicError
-    },
-    executePostProfilePic
-  ] = useAxios(
-    { url: `/records/profile_pics`, method: 'POST' },
-    {
-      manual: true
-    }
-  );
+
   useEffect(() => {
     const performAccountFetch = async () => {
       await refetch();
@@ -80,12 +68,7 @@ const Account = () => {
           profile_pic: currentFile
         }
       });
-      // const { data: val2 } = await executePostProfilePic({
-      //   data: {
-      //     person_id: currentUser.currentPersonID,
-      //     data: currentFile
-      //   }
-      // });
+
       val > 0 && setIsSuccess(true);
     }
     setOpenSaveDialog(false);
@@ -94,9 +77,9 @@ const Account = () => {
     let file = event.target.files[0];
     if (file) {
       const image = await resizeFile(file);
-      console.log(image.split(';')[1].split(',')[1]);
-      setCurrentFile(image.split(';')[1].split(',')[1]);
-
+      const pureBase64 = image.split(';')[1].split(',')[1];
+      console.log(image);
+      setCurrentFile(pureBase64);
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -115,18 +98,7 @@ const Account = () => {
         'base64'
       );
     });
-  const convertBase64 = file => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result.split(';')[1].split(',')[1]);
-      };
-      fileReader.onerror = () => {
-        reject(error);
-      };
-    });
-  };
+
   return (
     <Page className={classes.root} title="Account">
       <Container maxWidth="lg">

@@ -22,7 +22,8 @@ import {
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
   Calendar as CalendarIcon,
-  File as FileIcon
+  File as FileIcon,
+  HelpCircle as AboutIcon
 } from 'react-feather';
 
 import NavItem from './NavItem';
@@ -115,6 +116,12 @@ const resident = [
     href: '/app/settings',
     icon: SettingsIcon,
     title: 'Settings'
+  },
+  {
+    id: 10,
+    href: '/app/about',
+    icon: AboutIcon,
+    title: 'About'
   }
 ];
 const admin = [

@@ -14,15 +14,6 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  city: 'Los Angeles',
-  country: 'USA',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith',
-  timezone: 'GTM-7'
-};
-
 const useStyles = makeStyles(() => ({
   root: {},
   avatar: {
@@ -47,7 +38,12 @@ const Profile = ({
     <Card className={clsx(classes.root, className)} {...rest}>
       <CardContent>
         <Box alignItems="center" display="flex" flexDirection="column">
-          <Avatar className={classes.avatar} src={imagePreview} />
+          <Avatar
+            className={classes.avatar}
+            src={
+              imagePreview ?? `data:image/jpeg;base64,${profile.profile_pic}`
+            }
+          />
           <Typography color="textPrimary" gutterBottom variant="h3">
             {`${profile.first_name} ${profile.last_name}`}
           </Typography>
@@ -65,20 +61,22 @@ const Profile = ({
       </CardContent>
       <Divider />
       <CardActions>
-        <input
-          accept="image/*"
-          className={classes.input}
-          id="contained-button-file"
-          multiple
-          type="file"
-          onChange={onChangeImage}
-        />
+        <Box display="flex" flexGrow="1" justifyContent="center">
+          <input
+            accept="image/*"
+            className={classes.input}
+            id="contained-button-file"
+            multiple
+            type="file"
+            onChange={onChangeImage}
+          />
 
-        <label htmlFor="contained-button-file">
-          <Button color="primary" variant="text" component="span">
-            Upload picture
-          </Button>
-        </label>
+          <label htmlFor="contained-button-file">
+            <Button color="primary" variant="text" component="span">
+              Upload picture
+            </Button>
+          </label>
+        </Box>
       </CardActions>
     </Card>
   );

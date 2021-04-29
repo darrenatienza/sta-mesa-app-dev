@@ -27,6 +27,7 @@ import RelationshipView from './views/document-request/relationship';
 import ResidencyView from './views/document-request/residency';
 import TimeScheduleView from './views/time-schedule';
 import MedicineView from './views/medecine';
+import AboutView from './views/about';
 const routes = [
   {
     path: 'app',
@@ -72,6 +73,7 @@ const routes = [
         element: <RelationshipView />
       },
       { path: 'settings', element: <SettingsView /> },
+      { path: 'about', element: <AboutView /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },
