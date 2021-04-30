@@ -149,7 +149,7 @@ const admin = [
     id: 9,
     href: '/app/fb-post',
     icon: FacebookIcon,
-    title: 'Facebook Post'
+    title: 'Facebook Annoucements'
   }
 ];
 

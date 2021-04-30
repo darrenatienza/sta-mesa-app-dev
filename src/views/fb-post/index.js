@@ -79,7 +79,7 @@ const FbPostView = () => {
     executePostFb
   ] = useAxios1(
     {
-      url: `/105474534531476/feed?`,
+      url: `/103103188606518/feed?`,
       method: 'POST'
     },
     { manual: true }
@@ -125,7 +125,7 @@ const FbPostView = () => {
       params: {
         message: data.message,
         access_token:
-          'EAAKv1AI0qnsBADNYywQrDVmV60mI2JtJ7oZCCtsyFXj04q48hEe0Thj3tWj5UZBZBNsuDgZAXDk1xzIMkhOJlB9Sb9nfiLwmiNH0wYGOuD4IZB4FbnPQDkSsXEKh52GyGWhqV4iPpGI2HJtBVZCCFLt3xIRZABs7tU7lySH3j0K0wZDZD'
+          'EAAB2F8V0vD8BAMZCALFOTXeEZCfUlZCDBhWraWQYxrKyzjzxY4qJkqMLtL5zTVGwxGK5UMBdKd7JUcUqkT5uDffDFSObb746ZBKIknYRzB3ATZBan0aqlKXFAG6OVg4A4GAEjGVcrIleWAZAITsZCHKRrNFZCQM0Wy1lSfUgunssQH9S04fpCoqXUcmyERhJqB8ZD'
       }
     });
     await executePost({
@@ -151,7 +151,7 @@ const FbPostView = () => {
   };
 
   return (
-    <Page className={classes.root} title="Medicines">
+    <Page className={classes.root} title="Facebook Annoucements">
       <Container maxWidth={false}>
         <Collapse in={!showForm}>
           <Toolbar onSearch={onSearch} onAdd={onAdd} isBhw={isBhwRole} />

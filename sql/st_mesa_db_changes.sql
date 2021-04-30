@@ -1,5 +1,5 @@
 /**changes on 04-30-2021*/
-CREATE TABLE sta_mesa_db.fb_posts (
+CREATE TABLE fb_posts (
 	fb_posts_id INT NOT NULL AUTO_INCREMENT,
 	message varchar(1000) NOT NULL,
 	create_time_stamp datetime not null default current_timestamp,

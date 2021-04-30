@@ -29,15 +29,13 @@ const Toolbar = ({ className, onSearch, onAdd, isBhw, ...rest }) => {
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box display="flex">
-        <Typography variant="h1">Facebook Posts</Typography>
+        <Typography variant="h1">Facebook Annoucements</Typography>
         <Box marginLeft="auto">
-          {isBhw && (
-            <Box display="flex" justifyContent="flex-end">
-              <Button color="primary" variant="contained" onClick={onAdd}>
-                Add new Fb Post
-              </Button>
-            </Box>
-          )}
+          <Box display="flex" justifyContent="flex-end">
+            <Button color="primary" variant="contained" onClick={onAdd}>
+              Add new Fb Post
+            </Button>
+          </Box>
         </Box>
       </Box>
 
