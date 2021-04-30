@@ -23,7 +23,8 @@ import {
   Users as UsersIcon,
   Calendar as CalendarIcon,
   File as FileIcon,
-  HelpCircle as AboutIcon
+  HelpCircle as AboutIcon,
+  Facebook as FacebookIcon
 } from 'react-feather';
 
 import NavItem from './NavItem';
@@ -112,13 +113,13 @@ const resident = [
     title: 'Document Requests'
   },
   {
-    id: 9,
+    id: 10,
     href: '/app/settings',
     icon: SettingsIcon,
     title: 'Settings'
   },
   {
-    id: 10,
+    id: 11,
     href: '/app/about',
     icon: AboutIcon,
     title: 'About'
@@ -143,6 +144,12 @@ const admin = [
     href: '/app/health-workers',
     icon: UsersIcon,
     title: 'Brgy Health Workers'
+  },
+  {
+    id: 9,
+    href: '/app/fb-post',
+    icon: FacebookIcon,
+    title: 'Facebook Post'
   }
 ];
 

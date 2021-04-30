@@ -28,6 +28,7 @@ import ResidencyView from './views/document-request/residency';
 import TimeScheduleView from './views/time-schedule';
 import MedicineView from './views/medecine';
 import AboutView from './views/about';
+import FbPostView from './views/fb-post';
 const routes = [
   {
     path: 'app',
@@ -74,6 +75,7 @@ const routes = [
       },
       { path: 'settings', element: <SettingsView /> },
       { path: 'about', element: <AboutView /> },
+      { path: 'fb-post', element: <FbPostView /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },

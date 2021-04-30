@@ -1,3 +1,15 @@
+/**changes on 04-30-2021*/
+CREATE TABLE sta_mesa_db.fb_posts (
+	fb_posts_id INT NOT NULL AUTO_INCREMENT,
+	message varchar(1000) NOT NULL,
+	create_time_stamp datetime not null default current_timestamp,
+	CONSTRAINT fb_posts_pk PRIMARY KEY (fb_posts_id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8
+COLLATE=utf8_general_ci;
+
+
 /**changes on 04-28-2021*/
 ALTER TABLE persons ADD profile_pic BLOB NULL;
 /** not needed
