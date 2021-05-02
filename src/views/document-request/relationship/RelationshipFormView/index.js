@@ -28,6 +28,7 @@ import {
   makeStyles,
   Typography
 } from '@material-ui/core';
+import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
 const useStyles = makeStyles(() => ({
   root: { marginTop: '5px' },
   cancelButton: {
@@ -42,6 +43,7 @@ const RelationshipFormView = ({ className, ...rest }) => {
   const formRef = useRef();
   const [currentUser] = useCurrentUser();
   const [reset, setReset] = useState(false);
+
   //global state
   const [
     relationship,
@@ -52,7 +54,9 @@ const RelationshipFormView = ({ className, ...rest }) => {
       setRefreshList
     }
   ] = useRelationship();
-
+  const [openSaveConfirmationDialog, setOpenSaveConfirmationDialog] = useState(
+    false
+  );
   // http request hooks
   const [{ data, loading, error }, refetch] = useAxios(
     {
@@ -116,6 +120,7 @@ const RelationshipFormView = ({ className, ...rest }) => {
         }
       });
     }
+    setOpenSaveConfirmationDialog(true);
     setSelectedRelationshipID(0);
     formRef.current.resetFields();
     setShowFormView(false);
@@ -140,6 +145,13 @@ const RelationshipFormView = ({ className, ...rest }) => {
         onSubmit={onSubmit}
         onClose={onClose}
         ref={formRef}
+      />
+      <ConfirmationDialog
+        open={openSaveConfirmationDialog}
+        hasCancel={false}
+        title="Successfully saved"
+        message="Record successfully saved!"
+        onClose={() => setOpenSaveConfirmationDialog(false)}
       />
     </Box>
   );

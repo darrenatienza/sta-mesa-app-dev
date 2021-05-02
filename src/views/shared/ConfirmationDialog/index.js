@@ -9,7 +9,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDeleteDialog } from '../../../states';
 import useAxios from 'axios-hooks';
 
-const ConfirmationDialog = ({ title, message, open, onClose }) => {
+const ConfirmationDialog = ({
+  title,
+  message,
+  open,
+  onClose,
+  hasCancel = true
+}) => {
   return (
     <Dialog
       fullWidth
@@ -25,9 +31,11 @@ const ConfirmationDialog = ({ title, message, open, onClose }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => onClose(false)} color="primary">
-          Cancel
-        </Button>
+        {hasCancel && (
+          <Button onClick={() => onClose(false)} color="primary">
+            Cancel
+          </Button>
+        )}
         <Button onClick={() => onClose(true)} color="primary" autoFocus>
           Ok
         </Button>

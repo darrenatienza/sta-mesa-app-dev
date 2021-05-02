@@ -8,6 +8,7 @@ import useAxios from 'axios-hooks';
 import { useCurrentUser, useIndigencyViewState } from '../../../../states';
 import DeleteDialog from 'src/views/residents/ResidentListView/DeleteDialog';
 import DocumentStatusDialog from '../../shared/DocumentStatusDialog';
+import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -37,6 +38,9 @@ const ListView = () => {
     openChangeDocumentStatusDialog,
     setOpenChangeDocumentStatusDialog
   ] = useState(false);
+  const [openSaveConfirmationDialog, setOpenSaveConfirmationDialog] = useState(
+    false
+  );
   const [{ data, loading, error }, refetch] = useAxios(
     {
       url: `/records/view_indigencies?${
@@ -102,6 +106,7 @@ const ListView = () => {
         indigent_reason: '' // not needed
       }
     });
+    setOpenSaveConfirmationDialog(true);
     await refetch();
   };
   const onPrint = id => {
@@ -150,6 +155,13 @@ const ListView = () => {
         <DocumentStatusDialog
           open={openChangeDocumentStatusDialog}
           onClose={onCloseDocumentStatusDialog}
+        />
+        <ConfirmationDialog
+          open={openSaveConfirmationDialog}
+          hasCancel={false}
+          title="Successfully saved"
+          message="Record successfully saved!"
+          onClose={() => setOpenSaveConfirmationDialog(false)}
         />
       </Box>
     </>

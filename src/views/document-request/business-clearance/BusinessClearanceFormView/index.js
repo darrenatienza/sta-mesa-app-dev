@@ -5,6 +5,7 @@ import _ from 'lodash/fp';
 import PropTypes from 'prop-types';
 import { useForm, Controller } from 'react-hook-form';
 import { useBusinessClearanceViewState } from '../../../../states';
+import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
 import moment from 'moment';
 import {
   Box,
@@ -45,7 +46,9 @@ const BusinessClearanceFormView = ({ className, ...rest }) => {
       setRefreshList
     }
   ] = useBusinessClearanceViewState();
-
+  const [openSaveConfirmationDialog, setOpenSaveConfirmationDialog] = useState(
+    false
+  );
   // react hook form manager
   const { handleSubmit, setValue, control, errors } = useForm();
   // http request hooks
@@ -131,6 +134,7 @@ const BusinessClearanceFormView = ({ className, ...rest }) => {
         }
       });
     }
+    setOpenSaveConfirmationDialog(true);
     reloadList();
     handleClose();
   };
@@ -146,92 +150,101 @@ const BusinessClearanceFormView = ({ className, ...rest }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      autoComplete="off"
-      noValidate
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
-      <Card>
-        <CardHeader
-          subheader="The information can be edited"
-          title="Barangay Clearance Request Detail"
-        />
-        <Divider />
-        <CardContent>
-          <Grid container spacing={3}>
-            <Grid item lg={12} md={6} xs={12}>
-              <Controller
-                fullWidth
-                variant="outlined"
-                label="Business Name"
-                as={TextField}
-                name="businessName"
-                control={control}
-                rules={{ required: true }}
-                defaultValue=""
-                error={errors.businessName && true}
-              />
+    <>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+        noValidate
+        className={clsx(classes.root, className)}
+        {...rest}
+      >
+        <Card>
+          <CardHeader
+            subheader="The information can be edited"
+            title="Barangay Clearance Request Detail"
+          />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={3}>
+              <Grid item lg={12} md={6} xs={12}>
+                <Controller
+                  fullWidth
+                  variant="outlined"
+                  label="Business Name"
+                  as={TextField}
+                  name="businessName"
+                  control={control}
+                  rules={{ required: true }}
+                  defaultValue=""
+                  error={errors.businessName && true}
+                />
+              </Grid>
+              <Grid item lg={4} md={6} xs={12}>
+                <Controller
+                  fullWidth
+                  variant="outlined"
+                  label="Business Address"
+                  as={TextField}
+                  name="businessAddress"
+                  control={control}
+                  rules={{ required: true }}
+                  defaultValue=""
+                  error={errors.businessAddress && true}
+                />
+              </Grid>
+              <Grid item lg={4} md={6} xs={12}>
+                <Controller
+                  fullWidth
+                  variant="outlined"
+                  label="Business Engagement"
+                  as={TextField}
+                  name="businessEngagement"
+                  control={control}
+                  rules={{ required: true }}
+                  defaultValue=""
+                  error={errors.businessEngagement && true}
+                />
+              </Grid>
+              <Grid item lg={4} md={6} xs={12}>
+                <Controller
+                  fullWidth
+                  variant="outlined"
+                  label="OR Number"
+                  as={TextField}
+                  name="orNumber"
+                  control={control}
+                  rules={{ required: true }}
+                  defaultValue=""
+                  error={errors.orNumber && true}
+                />
+              </Grid>
             </Grid>
-            <Grid item lg={4} md={6} xs={12}>
-              <Controller
-                fullWidth
-                variant="outlined"
-                label="Business Address"
-                as={TextField}
-                name="businessAddress"
-                control={control}
-                rules={{ required: true }}
-                defaultValue=""
-                error={errors.businessAddress && true}
-              />
-            </Grid>
-            <Grid item lg={4} md={6} xs={12}>
-              <Controller
-                fullWidth
-                variant="outlined"
-                label="Business Engagement"
-                as={TextField}
-                name="businessEngagement"
-                control={control}
-                rules={{ required: true }}
-                defaultValue=""
-                error={errors.businessEngagement && true}
-              />
-            </Grid>
-            <Grid item lg={4} md={6} xs={12}>
-              <Controller
-                fullWidth
-                variant="outlined"
-                label="OR Number"
-                as={TextField}
-                name="orNumber"
-                control={control}
-                rules={{ required: true }}
-                defaultValue=""
-                error={errors.orNumber && true}
-              />
-            </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
+          </CardContent>
+          <Divider />
 
-        <Box display="flex" justifyContent="flex-end" p={2}>
-          <Button
-            color="primary"
-            variant="outlined"
-            className={classes.cancelButton}
-            onClick={handleClose}
-          >
-            Cancel
-          </Button>
-          <Button color="primary" variant="contained" type="submit">
-            {postLoading || putLoading ? `Loading...` : `Confirm`}
-          </Button>
-        </Box>
-      </Card>
-    </form>
+          <Box display="flex" justifyContent="flex-end" p={2}>
+            <Button
+              color="primary"
+              variant="outlined"
+              className={classes.cancelButton}
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+            <Button color="primary" variant="contained" type="submit">
+              {postLoading || putLoading ? `Loading...` : `Confirm`}
+            </Button>
+          </Box>
+        </Card>
+      </form>
+      <ConfirmationDialog
+        open={openSaveConfirmationDialog}
+        hasCancel={false}
+        title="Successfully saved"
+        message="Record successfully saved!"
+        onClose={() => setOpenSaveConfirmationDialog(false)}
+      />
+    </>
   );
 };
 

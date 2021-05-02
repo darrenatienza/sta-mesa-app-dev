@@ -75,7 +75,7 @@ const Print = () => {
       const to = `${year}/${MM}/${lastDay}`;
       //fetch data
       const { data } = await refetchList({
-        url: `/records/time_schedules?filter=${currentUser.currentPersonID}&filter=log_date,ge,${from}&filter=log_date,le,${to}`
+        url: `/records/time_schedules?filter=person_id,eq,${currentUser.currentPersonID}&filter=log_date,ge,${from}&filter=log_date,le,${to}`
       });
 
       // loop through last day of selected duration

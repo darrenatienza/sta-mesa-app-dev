@@ -10,6 +10,7 @@ import {
 } from '../../../../states';
 
 import Form from './Form';
+import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
 
 const FormView = ({ className, ...rest }) => {
   //global state
@@ -22,6 +23,9 @@ const FormView = ({ className, ...rest }) => {
   // state - admin
   const [isAdmin] = useState(isValidRole('admin'));
 
+  const [openSaveConfirmationDialog, setOpenSaveConfirmationDialog] = useState(
+    false
+  );
   // http - get barangay clearance list
   const [{ data, loading, error }, refetch] = useAxios(
     {
@@ -103,7 +107,7 @@ const FormView = ({ className, ...rest }) => {
         });
       }
     }
-
+    setOpenSaveConfirmationDialog(true);
     setRefreshList(true);
     onClose();
   };
@@ -116,7 +120,21 @@ const FormView = ({ className, ...rest }) => {
   };
 
   return (
-    <Form data={data} onClose={onClose} onSubmit={onSubmit} isAdmin={isAdmin} />
+    <>
+      <Form
+        data={data}
+        onClose={onClose}
+        onSubmit={onSubmit}
+        isAdmin={isAdmin}
+      />
+      <ConfirmationDialog
+        open={openSaveConfirmationDialog}
+        hasCancel={false}
+        title="Successfully saved"
+        message="Record successfully saved!"
+        onClose={() => setOpenSaveConfirmationDialog(false)}
+      />
+    </>
   );
 };
 

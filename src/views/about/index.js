@@ -76,7 +76,10 @@ const AboutView = () => {
               <CardHeader title="Mission" />
               <Divider />
               <CardContent>
-                <Typography variant="body1">
+                <Typography
+                  variant="body1"
+                  style={{ textAlign: 'justify', textJustify: 'inter-word' }}
+                >
                   To formulate and enforce Transparent Plans, Programs, and
                   Regulations for the protection of the interest of the
                   community with regards to Environment, Education,
@@ -94,7 +97,10 @@ const AboutView = () => {
               <CardHeader title="Vision" />
               <Divider />
               <CardContent>
-                <Typography variant="body1">
+                <Typography
+                  variant="body1"
+                  style={{ textAlign: 'justify', textJustify: 'inter-word' }}
+                >
                   Envisions a Progressive, Healthy, Peaceful community,
                   empowered constituents and collectively participating in
                   decision making towards good governance.

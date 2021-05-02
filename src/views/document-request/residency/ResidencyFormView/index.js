@@ -24,6 +24,7 @@ import {
   makeStyles,
   Typography
 } from '@material-ui/core';
+import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
 const useStyles = makeStyles(() => ({
   root: { marginTop: '5px' },
   cancelButton: {
@@ -55,7 +56,9 @@ const ResidencyFormView = ({ className, ...rest }) => {
       manual: true
     }
   );
-
+  const [openSaveConfirmationDialog, setOpenSaveConfirmationDialog] = useState(
+    false
+  );
   const [
     { data: postData, loading: postLoading, error: postError },
     executePost
@@ -104,6 +107,7 @@ const ResidencyFormView = ({ className, ...rest }) => {
         }
       });
     }
+    setOpenSaveConfirmationDialog(true);
     setSelectedResidencyID(0);
     formRef.current.resetFields();
     setShowFormView(false);
@@ -123,7 +127,21 @@ const ResidencyFormView = ({ className, ...rest }) => {
   };
 
   return (
-    <FormView data={data} onSubmit={onSubmit} onClose={onClose} ref={formRef} />
+    <>
+      <FormView
+        data={data}
+        onSubmit={onSubmit}
+        onClose={onClose}
+        ref={formRef}
+      />
+      <ConfirmationDialog
+        open={openSaveConfirmationDialog}
+        hasCancel={false}
+        title="Successfully saved"
+        message="Record successfully saved!"
+        onClose={() => setOpenSaveConfirmationDialog(false)}
+      />
+    </>
   );
 };
 
