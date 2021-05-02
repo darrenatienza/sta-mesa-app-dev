@@ -106,6 +106,7 @@ const TimeScheduleView = () => {
       data: {
         // time in not required to provide json value because it is auto generated once
         // the record created
+        time_in: moment().format(sqlDateTimeFormat),
         person_id: currentUser.currentPersonID
       }
     });
