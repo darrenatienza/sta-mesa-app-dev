@@ -7,7 +7,6 @@ view view_persons as select
 	p.civil_status,
 	p.phone_number,
 	p.birthdate,
-
 	p.gender,
 	p.profile_pic,
 	p.address,
