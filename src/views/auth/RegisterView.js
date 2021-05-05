@@ -108,7 +108,8 @@ const RegisterView = () => {
         civil_status: data.civilStatus,
         phone_number: data.phoneNumber,
         birthdate: data.birthDate,
-        gender: data.gender
+        gender: data.gender,
+        address: data.address
       }
     });
 
@@ -118,7 +119,7 @@ const RegisterView = () => {
           username: data.userName,
           password: data.password,
           person_id: newPersonID,
-          active: 1
+          active: 0
         }
       });
       // success saving records
@@ -262,6 +263,18 @@ const RegisterView = () => {
                     </option>
                   ))}
                 </Controller>
+                <Controller
+                  fullWidth
+                  margin="normal"
+                  as={TextField}
+                  name="address"
+                  label="Address"
+                  control={control}
+                  defaultValue=""
+                  variant="outlined"
+                  rules={{ required: true }}
+                  error={errors.address && true}
+                />
                 <Controller
                   fullWidth
                   margin="normal"

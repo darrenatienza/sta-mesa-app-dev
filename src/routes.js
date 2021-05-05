@@ -29,11 +29,13 @@ import TimeScheduleView from './views/time-schedule';
 import MedicineView from './views/medecine';
 import AboutView from './views/about';
 import FbPostView from './views/fb-post';
+import HomeView from './views/home';
 const routes = [
   {
     path: 'app',
     element: <DashboardLayout />,
     children: [
+      { path: 'home', element: <HomeView /> },
       { path: 'account', element: <AccountView /> },
       { path: 'customers', element: <CustomerListView /> },
       { path: 'officials', element: <OfficialView /> },
@@ -75,6 +77,7 @@ const routes = [
       },
       { path: 'settings', element: <SettingsView /> },
       { path: 'about', element: <AboutView /> },
+
       { path: 'fb-post', element: <FbPostView /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]

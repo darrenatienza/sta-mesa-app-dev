@@ -3,7 +3,7 @@ import { Divider, Box, Button, makeStyles } from '@material-ui/core';
 
 import ProfileDetails from './ProfileDetails';
 import useAxios from 'axios-hooks';
-import { useResidentViewState } from '../../../states';
+import { useCurrentUser, useResidentViewState } from '../../../states';
 
 import ResidentChangeGroupView from '../ResidentChangeGroupView';
 
@@ -21,6 +21,9 @@ const useStyles = makeStyles(theme => ({
 
 const ResidentFormView = () => {
   const classes = useStyles();
+  const [currentUser] = useCurrentUser();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isOfficial, setIsOfficial] = useState(false);
   const [
     residentViewState,
     { setShowResidentDetailView, setShowResidentListView }
@@ -35,7 +38,19 @@ const ResidentFormView = () => {
       manual: !residentViewState.currentPersonID
     }
   );
-
+  //check for roles
+  useEffect(() => {
+    if (currentUser.roles.length > 0) {
+      currentUser.roles.map(r => {
+        if (r.title === 'admin') {
+          setIsAdmin(true);
+        }
+        if (r.title === 'official') {
+          setIsOfficial(true);
+        }
+      });
+    }
+  }, [currentUser.roles]);
   const handleClose = event => {
     setShowResidentDetailView(false);
     setShowResidentListView(true);
@@ -53,7 +68,7 @@ const ResidentFormView = () => {
         </Button>
       </Box>
       <ProfileDetails profileDetails={data} onClose={handleClose} />
-      <ResidentChangeGroupView />
+      {isAdmin && <ResidentChangeGroupView />}
     </div>
   );
 };

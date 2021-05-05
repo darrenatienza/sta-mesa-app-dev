@@ -1,3 +1,7 @@
+/**changes 0n 05-05-2021*/
+ALTER TABLE persons ADD address varchar(1000) NULL;
+
+
 /**changes on 04-30-2021*/
 CREATE TABLE fb_posts (
 	fb_posts_id INT NOT NULL AUTO_INCREMENT,

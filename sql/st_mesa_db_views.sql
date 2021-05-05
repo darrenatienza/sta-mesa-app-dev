@@ -1,3 +1,22 @@
+create or replace 
+view view_persons as select
+	p.person_id,
+	p.first_name,
+	p.middle_name,
+	p.last_name,
+	p.civil_status,
+	p.phone_number,
+	p.birthdate,
+
+	p.gender,
+	p.profile_pic,
+	p.address,
+	u.active,
+	u.user_id
+from persons p join users u on u.person_id = p.person_id;
+
+
+
 create
 or replace
 view view_officials as select

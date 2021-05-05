@@ -9,12 +9,16 @@ import moment from 'moment';
 import { useCurrentUser, useTimeScheduleViewState } from 'src/states';
 import PrintPreview from './Print/PrintPreview';
 import Print from './Print';
+import { Alert } from '@material-ui/lab';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     minHeight: '100%',
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3)
+  },
+  alert: {
+    marginBottom: '10px'
   }
 }));
 const TimeScheduleView = () => {
@@ -22,6 +26,10 @@ const TimeScheduleView = () => {
   // retrieved the current id of time schedules of current person login
   const [currentID, setCurrentID] = useState(0);
   const [currentUser] = useCurrentUser();
+  const [
+    showTimeOutNotPermittedAlert,
+    setShowTimeOutNotPermittedAlert
+  ] = useState(false);
   const [
     timeScheduleViewState,
     { setShowPrintPreview, setShowMainView }
@@ -114,14 +122,26 @@ const TimeScheduleView = () => {
     await refetch();
   };
   const onTimeOut = async () => {
-    await executePut({
-      data: {
-        time_out: moment().format(sqlDateTimeFormat),
-        has_time_out: 1
-      }
-    });
-    await refetchList();
-    await refetch();
+    if (validToTimeOut()) {
+      await executePut({
+        data: {
+          time_out: moment().format(sqlDateTimeFormat),
+          has_time_out: 1
+        }
+      });
+      await refetchList();
+      await refetch();
+      setShowTimeOutNotPermittedAlert(false);
+    } else {
+      setShowTimeOutNotPermittedAlert(true);
+    }
+  };
+  const validToTimeOut = () => {
+    // must be 5hours duration to logout
+    const timeIn = data && data.records[0].time_in;
+    var duration = moment.duration(moment().diff(timeIn));
+    var hours = duration.asHours();
+    return hours < 5 ? false : true;
   };
   const handlePrintPreview = () => {
     setShowPrintPreview(true);
@@ -135,6 +155,15 @@ const TimeScheduleView = () => {
     <Page className={classes.root} title="Time Schedules">
       <Container maxWidth={false}>
         <Collapse in={timeScheduleViewState.showMainView}>
+          {showTimeOutNotPermittedAlert && (
+            <Alert
+              severity="error"
+              className={classes.alert}
+              onClose={() => setShowTimeOutNotPermittedAlert(false)}
+            >
+              The time duration to time out is minimum of 5 hours!
+            </Alert>
+          )}
           <Details
             details={data && data.records[0]}
             onTimeIn={onTimeIn}

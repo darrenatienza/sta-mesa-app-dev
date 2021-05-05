@@ -29,70 +29,20 @@ import {
 
 import NavItem from './NavItem';
 import { useCurrentUser } from '../../../states';
-import { BiCapsule as CapsuleIcon } from 'react-icons/bi';
+import { BiCapsule as CapsuleIcon, BiHome as HomeIcon } from 'react-icons/bi';
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
   jobTitle: 'Senior Developer',
   name: 'Katarina Smith'
 };
 
-const items = [
+const resident = [
   {
     id: 1,
-    href: '/app/dashboard',
-    icon: BarChartIcon,
-    title: 'Dashboard'
+    href: '/app/home',
+    icon: HomeIcon,
+    title: 'Home'
   },
-  {
-    id: 2,
-    href: '/app/account',
-    icon: UserIcon,
-    title: 'Account'
-  },
-  {
-    id: 3,
-    href: '/app/medicines',
-    icon: CapsuleIcon,
-    title: 'Medicines'
-  },
-  {
-    id: 4,
-    href: '/app/residents',
-    icon: UsersIcon,
-    title: 'Residents'
-  },
-  {
-    id: 5,
-    href: '/app/officials',
-    icon: UsersIcon,
-    title: 'Brgy Officials'
-  },
-  {
-    id: 6,
-    href: '/app/time-schedule',
-    icon: CalendarIcon,
-    title: 'Time Schedule'
-  },
-  {
-    id: 7,
-    href: '/app/health-workers',
-    icon: UsersIcon,
-    title: 'Brgy Health Workers'
-  },
-  {
-    id: 8,
-    href: '/app/document-requests',
-    icon: FileIcon,
-    title: 'Document Requests'
-  },
-  {
-    id: 9,
-    href: '/app/settings',
-    icon: SettingsIcon,
-    title: 'Settings'
-  }
-];
-const resident = [
   {
     id: 2,
     href: '/app/account',
@@ -149,11 +99,17 @@ const admin = [
     id: 9,
     href: '/app/fb-post',
     icon: FacebookIcon,
-    title: 'Facebook Annoucements'
+    title: 'Facebook Announcements'
   }
 ];
 
 const official = [
+  {
+    id: 4,
+    href: '/app/residents',
+    icon: UsersIcon,
+    title: 'Residents'
+  },
   {
     id: 6,
     href: '/app/time-schedule',
@@ -187,6 +143,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
   useEffect(() => {
     //conditionally add menus depending on current roles
+
     currentUser.roles.map(x => {
       switch (x.title) {
         case 'admin':
@@ -213,6 +170,10 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         <List>
           {listItems
             .sort((a, b) => (a.id > b.id ? 1 : -1))
+            .filter(
+              (ele, ind) =>
+                ind === listItems.findIndex(elem => elem.id === ele.id)
+            )
             .map(item => (
               <NavItem
                 href={item.href}

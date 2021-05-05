@@ -47,6 +47,9 @@ const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const methods = useForm();
+  const [showAccountNotActiveAlert, setShowAccountNotActiveAlert] = useState(
+    false
+  );
   const { handleSubmit, control, errors } = methods;
   const [
     currentUser,
@@ -83,7 +86,7 @@ const LoginView = () => {
       const performRoleCheck = async () => {
         const { data: result } = await refetchRole();
         setRoles(result.records);
-        navigate('/app/account');
+        navigate('/app/home');
       };
       performRoleCheck();
     }
@@ -96,9 +99,13 @@ const LoginView = () => {
         password: data.password
       }
     });
-    setUserName(data.userName);
-    setCurrentPersonID(user.person_id);
-    user.user_id > 0 && setLoginSuccess(true);
+    if (user.active) {
+      setUserName(data.userName);
+      setCurrentPersonID(user.person_id);
+      user.user_id > 0 && setLoginSuccess(true);
+    } else {
+      setShowAccountNotActiveAlert(true);
+    }
   };
   const handleClose = () => {
     setOpen(false);
@@ -122,6 +129,16 @@ const LoginView = () => {
           {error && (
             <Alert severity="error" className={classes.alert}>
               Login failed
+            </Alert>
+          )}
+          {showAccountNotActiveAlert && (
+            <Alert
+              severity="error"
+              className={classes.alert}
+              onClose={() => setShowAccountNotActiveAlert(false)}
+            >
+              Your account is not yet activated. Please visit the Barangay
+              Official in charge for this issue.
             </Alert>
           )}
           <Card>

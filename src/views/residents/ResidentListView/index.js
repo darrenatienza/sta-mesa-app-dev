@@ -4,10 +4,11 @@ import { Box, Container, makeStyles, Collapse } from '@material-ui/core';
 import Results from './Results';
 import Toolbar from './Toolbar';
 
-import { useResidentViewState } from '../../../states';
+import { useCurrentUser, useResidentViewState } from '../../../states';
 import useAxios from 'axios-hooks';
 import DeleteDialog from './DeleteDialog';
 import ResetPasswordDialog from './ResetPasswordDialog';
+import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,7 +20,12 @@ const useStyles = makeStyles(theme => ({
 const ResidentListView = () => {
   const classes = useStyles();
   const [criteria, setCriteria] = useState('');
+  const [currentUser] = useCurrentUser();
   const [selectedDeletePersonID, setSelectedDeletePersonID] = useState();
+  const [showActivateUserDialog, setShowActivateUserDialog] = useState(false);
+  const [selectedUserToActivate, setSelectedUserToActivate] = useState();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isOfficial, setIsOfficial] = useState(false);
   const [
     selectedResetPersonPasswordID,
     setSelectedResetPersonPasswordID
@@ -30,6 +36,7 @@ const ResidentListView = () => {
   ] = useState();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState(false);
+
   const [
     residentViewState,
     { setShowResidentDetailView, setShowResidentListView, setCurrentPersonID }
@@ -37,7 +44,10 @@ const ResidentListView = () => {
 
   // http - get list of residents / persons according to criteria
   const [{ data, loading, error }, refetch] = useAxios(
-    { url: `/records/persons?filter=first_name,cs,${criteria}`, method: 'GET' },
+    {
+      url: `/records/view_persons?filter=first_name,cs,${criteria}`,
+      method: 'GET'
+    },
     { manual: false }
   );
   // http - get user by person id
@@ -82,6 +92,24 @@ const ResidentListView = () => {
       manual: true
     }
   );
+  // http - reset the password of user
+  const [
+    {
+      data: activateUserData,
+      loading: activateUserLoading,
+      error: activateUserError
+    },
+    executeActivateUser
+  ] = useAxios(
+    {
+      url: `/records/users/${selectedUserToActivate &&
+        selectedUserToActivate.userID}`,
+      method: 'PUT'
+    },
+    {
+      manual: true
+    }
+  );
   //effect - occurs when showing  list
   useEffect(() => {
     if (residentViewState.showResidentListView) {
@@ -105,7 +133,19 @@ const ResidentListView = () => {
       performUserFetch();
     }
   }, [selectedResetPersonPasswordID]);
-
+  //check for roles
+  useEffect(() => {
+    if (currentUser.roles.length > 0) {
+      currentUser.roles.map(r => {
+        if (r.title === 'admin') {
+          setIsAdmin(true);
+        }
+        if (r.title === 'official') {
+          setIsOfficial(true);
+        }
+      });
+    }
+  }, [currentUser.roles]);
   //callback - occurs when reset click
   const onResetPassword = async personID => {
     setSelectedResetPersonPasswordID(personID);
@@ -141,6 +181,21 @@ const ResidentListView = () => {
     }
     setOpenResetPasswordDialog(false);
   };
+  const handleOnActivateUser = (userId, active) => {
+    setShowActivateUserDialog(true);
+    setSelectedUserToActivate({ userID: userId, active: active });
+  };
+  const handleOnCloseActivateUserDialog = async confirm => {
+    if (confirm) {
+      await executeActivateUser({
+        data: {
+          active: !selectedUserToActivate.active
+        }
+      });
+    }
+    await refetch();
+    setShowActivateUserDialog(false);
+  };
   return (
     <div>
       <Toolbar criteria={criteria} />
@@ -151,6 +206,9 @@ const ResidentListView = () => {
             onDelete={onDelete}
             onReset={onResetPassword}
             onViewDetail={onViewDetail}
+            onActivateUser={handleOnActivateUser}
+            isAdmin={isAdmin}
+            isOfficial={isOfficial}
           />
         )}
       </Box>
@@ -158,6 +216,20 @@ const ResidentListView = () => {
       <ResetPasswordDialog
         open={openResetPasswordDialog}
         onClose={onCloseResetPasswordDialog}
+      />
+      <ConfirmationDialog
+        open={showActivateUserDialog}
+        message={
+          selectedUserToActivate && selectedUserToActivate.active
+            ? `Do you want to de activate this user?`
+            : `Do you want to activate this user?`
+        }
+        title={
+          selectedUserToActivate && !selectedUserToActivate.active
+            ? `Activate User`
+            : `Deactivate User`
+        }
+        onClose={handleOnCloseActivateUserDialog}
       />
     </div>
   );

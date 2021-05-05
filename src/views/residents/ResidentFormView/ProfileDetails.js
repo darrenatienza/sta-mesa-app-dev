@@ -25,7 +25,13 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const ProfileDetails = ({ className, profileDetails, ...rest }) => {
+const ProfileDetails = ({
+  className,
+  profileDetails,
+  isAdmin,
+  isOfficial,
+  ...rest
+}) => {
   const classes = useStyles();
   const method = useForm();
   const { control, setValue } = method;
