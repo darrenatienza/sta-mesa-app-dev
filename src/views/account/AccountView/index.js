@@ -65,7 +65,8 @@ const Account = () => {
           phone_number: accountDetail.phoneNumber,
           birthdate: accountDetail.birthDate,
           gender: accountDetail.gender,
-          profile_pic: currentFile
+          profile_pic: currentFile,
+          address: accountDetail.address
         }
       });
 

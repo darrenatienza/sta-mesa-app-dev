@@ -6,7 +6,8 @@ export const initialState = {
 
 export const isValidRole = currentUser => roleName => {
   let isAdmin = false;
-  currentUser.initialState.roles.forEach(r => {
+  let mRoles = JSON.parse(localStorage.getItem('roles')) || [];
+  mRoles.forEach(r => {
     if (r.title === roleName) {
       isAdmin = true;
     }

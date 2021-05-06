@@ -11,6 +11,7 @@ import {
 
 import Form from './Form';
 import ConfirmationDialog from 'src/views/shared/ConfirmationDialog';
+import hasValidRole from 'src/utils/hasValidRole';
 
 const FormView = ({ className, ...rest }) => {
   //global state
@@ -60,6 +61,10 @@ const FormView = ({ className, ...rest }) => {
       manual: true
     }
   );
+  useEffect(() => {
+    let isAdmin = hasValidRole('admin');
+    console.log(isAdmin);
+  }, []);
   // occurs when the id is greater has change
   useEffect(() => {
     barangayClearanceStateView.barangayClearanceID > 0 &&
