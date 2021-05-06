@@ -26,7 +26,7 @@ const CustomerListView = () => {
   const [isBhwRole, setIsBhwRole] = useState(false);
   const [{ data, loading, error }, refetch] = useAxios(
     {
-      url: `/records/medicines?filter=name,cs,${criteria}`,
+      url: `/records/medicines?filter=name,cs,${criteria}&order=name`,
       method: 'GET'
     },
     { manual: true }

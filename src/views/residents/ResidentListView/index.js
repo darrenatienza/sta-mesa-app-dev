@@ -45,7 +45,7 @@ const ResidentListView = () => {
   // http - get list of residents / persons according to criteria
   const [{ data, loading, error }, refetch] = useAxios(
     {
-      url: `/records/view_persons?filter=first_name,cs,${criteria}`,
+      url: `/records/view_persons?filter=first_name,cs,${criteria}&order=last_name`,
       method: 'GET'
     },
     { manual: false }

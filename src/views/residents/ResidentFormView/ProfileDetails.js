@@ -55,6 +55,7 @@ const ProfileDetails = ({
       setValue('civilStatus', upperCaseCS);
       setValue('phoneNumber', profileDetails.phone_number);
       setValue('gender', gender);
+      setValue('address', profileDetails.address);
     }
   }, [profileDetails]);
 
@@ -106,6 +107,7 @@ const ProfileDetails = ({
                 defaultValue=""
               />
             </Grid>
+
             <Grid item md={4} xs={12}>
               <Controller
                 fullWidth
@@ -139,6 +141,18 @@ const ProfileDetails = ({
                 label="Civil Status"
                 as={TextField}
                 name="civilStatus"
+                control={control}
+                defaultValue=""
+              />
+            </Grid>
+            <Grid item lg={12} xs={12}>
+              <Controller
+                fullWidth
+                disabled
+                variant="outlined"
+                label="Address"
+                as={TextField}
+                name="address"
                 control={control}
                 defaultValue=""
               />

@@ -82,6 +82,7 @@ const ProfileDetails = ({
       setValue('civilStatus', profile.civil_status);
       setValue('phoneNumber', profile.phone_number);
       setValue('gender', profile.gender);
+      setValue('address', profile.address);
       setValue('birthDate', moment(profile.birthdate).format('YYYY-MM-DD'));
     }
   }, [profile]);
@@ -201,7 +202,20 @@ const ProfileDetails = ({
                 ))}
               </Controller>
             </Grid>
-
+            <Grid item md={6} xs={12}>
+              <Controller
+                fullWidth
+                margin="normal"
+                as={TextField}
+                name="address"
+                label="Address"
+                control={control}
+                defaultValue=""
+                variant="outlined"
+                rules={{ required: true }}
+                error={errors.address && true}
+              />
+            </Grid>
             <Grid item md={6} xs={12}>
               <Controller
                 fullWidth

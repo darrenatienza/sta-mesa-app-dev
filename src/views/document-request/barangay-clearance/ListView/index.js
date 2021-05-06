@@ -94,6 +94,7 @@ const ListView = () => {
       manual: true
     }
   );
+
   //occurs when search happens
   useEffect(() => {
     refetch();

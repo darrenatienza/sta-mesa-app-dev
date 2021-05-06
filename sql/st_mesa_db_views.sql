@@ -12,7 +12,7 @@ view view_persons as select
 	p.address,
 	u.active,
 	u.user_id
-from persons p join users u on u.person_id = p.person_id;
+from persons p join users u on u.person_id = p.person_id order by p.last_name;
 
 
 
