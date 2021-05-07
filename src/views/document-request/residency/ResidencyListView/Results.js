@@ -41,6 +41,7 @@ const Results = ({
   onUpdateDocumentStatus,
   residencies,
   isAdmin,
+  isOfficial,
   onPrint,
   ...rest
 }) => {
@@ -64,7 +65,7 @@ const Results = ({
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
                 <TableCell>Request Date</TableCell>
-                {isAdmin && (
+                {(isAdmin || isOfficial) && (
                   <>
                     <TableCell>Name</TableCell>
                     <TableCell>Age</TableCell>
@@ -84,19 +85,20 @@ const Results = ({
                     <TableRow hover key={residency.residency_id}>
                       <TableCell padding="checkbox"></TableCell>
                       <TableCell>{residency.create_time_stamp}</TableCell>
-                      {isAdmin && (
-                        <>
-                          <TableCell>
-                            <Typography color="textPrimary" variant="body1">
-                              {`${residency.first_name} ${residency.middle_name} ${residency.last_name}`}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            {moment().diff(residency.birthdate, 'years')}
-                          </TableCell>
-                          <TableCell>{residency.civil_status}</TableCell>
-                        </>
-                      )}
+                      {isAdmin ||
+                        (isOfficial && (
+                          <>
+                            <TableCell>
+                              <Typography color="textPrimary" variant="body1">
+                                {`${residency.first_name} ${residency.middle_name} ${residency.last_name}`}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              {moment().diff(residency.birthdate, 'years')}
+                            </TableCell>
+                            <TableCell>{residency.civil_status}</TableCell>
+                          </>
+                        ))}
                       <TableCell>{residency.residing_span}</TableCell>
 
                       <TableCell>
@@ -111,14 +113,17 @@ const Results = ({
                         />
                       </TableCell>
                       <TableCell>
-                        <IconButton
-                          aria-controls="simple-menu"
-                          aria-haspopup="true"
-                          aria-label="Print"
-                          onClick={() => onPrint(residency.residency_id)}
-                        >
-                          <PrintIcon />
-                        </IconButton>
+                        {isAdmin ||
+                          (isOfficial && (
+                            <IconButton
+                              aria-controls="simple-menu"
+                              aria-haspopup="true"
+                              aria-label="Print"
+                              onClick={() => onPrint(residency.residency_id)}
+                            >
+                              <PrintIcon />
+                            </IconButton>
+                          ))}
                         <IconButton
                           aria-controls="simple-menu"
                           aria-haspopup="true"

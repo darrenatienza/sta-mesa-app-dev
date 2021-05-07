@@ -35,6 +35,7 @@ const Results = ({
   onDelete,
   onPrint,
   isAdmin,
+  isOfficial,
   onChangeDocumentStatus,
   ...rest
 }) => {
@@ -58,7 +59,7 @@ const Results = ({
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
                 <TableCell>Request Date</TableCell>
-                {isAdmin && (
+                {(isAdmin || isOfficial) && (
                   <>
                     <TableCell>Name</TableCell>
                     <TableCell>Age</TableCell>
@@ -77,7 +78,7 @@ const Results = ({
                     <TableRow hover key={indigency.indigency_id}>
                       <TableCell padding="checkbox"></TableCell>
                       <TableCell>{indigency.request_date}</TableCell>
-                      {isAdmin && (
+                      {(isAdmin || isOfficial) && (
                         <>
                           <TableCell>
                             <Box alignItems="center" display="flex">
@@ -95,7 +96,7 @@ const Results = ({
                       <TableCell>
                         <Chip
                           onClick={() =>
-                            isAdmin &&
+                            (isAdmin || isOfficial) &&
                             onChangeDocumentStatus(indigency.indigency_id)
                           }
                           color="primary"
@@ -104,7 +105,7 @@ const Results = ({
                         />
                       </TableCell>
                       <TableCell>
-                        {isAdmin && (
+                        {(isAdmin || isOfficial) && (
                           <IconButton
                             aria-controls="simple-menu"
                             aria-haspopup="true"

@@ -53,6 +53,7 @@ const ListView = () => {
     setSelectedDeleteBarangaClearanceID
   ] = useState();
   const [isAdmin] = useState(isValidRole('admin'));
+  const [isOfficial] = useState(isValidRole('official'));
   //state - delete dialog
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
@@ -60,7 +61,7 @@ const ListView = () => {
   const [{ data, loading, error }, refetch] = useAxios(
     {
       url: `/records/view_barangay_clearances?${
-        isAdmin
+        isAdmin || isOfficial
           ? `filter1=first_name,cs,${criteria}&filter2=last_name,cs,${criteria}&filter=request_date,cs,${date}`
           : `filter=person_id,eq,${currentUser.currentPersonID}`
       }`,
@@ -162,11 +163,17 @@ const ListView = () => {
 
   return (
     <>
-      <Toolbar isAdmin={isAdmin} onAdd={onAdd} onSearch={onSearch} />
+      <Toolbar
+        isAdmin={isAdmin}
+        isOfficial={isOfficial}
+        onAdd={onAdd}
+        onSearch={onSearch}
+      />
       <Box mt={2}>
         <Results
           residents={data}
           isAdmin={isAdmin}
+          isOfficial={isOfficial}
           onEdit={onEdit}
           onDelete={onDelete}
           onPrint={onPrint}

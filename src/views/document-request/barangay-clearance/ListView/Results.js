@@ -43,6 +43,7 @@ const Results = ({
   className,
   residents,
   isAdmin,
+  isOfficial,
   onEdit,
   onDelete,
   onPrint,
@@ -73,7 +74,7 @@ const Results = ({
                 <TableRow>
                   <TableCell padding="checkbox"></TableCell>
                   <TableCell>Date Requested</TableCell>
-                  {isAdmin && (
+                  {(isAdmin || isOfficial) && (
                     <>
                       <TableCell>Full Name</TableCell>
                       <TableCell>Contact Number</TableCell>
@@ -94,7 +95,7 @@ const Results = ({
                         <TableCell>
                           {moment(record.request_date).format('DD/MM/YYYY')}
                         </TableCell>
-                        {isAdmin && (
+                        {(isAdmin || isOfficial) && (
                           <>
                             <TableCell>{`${record.first_name} ${record.middle_name} ${record.last_name}`}</TableCell>
                             <TableCell>{record.phone_number}</TableCell>
@@ -104,7 +105,7 @@ const Results = ({
                         <TableCell>
                           <Chip
                             onClick={() =>
-                              isAdmin &&
+                              (isAdmin || isOfficial) &&
                               onChangeDocumentStatus(
                                 record.barangay_clearance_id
                               )
@@ -115,7 +116,7 @@ const Results = ({
                           />
                         </TableCell>
                         <TableCell>
-                          {isAdmin && (
+                          {(isAdmin || isOfficial) && (
                             <IconButton
                               aria-label="Print"
                               onClick={() =>

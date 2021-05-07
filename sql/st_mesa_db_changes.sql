@@ -1,3 +1,7 @@
+/**changes on 05-07-2021 */
+ALTER TABLE relationships MODIFY COLUMN relationship varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '' NULL COMMENT 'Not needed. the value must included on person related with field';
+
+
 /**changes 0n 05-05-2021*/
 ALTER TABLE persons ADD address varchar(1000) NULL;
 

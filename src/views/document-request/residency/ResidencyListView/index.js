@@ -22,6 +22,7 @@ const ResidencyListView = () => {
   const classes = useStyles();
   const [currentUser, { isValidRole }] = useCurrentUser();
   const [isAdmin] = useState(isValidRole('admin'));
+  const [isOfficial] = useState(isValidRole('official'));
   const [selecteIDToDelete, setSelectedIDToDelete] = useState(0);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [
@@ -44,7 +45,7 @@ const ResidencyListView = () => {
   const [{ data, loading, error }, refetch] = useAxios(
     {
       url: `/records/view_residencies?${
-        isAdmin
+        isAdmin || isOfficial
           ? `filter1=first_name,cs,${criteria}&filter2=last_name,cs,${criteria}`
           : `filter=person_id,eq,${currentUser.currentPersonID}`
       }`,
@@ -132,10 +133,16 @@ const ResidencyListView = () => {
   //jsx
   return (
     <>
-      <Toolbar isAdmin={isAdmin} onSearch={onSearch} onAdd={onAdd} />
+      <Toolbar
+        isAdmin={isAdmin}
+        isOfficial={isOfficial}
+        onSearch={onSearch}
+        onAdd={onAdd}
+      />
       <Box mt={3}>
         <Results
           isAdmin={isAdmin}
+          isOfficial={isOfficial}
           onEdit={onEdit}
           onDelete={onDelete}
           onPrint={handlePrintPreview}

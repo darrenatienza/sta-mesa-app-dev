@@ -41,6 +41,7 @@ const Results = ({
   onUpdateDocumentStatus,
   relationships,
   isAdmin,
+  isOfficial,
   onPrint,
   ...rest
 }) => {
@@ -64,13 +65,14 @@ const Results = ({
               <TableRow>
                 <TableCell padding="checkbox"></TableCell>
                 <TableCell>Request Date</TableCell>
-                {isAdmin && (
-                  <>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Age</TableCell>
-                    <TableCell>Civil Status</TableCell>
-                  </>
-                )}
+                {isAdmin ||
+                  (isOfficial && (
+                    <>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Age</TableCell>
+                      <TableCell>Civil Status</TableCell>
+                    </>
+                  ))}
                 <TableCell>Reason</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
@@ -84,7 +86,7 @@ const Results = ({
                     <TableRow hover key={relationship.relationship_id}>
                       <TableCell padding="checkbox"></TableCell>
                       <TableCell>{relationship.request_date}</TableCell>
-                      {isAdmin && (
+                      {(isAdmin || isOfficial) && (
                         <>
                           <TableCell>
                             <Typography color="textPrimary" variant="body1">
@@ -104,22 +106,27 @@ const Results = ({
                           label={relationship.doc_status}
                           size="small"
                           onClick={() => {
-                            isAdmin &&
-                              onUpdateDocumentStatus(
-                                relationship.relationship_id
-                              );
+                            isAdmin ||
+                              (isOfficial &&
+                                onUpdateDocumentStatus(
+                                  relationship.relationship_id
+                                ));
                           }}
                         />
                       </TableCell>
                       <TableCell>
-                        <IconButton
-                          aria-controls="simple-menu"
-                          aria-haspopup="true"
-                          aria-label="Print"
-                          onClick={() => onPrint(relationship.relationship_id)}
-                        >
-                          <PrintIcon />
-                        </IconButton>
+                        {(isAdmin || isOfficial) && (
+                          <IconButton
+                            aria-controls="simple-menu"
+                            aria-haspopup="true"
+                            aria-label="Print"
+                            onClick={() =>
+                              onPrint(relationship.relationship_id)
+                            }
+                          >
+                            <PrintIcon />
+                          </IconButton>
+                        )}
                         <IconButton
                           aria-controls="simple-menu"
                           aria-haspopup="true"

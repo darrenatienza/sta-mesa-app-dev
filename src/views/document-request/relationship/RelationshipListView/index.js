@@ -23,6 +23,7 @@ const RelationshipListView = () => {
   const classes = useStyles();
   const [currentUser, { isValidRole }] = useCurrentUser();
   const [isAdmin] = useState(isValidRole('admin'));
+  const [isOfficial] = useState(isValidRole('official'));
   const [selecteIDToDelete, setSelectedIDToDelete] = useState(0);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [
@@ -47,7 +48,7 @@ const RelationshipListView = () => {
   const [{ data, loading, error }, refetch] = useAxios(
     {
       url: `/records/view_relationships?${
-        isAdmin
+        isAdmin || isOfficial
           ? `filter1=first_name,cs,${criteria}`
           : `filter=person_id,eq,${currentUser.currentPersonID}`
       }`,
@@ -144,13 +145,15 @@ const RelationshipListView = () => {
   return (
     <>
       <Toolbar
-        isAdmin={currentUser.isAdmin}
+        isAdmin={isAdmin}
+        isOfficial={isOfficial}
         onSearch={onSearch}
         onAdd={onAdd}
       />
       <Box mt={3}>
         <Results
           isAdmin={isAdmin}
+          isOfficial={isOfficial}
           onEdit={onEdit}
           onDelete={onDelete}
           onPrint={handlePrint}

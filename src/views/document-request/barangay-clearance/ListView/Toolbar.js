@@ -26,7 +26,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Toolbar = ({ className, onAdd, onSearch, isAdmin, ...rest }) => {
+const Toolbar = ({
+  className,
+  onAdd,
+  onSearch,
+  isAdmin,
+  isOfficial,
+  ...rest
+}) => {
   const classes = useStyles();
 
   const [criteria, setCriteria] = useState('');
@@ -52,7 +59,7 @@ const Toolbar = ({ className, onAdd, onSearch, isAdmin, ...rest }) => {
         </Box>
       </Box>
 
-      {isAdmin && (
+      {(isAdmin || isOfficial) && (
         <Box mt={3}>
           <Card>
             <CardContent>

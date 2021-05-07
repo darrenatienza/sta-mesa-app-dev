@@ -19,7 +19,14 @@ const useStyles = makeStyles(theme => ({
   root: {}
 }));
 
-const Toolbar = ({ className, isAdmin, onSearch, onAdd, ...rest }) => {
+const Toolbar = ({
+  className,
+  isAdmin,
+  isOfficial,
+  onSearch,
+  onAdd,
+  ...rest
+}) => {
   const classes = useStyles();
   const [query, setQuery] = useState('');
   useEffect(() => {
@@ -41,7 +48,7 @@ const Toolbar = ({ className, isAdmin, onSearch, onAdd, ...rest }) => {
         </Grid>
       </Grid>
 
-      {isAdmin && (
+      {(isAdmin || isOfficial) && (
         <Box mt={3}>
           <Card>
             <CardContent>

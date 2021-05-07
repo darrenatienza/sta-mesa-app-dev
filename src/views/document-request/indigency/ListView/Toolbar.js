@@ -25,7 +25,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Toolbar = ({ className, onSearch, onAdd, isAdmin, ...rest }) => {
+const Toolbar = ({
+  className,
+  onSearch,
+  onAdd,
+  isAdmin,
+  isOfficial,
+  ...rest
+}) => {
   const classes = useStyles();
   const [query, setQuery] = useState('');
   useEffect(() => {
@@ -60,31 +67,32 @@ const Toolbar = ({ className, onSearch, onAdd, isAdmin, ...rest }) => {
           </Box>
         </Grid>
       </Grid>
-      {isAdmin && (
-        <Box mt={3}>
-          <Card>
-            <CardContent>
-              <Box maxWidth={500}>
-                <TextField
-                  fullWidth
-                  onChange={e => setQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SvgIcon fontSize="small" color="action">
-                          <SearchIcon />
-                        </SvgIcon>
-                      </InputAdornment>
-                    )
-                  }}
-                  placeholder="Search"
-                  variant="outlined"
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-      )}
+      {isAdmin ||
+        (isOfficial && (
+          <Box mt={3}>
+            <Card>
+              <CardContent>
+                <Box maxWidth={500}>
+                  <TextField
+                    fullWidth
+                    onChange={e => setQuery(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SvgIcon fontSize="small" color="action">
+                            <SearchIcon />
+                          </SvgIcon>
+                        </InputAdornment>
+                      )
+                    }}
+                    placeholder="Search"
+                    variant="outlined"
+                  />
+                </Box>
+              </CardContent>
+            </Card>
+          </Box>
+        ))}
     </div>
   );
 };

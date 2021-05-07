@@ -33,6 +33,7 @@ const ListView = () => {
   const [criteria, setCriteria] = useState('');
   const [currentUser, { isValidRole }] = useCurrentUser();
   const [isAdmin] = useState(isValidRole('admin'));
+  const [isOfficial] = useState(isValidRole('official'));
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [
     openChangeDocumentStatusDialog,
@@ -44,7 +45,7 @@ const ListView = () => {
   const [{ data, loading, error }, refetch] = useAxios(
     {
       url: `/records/view_indigencies?${
-        isAdmin
+        isAdmin || isOfficial
           ? `filter1=first_name,cs,${criteria}&filter2=last_name,cs,${criteria}`
           : `filter=person_id,eq,${currentUser.currentPersonID}`
       }`,
@@ -142,11 +143,17 @@ const ListView = () => {
   };
   return (
     <>
-      <Toolbar onSearch={onSearch} onAdd={onAdd} isAdmin={isAdmin} />
+      <Toolbar
+        onSearch={onSearch}
+        onAdd={onAdd}
+        isAdmin={isAdmin}
+        isOfficial={isOfficial}
+      />
       <Box mt={3}>
         <Results
           indigencies={data ? data.records : []}
           isAdmin={isAdmin}
+          isOfficial={isOfficial}
           onPrint={onPrint}
           onDelete={onDelete}
           onChangeDocumentStatus={onChangeDocumentStatus}

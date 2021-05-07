@@ -124,9 +124,8 @@ const FbPostView = () => {
     const { data: fbData } = await executePostFb({
       params: {
         message: data.message,
-
         access_token:
-          'EAAB2F8V0vD8BAJviOjqJlOwo4me0gw3KmY9sRYtFs5ONf2nNJYd4PftqoyMMxSq6ZC8xgjS3PrtXk8UfVPp7pQpZBbnw9N13E9rravJYj1JhtjWfv0ItZA3X8AzZCxoy7krNH8KwgliIIsqQgvDVgMU74NfBXFgWP6rsFPZBPmyegl7wEWc3O6afhBk7jQsaFu8dxWjBZAQodjsZBZAO8uF5'
+          'EAAB2F8V0vD8BAKusAqsb40fFlEeKTxXPH1EaieNTIauNthX4qTsiXDbVj3dqxRm3zQHqfvOeTTVC0GQ8KThZB9LcrtgdAyHL3UghaaTet9EG8shgBzJMx06WaPH1zZBvCXXe9bsr3uoZBtP5jVVuF5ACZB0yyCpgUQnCWophuZBOphe7T6UZA74L5ZCp6zYQsoZD'
       }
     });
     await executePost({
