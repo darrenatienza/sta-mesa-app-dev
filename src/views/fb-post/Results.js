@@ -57,31 +57,33 @@ const Results = ({ className, fbPosts, onEdit, onDelete, isBhw, ...rest }) => {
             </TableHead>
             <TableBody>
               {fbPosts &&
-                fbPosts.slice(0, limit).map(fbPost => (
-                  <TableRow hover key={fbPost.fb_posts_id}>
-                    <TableCell padding="default" />
-                    <TableCell>
-                      <Box alignItems="center" display="flex">
-                        <Typography color="textPrimary" variant="body1">
-                          {fbPost.create_time_stamp}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Box maxWidth="411px">{fbPost.message}</Box>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        aria-label="Menu"
-                        onClick={() => onDelete(fbPost.fb_posts_id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                fbPosts
+                  .slice(page * limit, page * limit + limit)
+                  .map(fbPost => (
+                    <TableRow hover key={fbPost.fb_posts_id}>
+                      <TableCell padding="default" />
+                      <TableCell>
+                        <Box alignItems="center" display="flex">
+                          <Typography color="textPrimary" variant="body1">
+                            {fbPost.create_time_stamp}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Box maxWidth="411px">{fbPost.message}</Box>
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          aria-label="Menu"
+                          onClick={() => onDelete(fbPost.fb_posts_id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </Box>

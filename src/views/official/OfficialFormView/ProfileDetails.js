@@ -89,7 +89,7 @@ const ProfileDetails = ({
                 {personList &&
                   personList?.map(option => (
                     <option key={option.person_id} value={option.person_id}>
-                      {`${option.first_name} ${option.last_name}`}
+                      {`${option.last_name} ${option.first_name}`}
                     </option>
                   ))}
               </Controller>

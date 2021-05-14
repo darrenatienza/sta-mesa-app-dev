@@ -65,41 +65,43 @@ const Results = ({
             </TableHead>
             <TableBody>
               {medicines &&
-                medicines.slice(0, limit).map(medicine => (
-                  <TableRow hover key={medicine.medecine_id}>
-                    <TableCell padding="default" />
-                    <TableCell>
-                      <Box alignItems="center" display="flex">
-                        <Typography color="textPrimary" variant="body1">
-                          {medicine.name}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>{medicine.description}</TableCell>
-                    <TableCell>{medicine.quantity}</TableCell>
-                    {isBhw && (
+                medicines
+                  .slice(page * limit, page * limit + limit)
+                  .map(medicine => (
+                    <TableRow hover key={medicine.medecine_id}>
+                      <TableCell padding="default" />
                       <TableCell>
-                        <IconButton
-                          aria-controls="simple-menu"
-                          aria-haspopup="true"
-                          aria-label="Menu"
-                          onClick={() => onEdit(medicine.medecine_id)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-
-                        <IconButton
-                          aria-controls="simple-menu"
-                          aria-haspopup="true"
-                          aria-label="Menu"
-                          onClick={() => onDelete(medicine.medecine_id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                        <Box alignItems="center" display="flex">
+                          <Typography color="textPrimary" variant="body1">
+                            {medicine.name}
+                          </Typography>
+                        </Box>
                       </TableCell>
-                    )}
-                  </TableRow>
-                ))}
+                      <TableCell>{medicine.description}</TableCell>
+                      <TableCell>{medicine.quantity}</TableCell>
+                      {isBhw && (
+                        <TableCell>
+                          <IconButton
+                            aria-controls="simple-menu"
+                            aria-haspopup="true"
+                            aria-label="Menu"
+                            onClick={() => onEdit(medicine.medecine_id)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+
+                          <IconButton
+                            aria-controls="simple-menu"
+                            aria-haspopup="true"
+                            aria-label="Menu"
+                            onClick={() => onDelete(medicine.medecine_id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </Box>

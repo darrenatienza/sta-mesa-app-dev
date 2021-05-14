@@ -119,7 +119,9 @@ const ResidentListView = () => {
       performRefetch();
     }
   }, [residentViewState.showResidentListView]);
-
+  useEffect(() => {
+    refetch();
+  }, [criteria]);
   //effect - occurs when selected person id to reset changed
   useEffect(() => {
     if (selectedResetPersonPasswordID) {
@@ -196,9 +198,13 @@ const ResidentListView = () => {
     await refetch();
     setShowActivateUserDialog(false);
   };
+  const handleOnSearch = criteria => {
+    setCriteria(criteria);
+  };
+
   return (
     <div>
-      <Toolbar criteria={criteria} />
+      <Toolbar criteria={criteria} onSearch={handleOnSearch} />
       <Box mt={3}>
         {!loading && (
           <Results

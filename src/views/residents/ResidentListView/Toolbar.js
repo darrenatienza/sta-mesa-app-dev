@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ className, onSearch, ...rest }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [personEntity, { resetPersonEntity }] = usePersonEntity();
@@ -37,7 +37,7 @@ const Toolbar = ({ className, ...rest }) => {
   ] = useResidentViewState();
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => setCriteria(query), 500);
+    const timeOutId = setTimeout(() => onSearch(query), 500);
     return () => clearTimeout(timeOutId);
   }, [query]);
   //maintains value of the search box

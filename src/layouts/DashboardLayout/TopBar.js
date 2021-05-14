@@ -44,7 +44,7 @@ const TopBar = ({ className, onMobileNavOpen, onLogout, ...rest }) => {
             <Logo className={classes.logo} />
             <Hidden mdDown>
               <Typography variant="h4" className={classes.title}>
-                Barangay Sta. Mesa Web Base System
+                LOCAL GOVERNMENT UNIT (LGU) INFORMATION SYSTEM
               </Typography>
             </Hidden>
           </Box>

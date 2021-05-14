@@ -40,7 +40,10 @@ view `view_person_roles` as select
     person_roles.person_role_id,
     persons.person_id,
     roles.role_id,
-    roles.title
+    roles.title,
+    persons.first_name,
+    persons.middle_name,
+    persons.last_name
 from
     (( `person_roles`
 join `persons` on

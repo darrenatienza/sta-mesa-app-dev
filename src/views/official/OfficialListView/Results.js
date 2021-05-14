@@ -70,50 +70,52 @@ const Results = ({ className, onEdit, onDelete, officials, ...rest }) => {
             </TableHead>
             <TableBody>
               {officials &&
-                officials.slice(0, limit).map(official => (
-                  <TableRow
-                    hover
-                    key={official.official_id}
-                    value={official.official_id}
-                  >
-                    <TableCell padding="checkbox"></TableCell>
-                    <TableCell>
-                      <Typography color="textPrimary" variant="body1">
-                        {`${official.first_name} ${official.last_name} `}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      {moment().diff(official.birthdate, 'year')}
-                    </TableCell>
-                    <TableCell>
-                      {moment(official.birthdate).format('YYYY-MM-DD')}
-                    </TableCell>
-                    <TableCell>
-                      {official.civil_status &&
-                        official.civil_status.charAt(0).toUpperCase() +
-                          official.civil_status.slice(
-                            1,
-                            official.civil_status.length
-                          )}
-                    </TableCell>
-                    <TableCell>{official.title}</TableCell>
+                officials
+                  .slice(page * limit, page * limit + limit)
+                  .map(official => (
+                    <TableRow
+                      hover
+                      key={official.official_id}
+                      value={official.official_id}
+                    >
+                      <TableCell padding="checkbox"></TableCell>
+                      <TableCell>
+                        <Typography color="textPrimary" variant="body1">
+                          {`${official.first_name} ${official.last_name} `}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        {moment().diff(official.birthdate, 'year')}
+                      </TableCell>
+                      <TableCell>
+                        {moment(official.birthdate).format('YYYY-MM-DD')}
+                      </TableCell>
+                      <TableCell>
+                        {official.civil_status &&
+                          official.civil_status.charAt(0).toUpperCase() +
+                            official.civil_status.slice(
+                              1,
+                              official.civil_status.length
+                            )}
+                      </TableCell>
+                      <TableCell>{official.title}</TableCell>
 
-                    <TableCell>
-                      <IconButton
-                        aria-label="Edit"
-                        onClick={() => onEdit(official.official_id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="Delete"
-                        onClick={() => onDelete(official.official_id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      <TableCell>
+                        <IconButton
+                          aria-label="Edit"
+                          onClick={() => onEdit(official.official_id)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="Delete"
+                          onClick={() => onDelete(official.official_id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </Box>

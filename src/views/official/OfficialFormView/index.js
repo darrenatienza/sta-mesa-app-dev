@@ -39,7 +39,7 @@ const OfficialFormView = () => {
   const [
     { data: personList, loading: personListLoading, error: personListError },
     refetchPersonList
-  ] = useAxios(`/records/persons`);
+  ] = useAxios(`/records/view_person_roles?filter=role_id,eq,2`);
 
   const [
     {
