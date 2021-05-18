@@ -208,7 +208,7 @@ const ResidentListView = () => {
       <Box mt={3}>
         {!loading && (
           <Results
-            residents={data}
+            residents={data?.records ?? []}
             onDelete={onDelete}
             onReset={onResetPassword}
             onViewDetail={onViewDetail}

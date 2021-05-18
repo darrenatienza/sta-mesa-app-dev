@@ -40,11 +40,13 @@ const ProfileDetails = ({
     if (profileDetails) {
       //upper case civil status first letter
       const upperCaseCS =
-        profileDetails.civil_status.charAt(0).toUpperCase() +
-        profileDetails.civil_status.slice(1);
+        profileDetails?.civil_status?.charAt(0).toUpperCase() ??
+        '' + profileDetails?.civil_status?.slice(1) ??
+        '';
       const gender =
-        profileDetails.gender.charAt(0).toUpperCase() +
-        profileDetails.gender.slice(1);
+        profileDetails?.gender?.charAt(0).toUpperCase() ??
+        '' + profileDetails?.gender?.slice(1) ??
+        '';
       setValue('firstName', profileDetails.first_name);
       setValue('middleName', profileDetails.middle_name);
       setValue('lastName', profileDetails.last_name);

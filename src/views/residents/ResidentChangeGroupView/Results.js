@@ -73,47 +73,36 @@ const Results = ({ className, personRoles, onDelete, ...rest }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {personRoles &&
-                    personRoles.records.slice(0, limit).map(v => (
-                      <TableRow
-                        hover
-                        key={v.person_role_id}
-                        value={v.person_role_id}
-                      >
-                        <TableCell>
-                          <Box alignItems="center" display="flex">
-                            <Typography color="textPrimary" variant="body1">
-                              {`${v.title}`}
-                            </Typography>
-                          </Box>
-                        </TableCell>
+                  {personRoles.map(v => (
+                    <TableRow
+                      hover
+                      key={v.person_role_id}
+                      value={v.person_role_id}
+                    >
+                      <TableCell>
+                        <Box alignItems="center" display="flex">
+                          <Typography color="textPrimary" variant="body1">
+                            {`${v.title}`}
+                          </Typography>
+                        </Box>
+                      </TableCell>
 
-                        <TableCell>
-                          <IconButton
-                            aria-label="Reset Password"
-                            onClick={() => {
-                              onDelete(v.person_role_id);
-                            }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                      <TableCell>
+                        <IconButton
+                          aria-label="Reset Password"
+                          onClick={() => {
+                            onDelete(v.person_role_id);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </Box>
           </PerfectScrollbar>
-
-          <TablePagination
-            component="div"
-            count={personRoles ? personRoles.records.length : 0}
-            onChangePage={handlePageChange}
-            onChangeRowsPerPage={handleLimitChange}
-            page={page}
-            rowsPerPage={limit}
-            rowsPerPageOptions={[5, 10, 25]}
-          />
         </Card>
       </Box>
     </>

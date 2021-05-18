@@ -98,9 +98,16 @@ const ResidentChangeGroupView = ({ className, ...rest }) => {
   return (
     <>
       <Box mb={3} mt={3}>
-        <ToolBar roles={roleListData} onAdd={onAdd} loading={roleListLoading} />
+        <ToolBar
+          roles={roleListData?.records ?? []}
+          onAdd={onAdd}
+          loading={roleListLoading}
+        />
       </Box>
-      <Results personRoles={personRolesData} onDelete={onDelete} />
+      <Results
+        personRoles={personRolesData?.records ?? []}
+        onDelete={onDelete}
+      />
     </>
   );
 };
